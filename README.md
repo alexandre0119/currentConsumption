@@ -1,0 +1,2 @@
+# currentConsumption
+Current consumption automation

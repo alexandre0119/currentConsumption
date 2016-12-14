@@ -7,6 +7,7 @@ import visa
 import time
 import sys
 import threading
+import multiprocessing
 import numpy as np
 from pyvisa import util
 import logging
@@ -14,7 +15,6 @@ from src.my_logging import *
 import configparser
 from src.my_ssh import *
 from pandas import DataFrame, ExcelWriter
-import queue
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -27,19 +27,17 @@ formatter = logging.Formatter('(%(threadName)-10s) %(message)s',)
 ch.setFormatter(formatter)
 visa.logger.addHandler(ch)
 
-active_queues = []
-class ThreadWithReturnValue(threading.Thread):
-	def __init__(self, group=None, target=None, name=None, args=(), kwargs=None, *, daemon=None):
+class MyThreading(threading.Thread):
+	# def __init__(self, group=None, target=None, name=None, args=(), kwargs=None, *, daemon=None):
+	def __init__(self, group=None, target=None, name=None, args=(), kwargs=None, daemon=None):
 		threading.Thread.__init__(self, group, target, name, args, kwargs, daemon=daemon)
-		self.mailbox = queue.Queue()
-		active_queues.append(self.mailbox)
 		self._return = None
 
 	def run(self):
-		# logger_append.info('running')
+		print('>>>> Starting', self.name)
 		if self._target is not None:
 			self._return = self._target(*self._args, **self._kwargs)
-		# return
+		print('>>>> Exiting', self.name)
 
 	def join(self):
 		threading.Thread.join(self)
@@ -196,11 +194,14 @@ def captureOnce(trigger_count, sample_count, myinst):
 
 
 def repeat_captureOnce(times, captureOnce, *args):
+	pname = multiprocessing.current_process().name
+	print('>>>> Starting', pname)
 	readings_all = []
 	for i in range(times):
 		for i_readings in captureOnce(*args)[0]:
 			readings_all.append(i_readings)
 		# print(readings_all)
+	print('>>>> Exiting', pname)
 	return readings_all, np.mean(readings_all), np.max(readings_all), np.min(readings_all), np.std(
 		readings_all), np.count_nonzero(readings_all)
 
@@ -254,7 +255,7 @@ try:
 		myinst_name_list[i] = rm.open_resource(visa_address_list[i])
 		myinst_list.append(myinst_name_list[i])
 
-		# mythread_name_list[i] = ThreadWithReturnValue(target=repeat_captureOnce,
+		# mythread_name_list[i] = MyThreading(target=repeat_captureOnce,
 		#                                    args=(repeat_cnt_pulse,
 		#                                          captureOnce,
 		#                                          trigger_cnt_pulse,
@@ -267,23 +268,19 @@ try:
 
 	def startThread():
 		for i in range(len(myinst_name_list)):
-			mythread_name_list[i] = ThreadWithReturnValue(target=repeat_captureOnce,
+			mythread_name_list[i] = MyThreading(target=repeat_captureOnce,
 														  args=(repeat_cnt_pulse,
 																captureOnce,
 																trigger_cnt_pulse,
 																sample_cnt_pulse,
 																myinst_list[i],))
 			mythread_list.append(mythread_name_list[i])
-		# print(mythread_list, '!!!!!!!')
 		for i in mythread_list:
 			i.start()
 		# for i in mythread_list:
 		# 	i.join()
+		print(mythread_list, '!!!!!!!')
 		return mythread_list
-
-	# print(myinst_list, '!!!!!!!!!')
-	# print(mythread_list, '@@@@@@@@@@@')
-	# print(joined_DF_list, '$$$$$$$$$$$$$$$$$$')
 
 	queryError(myinst_list)
 
@@ -310,10 +307,8 @@ try:
 		time.sleep(1)
 		logger_append.info('Measuring deep sleep...')
 		startThread()
-
 		# print(mythread_list[0].join(), '!!!!!!!!!!!!!!!!!!!!!')
 		# print(mythread_list[1].join(), '!!!!!!!!!!!!!!!!!!!!!')
-
 		for i in range(int(dmm_count)):
 			joined_DF_list[i] = DataFrame(resultFormat(mythread_list[i].join()),
 											 index=['1.Average (mA)', '2.Max', '3.Min', '4.Sdev', '5.Count'],

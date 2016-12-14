@@ -8,13 +8,13 @@ import time
 import sys
 import threading
 import numpy as np
-# import matplotlib.pyplot as plt
 from pyvisa import util
 import logging
 from src.my_logging import *
 import configparser
 from src.my_ssh import *
 from pandas import DataFrame, ExcelWriter
+import queue
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -22,19 +22,24 @@ config.read('config.ini')
 visa.logger.setLevel(logging.INFO)
 ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+# formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+formatter = logging.Formatter('(%(threadName)-10s) %(message)s',)
 ch.setFormatter(formatter)
 visa.logger.addHandler(ch)
 
-
+active_queues = []
 class ThreadWithReturnValue(threading.Thread):
 	def __init__(self, group=None, target=None, name=None, args=(), kwargs=None, *, daemon=None):
 		threading.Thread.__init__(self, group, target, name, args, kwargs, daemon=daemon)
+		self.mailbox = queue.Queue()
+		active_queues.append(self.mailbox)
 		self._return = None
 
 	def run(self):
+		# logger_append.info('running')
 		if self._target is not None:
 			self._return = self._target(*self._args, **self._kwargs)
+		# return
 
 	def join(self):
 		threading.Thread.join(self)
@@ -118,11 +123,10 @@ def dmmInit(myinst_list):
 
 def resultFormat(result):
 	return [float(format(result[1], '.4f')),
-	        float(format(result[2], '.4f')),
-	        float(format(result[3], '.4f')),
-	        float(format(result[4], '.4f')),
-	        float(format(result[5], '.0f'))]
-
+			float(format(result[2], '.4f')),
+			float(format(result[3], '.4f')),
+			float(format(result[4], '.4f')),
+			float(format(result[5], '.0f'))]
 
 
 def captureOnce(trigger_count, sample_count, myinst):
@@ -220,97 +224,66 @@ try:
 	trigger_cnt_active = int(config['Test_Case_Sample'].get('Active_Trigger_Count'))
 	sample_cnt_active = int(config['Test_Case_Sample'].get('Active_Sample_Count'))
 
-	if dmm_count == '1':
-		myinst_A = rm.open_resource(str(config['DMM'].get('VISA_address_A')))
-		myinst_list = [myinst_A]
-		mythread_A = ThreadWithReturnValue(target=repeat_captureOnce,
-		                                   args=(repeat_cnt_flat,
-		                                         captureOnce,
-		                                         trigger_cnt_flat,
-		                                         sample_cnt_flat,
-		                                         myinst_A,))
-		joined_result_DF_A = DataFrame()
-	elif dmm_count == '2':
-		myinst_A = rm.open_resource(str(config['DMM'].get('VISA_address_A')))
-		myinst_B = rm.open_resource(str(config['DMM'].get('VISA_address_B')))
-		myinst_list = [myinst_A, myinst_B]
-		mythread_A = ThreadWithReturnValue(target=repeat_captureOnce,
-		                                   args=(repeat_cnt_flat,
-		                                         captureOnce,
-		                                         trigger_cnt_flat,
-		                                         sample_cnt_flat,
-		                                         myinst_A,))
-		mythread_B = ThreadWithReturnValue(target=repeat_captureOnce,
-		                                   args=(repeat_cnt_flat,
-		                                         captureOnce,
-		                                         trigger_cnt_flat,
-		                                         sample_cnt_flat,
-		                                         myinst_B,))
-		joined_result_DF_A = DataFrame()
-		joined_result_DF_B = DataFrame()
-	elif dmm_count == '3':
-		myinst_A = rm.open_resource(str(config['DMM'].get('VISA_address_A')))
-		myinst_B = rm.open_resource(str(config['DMM'].get('VISA_address_B')))
-		myinst_C = rm.open_resource(str(config['DMM'].get('VISA_address_C')))
-		myinst_list = [myinst_A, myinst_B, myinst_C]
-		mythread_A = ThreadWithReturnValue(target=repeat_captureOnce,
-		                                   args=(repeat_cnt_flat,
-		                                         captureOnce,
-		                                         trigger_cnt_flat,
-		                                         sample_cnt_flat,
-		                                         myinst_A,))
-		mythread_B = ThreadWithReturnValue(target=repeat_captureOnce,
-		                                   args=(repeat_cnt_flat,
-		                                         captureOnce,
-		                                         trigger_cnt_flat,
-		                                         sample_cnt_flat,
-		                                         myinst_B,))
-		mythread_C = ThreadWithReturnValue(target=repeat_captureOnce,
-		                                   args=(repeat_cnt_flat,
-		                                         captureOnce,
-		                                         trigger_cnt_flat,
-		                                         sample_cnt_flat,
-		                                         myinst_C,))
-		joined_result_DF_A = DataFrame()
-		joined_result_DF_B = DataFrame()
-		joined_result_DF_C = DataFrame()
-	elif dmm_count == '4':
-		myinst_A = rm.open_resource(str(config['DMM'].get('VISA_address_A')))
-		myinst_B = rm.open_resource(str(config['DMM'].get('VISA_address_B')))
-		myinst_C = rm.open_resource(str(config['DMM'].get('VISA_address_C')))
-		myinst_D = rm.open_resource(str(config['DMM'].get('VISA_address_D')))
-		myinst_list = [myinst_A, myinst_B, myinst_C, myinst_D]
-		mythread_A = ThreadWithReturnValue(target=repeat_captureOnce,
-		                                   args=(repeat_cnt_flat,
-		                                         captureOnce,
-		                                         trigger_cnt_flat,
-		                                         sample_cnt_flat,
-		                                         myinst_A,))
-		mythread_B = ThreadWithReturnValue(target=repeat_captureOnce,
-		                                   args=(repeat_cnt_flat,
-		                                         captureOnce,
-		                                         trigger_cnt_flat,
-		                                         sample_cnt_flat,
-		                                         myinst_B,))
-		mythread_C = ThreadWithReturnValue(target=repeat_captureOnce,
-		                                   args=(repeat_cnt_flat,
-		                                         captureOnce,
-		                                         trigger_cnt_flat,
-		                                         sample_cnt_flat,
-		                                         myinst_C,))
-		mythread_D = ThreadWithReturnValue(target=repeat_captureOnce,
-		                                   args=(repeat_cnt_flat,
-		                                         captureOnce,
-		                                         trigger_cnt_flat,
-		                                         sample_cnt_flat,
-		                                         myinst_D,))
-		joined_result_DF_A = DataFrame()
-		joined_result_DF_B = DataFrame()
-		joined_result_DF_C = DataFrame()
-		joined_result_DF_D = DataFrame()
-	else:
-		logger_append.info('Wrong DMM count info, pls check config.ini file. Exciting...')
-		sys.exit(1)
+	suffix_name_list = [str(config['BASIC'].get('Excel_Sheet_Name_A')),
+						str(config['BASIC'].get('Excel_Sheet_Name_B')),
+						str(config['BASIC'].get('Excel_Sheet_Name_C')),
+						str(config['BASIC'].get('Excel_Sheet_Name_D')),]
+
+	visa_address_list = [str(config['DMM'].get('VISA_address_A')),
+						 str(config['DMM'].get('VISA_address_B')),
+						 str(config['DMM'].get('VISA_address_C')),
+						 str(config['DMM'].get('VISA_address_D'))]
+
+	myinst_name_list = []
+	mythread_name_list = []
+	joined_DF_name_list = []
+	myinst_list = []
+	mythread_list = []
+	joined_DF_list = []
+
+	# if dmm_count == '1':
+	for suffix_name in suffix_name_list[0: int(dmm_count)]:
+		myinst_name_list.append('{0}_{1}'.format('myinst', suffix_name))
+		mythread_name_list.append('{0}_{1}'.format('mythread', suffix_name))
+		joined_DF_name_list.append('{0}_{1}'.format('joined_DF', suffix_name))
+	# print(myinst_name_list)
+	# print(mythread_name_list)
+	# print(joined_DF_name_list)
+
+	for i in range(len(myinst_name_list)):
+		myinst_name_list[i] = rm.open_resource(visa_address_list[i])
+		myinst_list.append(myinst_name_list[i])
+
+		# mythread_name_list[i] = ThreadWithReturnValue(target=repeat_captureOnce,
+		#                                    args=(repeat_cnt_pulse,
+		#                                          captureOnce,
+		#                                          trigger_cnt_pulse,
+		#                                          sample_cnt_pulse,
+		#                                          myinst_list[i],))
+		# mythread_list.append(mythread_name_list[i])
+
+		joined_DF_name_list[i] = DataFrame()
+		joined_DF_list.append(joined_DF_name_list[i])
+
+	def startThread():
+		for i in range(len(myinst_name_list)):
+			mythread_name_list[i] = ThreadWithReturnValue(target=repeat_captureOnce,
+														  args=(repeat_cnt_pulse,
+																captureOnce,
+																trigger_cnt_pulse,
+																sample_cnt_pulse,
+																myinst_list[i],))
+			mythread_list.append(mythread_name_list[i])
+		# print(mythread_list, '!!!!!!!')
+		for i in mythread_list:
+			i.start()
+		# for i in mythread_list:
+		# 	i.join()
+		return mythread_list
+
+	# print(myinst_list, '!!!!!!!!!')
+	# print(mythread_list, '@@@@@@@@@@@')
+	# print(joined_DF_list, '$$$$$$$$$$$$$$$$$$')
 
 	queryError(myinst_list)
 
@@ -330,33 +303,21 @@ try:
 				print('Something wrong with BD address. Exciting....')
 				sys.exit(1)
 
-
-
 	if str(config['BASIC'].get('Select_ChipVersion')) == '8977' or '8997' or '8987':
 		logger_append.info('Chip version is selected as {0}'.format(str(config['BASIC'].get('Select_ChipVersion'))))
 		# Always get deep sleep current
 		cc_bt_init_status(dut, ref, 0)
 		time.sleep(1)
 		logger_append.info('Measuring deep sleep...')
-		if dmm_count == '1':
-			# results = repeat_captureOnce(repeat_cnt_flat, captureOnce, trigger_cnt_flat, sample_cnt_flat, i)
-			mythread_A.start()
-			# print(mythread.join(), '!!!!!!!!!!!!!!!!!!!!!')
-			df_cc_bt_init_status_A = DataFrame(resultFormat(mythread_A.join()),
+		startThread()
+
+		# print(mythread_list[0].join(), '!!!!!!!!!!!!!!!!!!!!!')
+		# print(mythread_list[1].join(), '!!!!!!!!!!!!!!!!!!!!!')
+
+		for i in range(int(dmm_count)):
+			joined_DF_list[i] = DataFrame(resultFormat(mythread_list[i].join()),
 											 index=['1.Average (mA)', '2.Max', '3.Min', '4.Sdev', '5.Count'],
 											 columns=['Deep Sleep'])
-			joined_result_DF_A = df_cc_bt_init_status_A
-		elif dmm_count == '2':
-			mythread_A.start()
-			mythread_B.start()
-			df_cc_bt_init_status_A = DataFrame(resultFormat(mythread_A.join()),
-											 index=['1.Average (mA)', '2.Max', '3.Min', '4.Sdev', '5.Count'],
-											 columns=['Deep Sleep'])
-			df_cc_bt_init_status_B = DataFrame(resultFormat(mythread_B.join()),
-											 index=['1.Average (mA)', '2.Max', '3.Min', '4.Sdev', '5.Count'],
-											 columns=['Deep Sleep'])
-			joined_result_DF_A = df_cc_bt_init_status_A
-			joined_result_DF_B = df_cc_bt_init_status_B
 
 		if str(config['Test_Case'].get('BT_Enable')) == '1':
 			if str(config['Test_Case'].get('BT_Idle')) == '1':
@@ -364,16 +325,19 @@ try:
 				cc_bt_idle()
 				time.sleep(2)
 				logger_append.info('Measuring BT Idle...')
-				results = repeat_captureOnce(repeat_cnt_flat, captureOnce, trigger_cnt_flat, sample_cnt_flat)
-				list_cc_bt_idle = [float(format(results[1], '.3f')),
-								   float(format(results[2], '.3f')),
-								   float(format(results[3], '.3f')),
-								   float(format(results[4], '.3f')),
-								   float(format(results[5], '.0f'))]
-				df_cc_bt_idle = DataFrame(list_cc_bt_idle,
+
+				# for i in range(int(dmm_count)):
+				# 	mythread_list[i].start()
+				startThread()
+				temp_list = []
+				for i in range(int(dmm_count)):
+					temp_list.append(DataFrame(resultFormat(mythread_list[i].join()),
 										  index=['1.Average (mA)', '2.Max', '3.Min', '4.Sdev', '5.Count'],
-										  columns=['BT Idle'])
-				joined_result_DF = joined_result_DF.join(df_cc_bt_idle)
+										  columns=['BT Idle']))
+				print(temp_list, '!!!!!!!!!!!!!!!!!!!!!!!!!!')
+				for i in range(int(dmm_count)):
+					joined_DF_list[i] = joined_DF_list[i].join(temp_list[i])
+
 				cc_bt_init_status(dut, ref, 0)
 
 			if str(config['Test_Case'].get('BT_Pscan')) == '1':
@@ -944,24 +908,8 @@ try:
 			sys.exit(1)
 
 		my_excel = ExcelWriter('test.xlsx')
-		if dmm_count == '1':
-			(joined_result_DF_A.T).to_excel(my_excel, sheet_name=str(config['BASIC'].get('Excel_Sheet_Name_A')), index=True)
-		elif dmm_count == '2':
-			(joined_result_DF_A.T).to_excel(my_excel, sheet_name=str(config['BASIC'].get('Excel_Sheet_Name_A')), index=True)
-			(joined_result_DF_B.T).to_excel(my_excel, sheet_name=str(config['BASIC'].get('Excel_Sheet_Name_B')), index=True)
-		elif dmm_count == '3':
-			(joined_result_DF_A.T).to_excel(my_excel, sheet_name=str(config['BASIC'].get('Excel_Sheet_Name_A')), index=True)
-			(joined_result_DF_B.T).to_excel(my_excel, sheet_name=str(config['BASIC'].get('Excel_Sheet_Name_B')), index=True)
-			(joined_result_DF_C.T).to_excel(my_excel, sheet_name=str(config['BASIC'].get('Excel_Sheet_Name_C')), index=True)
-		elif dmm_count == '4':
-			(joined_result_DF_A.T).to_excel(my_excel, sheet_name=str(config['BASIC'].get('Excel_Sheet_Name_A')), index=True)
-			(joined_result_DF_B.T).to_excel(my_excel, sheet_name=str(config['BASIC'].get('Excel_Sheet_Name_B')), index=True)
-			(joined_result_DF_C.T).to_excel(my_excel, sheet_name=str(config['BASIC'].get('Excel_Sheet_Name_C')), index=True)
-			(joined_result_DF_D.T).to_excel(my_excel, sheet_name=str(config['BASIC'].get('Excel_Sheet_Name_D')), index=True)
-		else:
-			logger_append.info('Wrong DMM count info, pls check config.ini file. Exciting...')
-			sys.exit(1)
-
+		for i in range(int(dmm_count)):
+			joined_DF_list[i].T.to_excel(my_excel, sheet_name=suffix_name_list[i], index=True)
 		my_excel.save()
 
 	else:

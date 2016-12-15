@@ -34,10 +34,13 @@ class MyThreading(threading.Thread):
 		self._return = None
 
 	def run(self):
+		lock = threading.Lock()
+		lock.acquire()
 		print('>>>> Starting', self.name)
 		if self._target is not None:
 			self._return = self._target(*self._args, **self._kwargs)
 		print('>>>> Exiting', self.name)
+		lock.release()
 
 	def join(self):
 		threading.Thread.join(self)
@@ -254,32 +257,26 @@ try:
 	for i in range(len(myinst_name_list)):
 		myinst_name_list[i] = rm.open_resource(visa_address_list[i])
 		myinst_list.append(myinst_name_list[i])
-
-		# mythread_name_list[i] = MyThreading(target=repeat_captureOnce,
-		#                                    args=(repeat_cnt_pulse,
-		#                                          captureOnce,
-		#                                          trigger_cnt_pulse,
-		#                                          sample_cnt_pulse,
-		#                                          myinst_list[i],))
-		# mythread_list.append(mythread_name_list[i])
-
 		joined_DF_name_list[i] = DataFrame()
 		joined_DF_list.append(joined_DF_name_list[i])
 
-	def startThread():
-		for i in range(len(myinst_name_list)):
-			mythread_name_list[i] = MyThreading(target=repeat_captureOnce,
+	def startThread(case_name):
+		mythread_name_list_new = []
+		for i in mythread_name_list:
+			i += str('_' + str(case_name))
+			mythread_name_list_new.append(i)
+		# print(mythread_name_list_new, '!!!!!!!!!!!!!!!!')
+		for i in range(len(mythread_name_list_new)):
+			mythread_name_list_new[i] = MyThreading(target=repeat_captureOnce,
 														  args=(repeat_cnt_pulse,
 																captureOnce,
 																trigger_cnt_pulse,
 																sample_cnt_pulse,
 																myinst_list[i],))
-			mythread_list.append(mythread_name_list[i])
-		for i in mythread_list:
-			i.start()
-		# for i in mythread_list:
-		# 	i.join()
-		print(mythread_list, '!!!!!!!')
+			mythread_name_list_new[i].start()
+			mythread_list.append(mythread_name_list_new[i])
+
+		# print(mythread_list, '!!!!!!!')
 		return mythread_list
 
 	queryError(myinst_list)
@@ -306,13 +303,17 @@ try:
 		cc_bt_init_status(dut, ref, 0)
 		time.sleep(1)
 		logger_append.info('Measuring deep sleep...')
-		startThread()
+		startThread('ds')
 		# print(mythread_list[0].join(), '!!!!!!!!!!!!!!!!!!!!!')
 		# print(mythread_list[1].join(), '!!!!!!!!!!!!!!!!!!!!!')
-		for i in range(int(dmm_count)):
+		for i in reversed(range(int(dmm_count))):
 			joined_DF_list[i] = DataFrame(resultFormat(mythread_list[i].join()),
 											 index=['1.Average (mA)', '2.Max', '3.Min', '4.Sdev', '5.Count'],
 											 columns=['Deep Sleep'])
+			print('Thread list before pop: ', mythread_list)
+			mythread_list.pop(i)
+			print('Thread list after pop:', mythread_list)
+		print('Final thread list(should be empty):', mythread_list)
 
 		if str(config['Test_Case'].get('BT_Enable')) == '1':
 			if str(config['Test_Case'].get('BT_Idle')) == '1':
@@ -321,15 +322,17 @@ try:
 				time.sleep(2)
 				logger_append.info('Measuring BT Idle...')
 
-				# for i in range(int(dmm_count)):
-				# 	mythread_list[i].start()
-				startThread()
+				startThread('bt_idle')
 				temp_list = []
-				for i in range(int(dmm_count)):
+				for i in reversed(range(int(dmm_count))):
 					temp_list.append(DataFrame(resultFormat(mythread_list[i].join()),
 										  index=['1.Average (mA)', '2.Max', '3.Min', '4.Sdev', '5.Count'],
 										  columns=['BT Idle']))
-				print(temp_list, '!!!!!!!!!!!!!!!!!!!!!!!!!!')
+					print('Thread list before pop: ', mythread_list)
+					mythread_list.pop(i)
+					print('Thread list after pop:', mythread_list)
+				print('Final thread list(should be empty):', mythread_list)
+				print(temp_list)
 				for i in range(int(dmm_count)):
 					joined_DF_list[i] = joined_DF_list[i].join(temp_list[i])
 
@@ -340,17 +343,22 @@ try:
 				cc_bt_pscan()
 				time.sleep(3)
 				logger_append.info('Measuring BT Pscan...')
-
-				results = repeat_captureOnce(repeat_cnt_pulse, captureOnce, trigger_cnt_pulse, sample_cnt_pulse)
-				list_cc_bt_pscan = [float(format(results[1], '.3f')),
-									float(format(results[2], '.3f')),
-									float(format(results[3], '.3f')),
-									float(format(results[4], '.3f')),
-									float(format(results[5], '.0f'))]
-				df_cc_bt_pscan = DataFrame(list_cc_bt_pscan,
+				startThread('bt_pscan')
+				temp_list = []
+				for i in reversed(range(int(dmm_count))):
+					temp_list.append(DataFrame(resultFormat(mythread_list[i].join()),
 										   index=['1.Average (mA)', '2.Max', '3.Min', '4.Sdev', '5.Count'],
-										   columns=['BT Pscan'])
-				joined_result_DF = joined_result_DF.join(df_cc_bt_pscan)
+										   columns=['BT Pscan']))
+					print('Thread list before pop: ', mythread_list)
+					mythread_list.pop(i)
+					print('Thread list after pop:', mythread_list)
+				print('Final thread list(should be empty):', mythread_list)
+
+				print(temp_list)
+
+				for i in range(int(dmm_count)):
+					joined_DF_list[i] = joined_DF_list[i].join(temp_list[i])
+
 				cc_bt_init_status(dut, ref, 0)
 
 			if str(config['Test_Case'].get('BT_Iscan')) == '1':

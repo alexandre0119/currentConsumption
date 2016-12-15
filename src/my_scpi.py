@@ -297,23 +297,27 @@ try:
 				print('Something wrong with BD address. Exciting....')
 				sys.exit(1)
 
+	def wrap_join_DF(case_name, dmm_count, mythread_list):
+		temp_list = []
+		startThread(str(case_name))
+		for i in reversed(range(int(dmm_count))):
+			temp_list.append(DataFrame(resultFormat(mythread_list[i].join()),
+											 index=['1.Average (mA)', '2.Max', '3.Min', '4.Sdev', '5.Count'],
+											 columns=[str(case_name)]))
+			print('Thread list before pop: ', mythread_list)
+			mythread_list.pop(i)
+			print('Thread list after pop:', mythread_list)
+		print('Final thread list(should be empty):', mythread_list)
+		print(temp_list)
+		return temp_list
+
 	if str(config['BASIC'].get('Select_ChipVersion')) == '8977' or '8997' or '8987':
 		logger_append.info('Chip version is selected as {0}'.format(str(config['BASIC'].get('Select_ChipVersion'))))
 		# Always get deep sleep current
 		cc_bt_init_status(dut, ref, 0)
 		time.sleep(1)
 		logger_append.info('Measuring deep sleep...')
-		startThread('ds')
-		# print(mythread_list[0].join(), '!!!!!!!!!!!!!!!!!!!!!')
-		# print(mythread_list[1].join(), '!!!!!!!!!!!!!!!!!!!!!')
-		for i in reversed(range(int(dmm_count))):
-			joined_DF_list[i] = DataFrame(resultFormat(mythread_list[i].join()),
-											 index=['1.Average (mA)', '2.Max', '3.Min', '4.Sdev', '5.Count'],
-											 columns=['Deep Sleep'])
-			print('Thread list before pop: ', mythread_list)
-			mythread_list.pop(i)
-			print('Thread list after pop:', mythread_list)
-		print('Final thread list(should be empty):', mythread_list)
+		joined_DF_list = wrap_join_DF('deep_sleep', dmm_count, mythread_list)
 
 		if str(config['Test_Case'].get('BT_Enable')) == '1':
 			if str(config['Test_Case'].get('BT_Idle')) == '1':
@@ -322,19 +326,8 @@ try:
 				time.sleep(2)
 				logger_append.info('Measuring BT Idle...')
 
-				startThread('bt_idle')
-				temp_list = []
-				for i in reversed(range(int(dmm_count))):
-					temp_list.append(DataFrame(resultFormat(mythread_list[i].join()),
-										  index=['1.Average (mA)', '2.Max', '3.Min', '4.Sdev', '5.Count'],
-										  columns=['BT Idle']))
-					print('Thread list before pop: ', mythread_list)
-					mythread_list.pop(i)
-					print('Thread list after pop:', mythread_list)
-				print('Final thread list(should be empty):', mythread_list)
-				print(temp_list)
 				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(temp_list[i])
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('bt_idle', dmm_count, mythread_list)[i])
 
 				cc_bt_init_status(dut, ref, 0)
 
@@ -343,21 +336,9 @@ try:
 				cc_bt_pscan()
 				time.sleep(3)
 				logger_append.info('Measuring BT Pscan...')
-				startThread('bt_pscan')
-				temp_list = []
-				for i in reversed(range(int(dmm_count))):
-					temp_list.append(DataFrame(resultFormat(mythread_list[i].join()),
-										   index=['1.Average (mA)', '2.Max', '3.Min', '4.Sdev', '5.Count'],
-										   columns=['BT Pscan']))
-					print('Thread list before pop: ', mythread_list)
-					mythread_list.pop(i)
-					print('Thread list after pop:', mythread_list)
-				print('Final thread list(should be empty):', mythread_list)
-
-				print(temp_list)
 
 				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(temp_list[i])
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('bt_pscan', dmm_count, mythread_list)[i])
 
 				cc_bt_init_status(dut, ref, 0)
 
@@ -366,17 +347,8 @@ try:
 				cc_bt_iscan()
 				time.sleep(3)
 				logger_append.info('Measuring BT Iscan...')
-
-				results = repeat_captureOnce(repeat_cnt_pulse, captureOnce, trigger_cnt_pulse, sample_cnt_pulse)
-				list_cc_bt_iscan = [float(format(results[1], '.3f')),
-									float(format(results[2], '.3f')),
-									float(format(results[3], '.3f')),
-									float(format(results[4], '.3f')),
-									float(format(results[5], '.0f'))]
-				df_cc_bt_iscan = DataFrame(list_cc_bt_iscan,
-										   index=['1.Average (mA)', '2.Max', '3.Min', '4.Sdev', '5.Count'],
-										   columns=['BT Iscan'])
-				joined_result_DF = joined_result_DF.join(df_cc_bt_iscan)
+				for i in range(int(dmm_count)):
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('bt_iscan', dmm_count, mythread_list)[i])
 				cc_bt_init_status(dut, ref, 0)
 
 			if str(config['Test_Case'].get('BT_PIscan')) == '1':
@@ -384,17 +356,8 @@ try:
 				cc_bt_piscan()
 				time.sleep(3)
 				logger_append.info('Measuring BT PIscan...')
-
-				results = repeat_captureOnce(repeat_cnt_pulse, captureOnce, trigger_cnt_pulse, sample_cnt_pulse)
-				list_cc_bt_piscan = [float(format(results[1], '.3f')),
-									 float(format(results[2], '.3f')),
-									 float(format(results[3], '.3f')),
-									 float(format(results[4], '.3f')),
-									 float(format(results[5], '.0f'))]
-				df_cc_bt_piscan = DataFrame(list_cc_bt_piscan,
-											index=['1.Average (mA)', '2.Max', '3.Min', '4.Sdev', '5.Count'],
-											columns=['BT PIscan'])
-				joined_result_DF = joined_result_DF.join(df_cc_bt_piscan)
+				for i in range(int(dmm_count)):
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('bt_piscan', dmm_count, mythread_list)[i])
 				cc_bt_init_status(dut, ref, 0)
 
 			if str(config['Test_Case'].get('BT_ACL_Sniff_1.28s_Master_0dBm')) == '1':
@@ -403,19 +366,9 @@ try:
 				cc_bt_acl_sniff_1dot28s_master(dut_bd_address, ref_bd_address)
 				time.sleep(5)
 				logger_append.info('Measuring BT ACL Sniff 1.28s Master @ 0dBm...')
-
-				results = repeat_captureOnce(repeat_cnt_pulse, captureOnce, trigger_cnt_pulse, sample_cnt_pulse)
-				list_cc_bt_acl_sniff_1dot28s_master = [float(format(results[1], '.3f')),
-													   float(format(results[2], '.3f')),
-													   float(format(results[3], '.3f')),
-													   float(format(results[4], '.3f')),
-													   float(format(results[5], '.0f'))]
-				df_cc_bt_acl_sniff_1dot28s_master = DataFrame(list_cc_bt_acl_sniff_1dot28s_master,
-															  index=['1.Average (mA)', '2.Max', '3.Min', '4.Sdev',
-																	 '5.Count'],
-															  columns=['BT ACL Sniff 1.28S @ 0dBm'])
-
-				joined_result_DF = joined_result_DF.join(df_cc_bt_acl_sniff_1dot28s_master)
+				for i in range(int(dmm_count)):
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('bt_acl_sniff_1dot28s_master_0dbm',
+					                                                        dmm_count, mythread_list)[i])
 
 				cc_bt_init_status(dut, ref, 0)
 
@@ -427,20 +380,9 @@ try:
 				cc_bt_acl_sniff_1dot28s_master(dut_bd_address, ref_bd_address)
 				time.sleep(5)
 				logger_append.info('Measuring BT ACL Sniff 1.28s Master @ 4dBm...')
-
-				results = repeat_captureOnce(repeat_cnt_pulse, captureOnce, trigger_cnt_pulse, sample_cnt_pulse)
-				list_cc_bt_acl_sniff_1dot28s_master = [float(format(results[1], '.3f')),
-													   float(format(results[2], '.3f')),
-													   float(format(results[3], '.3f')),
-													   float(format(results[4], '.3f')),
-													   float(format(results[5], '.0f'))]
-				df_cc_bt_acl_sniff_1dot28s_master = DataFrame(list_cc_bt_acl_sniff_1dot28s_master,
-															  index=['1.Average (mA)', '2.Max', '3.Min', '4.Sdev',
-																	 '5.Count'],
-															  columns=['BT ACL Sniff 1.28S @ 4dBm'])
-
-				joined_result_DF = joined_result_DF.join(df_cc_bt_acl_sniff_1dot28s_master)
-
+				for i in range(int(dmm_count)):
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('bt_acl_sniff_1dot28s_master_4dbm',
+					                                                        dmm_count, mythread_list)[i])
 				cc_bt_init_status(dut, ref, 0)
 
 			if str(config['Test_Case'].get('BT_ACL_Sniff_1.28s_Master_12.5dBm')) == '1':
@@ -451,19 +393,9 @@ try:
 				cc_bt_acl_sniff_1dot28s_master(dut_bd_address, ref_bd_address)
 				time.sleep(5)
 				logger_append.info('Measuring BT ACL Sniff 1.28s Master @ 12.5dBm...')
-
-				results = repeat_captureOnce(repeat_cnt_pulse, captureOnce, trigger_cnt_pulse, sample_cnt_pulse)
-				list_cc_bt_acl_sniff_1dot28s_master = [float(format(results[1], '.3f')),
-													   float(format(results[2], '.3f')),
-													   float(format(results[3], '.3f')),
-													   float(format(results[4], '.3f')),
-													   float(format(results[5], '.0f'))]
-				df_cc_bt_acl_sniff_1dot28s_master = DataFrame(list_cc_bt_acl_sniff_1dot28s_master,
-															  index=['1.Average (mA)', '2.Max', '3.Min', '4.Sdev',
-																	 '5.Count'],
-															  columns=['BT ACL Sniff 1.28S @ 12.5dBm'])
-
-				joined_result_DF = joined_result_DF.join(df_cc_bt_acl_sniff_1dot28s_master)
+				for i in range(int(dmm_count)):
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('bt_acl_sniff_1dot28s_master_12dot5dbm',
+					                                                        dmm_count, mythread_list)[i])
 
 				cc_bt_init_status(dut, ref, 0)
 
@@ -474,19 +406,9 @@ try:
 											  ref_bd_address)
 				time.sleep(5)
 				logger_append.info('Measuring BT ACL Sniff 0.5s Master @ 0dBm...')
-
-				results = repeat_captureOnce(repeat_cnt_pulse, captureOnce, trigger_cnt_pulse, sample_cnt_pulse)
-				list_cc_bt_acl_sniff_0dot5_master = [float(format(results[1], '.3f')),
-													 float(format(results[2], '.3f')),
-													 float(format(results[3], '.3f')),
-													 float(format(results[4], '.3f')),
-													 float(format(results[5], '.0f'))]
-				df_cc_bt_acl_sniff_0dot5s_master = DataFrame(list_cc_bt_acl_sniff_0dot5_master,
-															 index=['1.Average (mA)', '2.Max', '3.Min', '4.Sdev',
-																	'5.Count'],
-															 columns=['BT ACL Sniff 0.5S @ 0dBm'])
-
-				joined_result_DF = joined_result_DF.join(df_cc_bt_acl_sniff_0dot5s_master)
+				for i in range(int(dmm_count)):
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('bt_acl_sniff_dot5s_master_0dbm',
+					                                                        dmm_count, mythread_list)[i])
 
 				cc_bt_init_status(dut, ref, 0)
 
@@ -499,20 +421,9 @@ try:
 											  ref_bd_address)
 				time.sleep(5)
 				logger_append.info('Measuring BT ACL Sniff 0.5s Master @ 4dBm...')
-
-				results = repeat_captureOnce(repeat_cnt_pulse, captureOnce, trigger_cnt_pulse, sample_cnt_pulse)
-				list_cc_bt_acl_sniff_0dot5s_master = [float(format(results[1], '.3f')),
-													  float(format(results[2], '.3f')),
-													  float(format(results[3], '.3f')),
-													  float(format(results[4], '.3f')),
-													  float(format(results[5], '.0f'))]
-				df_cc_bt_acl_sniff_0dot5s_master = DataFrame(list_cc_bt_acl_sniff_0dot5s_master,
-															 index=['1.Average (mA)', '2.Max', '3.Min', '4.Sdev',
-																	'5.Count'],
-															 columns=['BT ACL Sniff 0.5S @ 4dBm'])
-
-				joined_result_DF = joined_result_DF.join(df_cc_bt_acl_sniff_0dot5s_master)
-
+				for i in range(int(dmm_count)):
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('bt_acl_sniff_dot5s_master_4dbm',
+					                                                        dmm_count, mythread_list)[i])
 				cc_bt_init_status(dut, ref, 0)
 
 			if str(config['Test_Case'].get('BT_ACL_Sniff_0.5s_Master_12.5dBm')) == '1':
@@ -524,19 +435,9 @@ try:
 											  ref_bd_address)
 				time.sleep(5)
 				logger_append.info('Measuring BT ACL Sniff 0.5s Master @ 12.5dBm...')
-
-				results = repeat_captureOnce(repeat_cnt_pulse, captureOnce, trigger_cnt_pulse, sample_cnt_pulse)
-				list_cc_bt_acl_sniff_0dot5s_master = [float(format(results[1], '.3f')),
-													  float(format(results[2], '.3f')),
-													  float(format(results[3], '.3f')),
-													  float(format(results[4], '.3f')),
-													  float(format(results[5], '.0f'))]
-				df_cc_bt_acl_sniff_0dot5s_master = DataFrame(list_cc_bt_acl_sniff_0dot5s_master,
-															 index=['1.Average (mA)', '2.Max', '3.Min', '4.Sdev',
-																	'5.Count'],
-															 columns=['BT ACL Sniff 0.5S @ 12.5dBm'])
-
-				joined_result_DF = joined_result_DF.join(df_cc_bt_acl_sniff_0dot5s_master)
+				for i in range(int(dmm_count)):
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('bt_acl_sniff_dot5s_master_12dot5dbm',
+					                                                        dmm_count, mythread_list)[i])
 
 				cc_bt_init_status(dut, ref, 0)
 
@@ -550,18 +451,9 @@ try:
 				cc_bt_sco_hv3(ref_bd_address)
 				time.sleep(10)
 				logger_append.info('Measuring BT SCO HV3 Master @ 0dBm...')
-
-				results = repeat_captureOnce(repeat_cnt_active, captureOnce, trigger_cnt_active, sample_cnt_active)
-				list_cc_bt_sco_hv3 = [float(format(results[1], '.3f')),
-									  float(format(results[2], '.3f')),
-									  float(format(results[3], '.3f')),
-									  float(format(results[4], '.3f')),
-									  float(format(results[5], '.0f'))]
-				df_cc_bt_sco_hv3 = DataFrame(list_cc_bt_sco_hv3,
-											 index=['1.Average (mA)', '2.Max', '3.Min', '4.Sdev', '5.Count'],
-											 columns=['BT SCO HV3 @ 0dBm'])
-
-				joined_result_DF = joined_result_DF.join(df_cc_bt_sco_hv3)
+				for i in range(int(dmm_count)):
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('bt_sco_hv3_master_0dbm',
+					                                                        dmm_count, mythread_list)[i])
 
 				cc_bt_init_status(dut, ref, 0)
 
@@ -575,18 +467,9 @@ try:
 				cc_bt_sco_hv3(ref_bd_address)
 				time.sleep(10)
 				logger_append.info('Measuring BT SCO HV3 Master @ 4dBm...')
-
-				results = repeat_captureOnce(repeat_cnt_active, captureOnce, trigger_cnt_active, sample_cnt_active)
-				list_cc_bt_sco_hv3 = [float(format(results[1], '.3f')),
-									  float(format(results[2], '.3f')),
-									  float(format(results[3], '.3f')),
-									  float(format(results[4], '.3f')),
-									  float(format(results[5], '.0f'))]
-				df_cc_bt_sco_hv3 = DataFrame(list_cc_bt_sco_hv3,
-											 index=['1.Average (mA)', '2.Max', '3.Min', '4.Sdev', '5.Count'],
-											 columns=['BT SCO HV3 @ 4dBm'])
-
-				joined_result_DF = joined_result_DF.join(df_cc_bt_sco_hv3)
+				for i in range(int(dmm_count)):
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('bt_sco_hv3_master_4dbm',
+					                                                        dmm_count, mythread_list)[i])
 
 				cc_bt_init_status(dut, ref, 0)
 
@@ -600,18 +483,9 @@ try:
 				cc_bt_sco_hv3(ref_bd_address)
 				time.sleep(10)
 				logger_append.info('Measuring BT SCO HV3 Master @ 12.5dBm...')
-
-				results = repeat_captureOnce(repeat_cnt_active, captureOnce, trigger_cnt_active, sample_cnt_active)
-				list_cc_bt_sco_hv3 = [float(format(results[1], '.3f')),
-									  float(format(results[2], '.3f')),
-									  float(format(results[3], '.3f')),
-									  float(format(results[4], '.3f')),
-									  float(format(results[5], '.0f'))]
-				df_cc_bt_sco_hv3 = DataFrame(list_cc_bt_sco_hv3,
-											 index=['1.Average (mA)', '2.Max', '3.Min', '4.Sdev', '5.Count'],
-											 columns=['BT SCO HV3 @ 12.5dBm'])
-
-				joined_result_DF = joined_result_DF.join(df_cc_bt_sco_hv3)
+				for i in range(int(dmm_count)):
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('bt_sco_hv3_master_12dot5dbm',
+					                                                        dmm_count, mythread_list)[i])
 
 				cc_bt_init_status(dut, ref, 0)
 
@@ -625,18 +499,9 @@ try:
 				cc_bt_sco_ev3(ref_bd_address)
 				time.sleep(10)
 				logger_append.info('Measuring BT SCO EV3 Master @ 0dBm...')
-
-				results = repeat_captureOnce(repeat_cnt_active, captureOnce, trigger_cnt_active, sample_cnt_active)
-				list_cc_bt_sco_ev3 = [float(format(results[1], '.3f')),
-									  float(format(results[2], '.3f')),
-									  float(format(results[3], '.3f')),
-									  float(format(results[4], '.3f')),
-									  float(format(results[5], '.0f'))]
-				df_cc_bt_sco_ev3 = DataFrame(list_cc_bt_sco_ev3,
-											 index=['1.Average (mA)', '2.Max', '3.Min', '4.Sdev', '5.Count'],
-											 columns=['BT SCO EV3 @ 0dBm'])
-
-				joined_result_DF = joined_result_DF.join(df_cc_bt_sco_ev3)
+				for i in range(int(dmm_count)):
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('bt_sco_ev3_master_0dbm',
+					                                                        dmm_count, mythread_list)[i])
 
 				cc_bt_init_status(dut, ref, 0)
 
@@ -650,18 +515,9 @@ try:
 				cc_bt_sco_ev3(ref_bd_address)
 				time.sleep(10)
 				logger_append.info('Measuring BT SCO EV3 Master @ 4dBm...')
-
-				results = repeat_captureOnce(repeat_cnt_active, captureOnce, trigger_cnt_active, sample_cnt_active)
-				list_cc_bt_sco_ev3 = [float(format(results[1], '.3f')),
-									  float(format(results[2], '.3f')),
-									  float(format(results[3], '.3f')),
-									  float(format(results[4], '.3f')),
-									  float(format(results[5], '.0f'))]
-				df_cc_bt_sco_ev3 = DataFrame(list_cc_bt_sco_ev3,
-											 index=['1.Average (mA)', '2.Max', '3.Min', '4.Sdev', '5.Count'],
-											 columns=['BT SCO EV3 @ 4dBm'])
-
-				joined_result_DF = joined_result_DF.join(df_cc_bt_sco_ev3)
+				for i in range(int(dmm_count)):
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('bt_sco_ev3_master_4dbm',
+					                                                        dmm_count, mythread_list)[i])
 
 				cc_bt_init_status(dut, ref, 0)
 
@@ -675,18 +531,9 @@ try:
 				cc_bt_sco_ev3(ref_bd_address)
 				time.sleep(10)
 				logger_append.info('Measuring BT SCO EV3 Master @ 12.5dBm...')
-
-				results = repeat_captureOnce(repeat_cnt_active, captureOnce, trigger_cnt_active, sample_cnt_active)
-				list_cc_bt_sco_ev3 = [float(format(results[1], '.3f')),
-									  float(format(results[2], '.3f')),
-									  float(format(results[3], '.3f')),
-									  float(format(results[4], '.3f')),
-									  float(format(results[5], '.0f'))]
-				df_cc_bt_sco_ev3 = DataFrame(list_cc_bt_sco_ev3,
-											 index=['1.Average (mA)', '2.Max', '3.Min', '4.Sdev', '5.Count'],
-											 columns=['BT SCO EV3 @ 12.5dBm'])
-
-				joined_result_DF = joined_result_DF.join(df_cc_bt_sco_ev3)
+				for i in range(int(dmm_count)):
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('bt_sco_ev3_master_12dot5dbm',
+					                                                        dmm_count, mythread_list)[i])
 
 				cc_bt_init_status(dut, ref, 0)
 
@@ -705,19 +552,9 @@ try:
 				cc_ble_adv_1dot28s_3channel('1')
 				time.sleep(3)
 				logger_append.info('Measuring BLE Adv 1.28s 3-Channel @ 0dBm...')
-
-				results = repeat_captureOnce(repeat_cnt_pulse, captureOnce, trigger_cnt_pulse, sample_cnt_pulse)
-				list_cc_ble_adv_1dot28s_3channel = [float(format(results[1], '.3f')),
-													float(format(results[2], '.3f')),
-													float(format(results[3], '.3f')),
-													float(format(results[4], '.3f')),
-													float(format(results[5], '.0f'))]
-				df_cc_ble_adv_1dot28s_3channel = DataFrame(list_cc_ble_adv_1dot28s_3channel,
-														   index=['1.Average (mA)', '2.Max', '3.Min', '4.Sdev',
-																  '5.Count'],
-														   columns=['BLE Adv 1.28s 3-Channel @ 0dBm'])
-
-				joined_result_DF = joined_result_DF.join(df_cc_ble_adv_1dot28s_3channel)
+				for i in range(int(dmm_count)):
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BLE_Adv_1dot28s_3Channel_0dbm',
+					                                                        dmm_count, mythread_list)[i])
 
 				cc_bt_init_status(dut, ref, 0)
 
@@ -729,19 +566,9 @@ try:
 				cc_ble_adv_1dot28s_3channel('1')
 				time.sleep(3)
 				logger_append.info('Measuring BLE Adv 1.28s 3-Channel @ 4dBm...')
-
-				results = repeat_captureOnce(repeat_cnt_pulse, captureOnce, trigger_cnt_pulse, sample_cnt_pulse)
-				list_cc_ble_adv_1dot28s_3channel = [float(format(results[1], '.3f')),
-													float(format(results[2], '.3f')),
-													float(format(results[3], '.3f')),
-													float(format(results[4], '.3f')),
-													float(format(results[5], '.0f'))]
-				df_cc_ble_adv_1dot28s_3channel = DataFrame(list_cc_ble_adv_1dot28s_3channel,
-														   index=['1.Average (mA)', '2.Max', '3.Min', '4.Sdev',
-																  '5.Count'],
-														   columns=['BLE Adv 1.28s 3-Channel @ 4dBm'])
-
-				joined_result_DF = joined_result_DF.join(df_cc_ble_adv_1dot28s_3channel)
+				for i in range(int(dmm_count)):
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BLE_Adv_1dot28s_3Channel_4dbm',
+					                                                        dmm_count, mythread_list)[i])
 
 				cc_bt_init_status(dut, ref, 0)
 
@@ -753,19 +580,9 @@ try:
 				cc_ble_adv_1dot28s_3channel('1')
 				time.sleep(3)
 				logger_append.info('Measuring BLE Adv 1.28s 3-Channel @ 12.5dBm...')
-
-				results = repeat_captureOnce(repeat_cnt_pulse, captureOnce, trigger_cnt_pulse, sample_cnt_pulse)
-				list_cc_ble_adv_1dot28s_3channel = [float(format(results[1], '.3f')),
-													float(format(results[2], '.3f')),
-													float(format(results[3], '.3f')),
-													float(format(results[4], '.3f')),
-													float(format(results[5], '.0f'))]
-				df_cc_ble_adv_1dot28s_3channel = DataFrame(list_cc_ble_adv_1dot28s_3channel,
-														   index=['1.Average (mA)', '2.Max', '3.Min', '4.Sdev',
-																  '5.Count'],
-														   columns=['BLE Adv 1.28s 3-Channel @ 12.5dBm'])
-
-				joined_result_DF = joined_result_DF.join(df_cc_ble_adv_1dot28s_3channel)
+				for i in range(int(dmm_count)):
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BLE_Adv_1dot28s_3Channel_12dot5dbm',
+					                                                        dmm_count, mythread_list)[i])
 
 				cc_bt_init_status(dut, ref, 0)
 
@@ -775,18 +592,9 @@ try:
 				cc_ble_scan_1dot28s('1')
 				time.sleep(3)
 				logger_append.info('Measuring BLE Scan 1.28s...')
-
-				results = repeat_captureOnce(repeat_cnt_pulse, captureOnce, trigger_cnt_pulse, sample_cnt_pulse)
-				list_cc_ble_scan_1dot28s = [float(format(results[1], '.3f')),
-											float(format(results[2], '.3f')),
-											float(format(results[3], '.3f')),
-											float(format(results[4], '.3f')),
-											float(format(results[5], '.0f'))]
-				df_cc_ble_scan_1dot28s = DataFrame(list_cc_ble_scan_1dot28s,
-												   index=['1.Average (mA)', '2.Max', '3.Min', '4.Sdev', '5.Count'],
-												   columns=['BLE Scan 1.28s'])
-
-				joined_result_DF = joined_result_DF.join(df_cc_ble_scan_1dot28s)
+				for i in range(int(dmm_count)):
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BLE_scan_1dot28s',
+					                                                        dmm_count, mythread_list)[i])
 
 				cc_bt_init_status(dut, ref, 0)
 
@@ -796,18 +604,9 @@ try:
 				cc_ble_scan_1s('1')
 				time.sleep(3)
 				logger_append.info('Measuring BLE Scan 1s...')
-
-				results = repeat_captureOnce(repeat_cnt_pulse, captureOnce, trigger_cnt_pulse, sample_cnt_pulse)
-				list_cc_ble_scan_1s = [float(format(results[1], '.3f')),
-									   float(format(results[2], '.3f')),
-									   float(format(results[3], '.3f')),
-									   float(format(results[4], '.3f')),
-									   float(format(results[5], '.0f'))]
-				df_cc_ble_scan_1s = DataFrame(list_cc_ble_scan_1s,
-											  index=['1.Average (mA)', '2.Max', '3.Min', '4.Sdev', '5.Count'],
-											  columns=['BLE Scan 1s'])
-
-				joined_result_DF = joined_result_DF.join(df_cc_ble_scan_1s)
+				for i in range(int(dmm_count)):
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BLE_scan_1s',
+					                                                        dmm_count, mythread_list)[i])
 
 				cc_bt_init_status(dut, ref, 0)
 
@@ -817,18 +616,9 @@ try:
 				cc_ble_scan_10ms('1')
 				time.sleep(3)
 				logger_append.info('Measuring BLE Scan 10ms...')
-
-				results = repeat_captureOnce(repeat_cnt_pulse, captureOnce, trigger_cnt_pulse, sample_cnt_pulse)
-				list_cc_ble_scan_10ms = [float(format(results[1], '.3f')),
-										 float(format(results[2], '.3f')),
-										 float(format(results[3], '.3f')),
-										 float(format(results[4], '.3f')),
-										 float(format(results[5], '.0f'))]
-				df_cc_ble_scan_10ms = DataFrame(list_cc_ble_scan_10ms,
-												index=['1.Average (mA)', '2.Max', '3.Min', '4.Sdev', '5.Count'],
-												columns=['BLE Scan 10ms'])
-
-				joined_result_DF = joined_result_DF.join(df_cc_ble_scan_10ms)
+				for i in range(int(dmm_count)):
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BLE_scan_10ms',
+					                                                        dmm_count, mythread_list)[i])
 
 				cc_bt_init_status(dut, ref, 0)
 
@@ -840,19 +630,9 @@ try:
 				cc_ble_connection_1dot28s(ref_bd_address)
 				time.sleep(5)
 				logger_append.info('Measuring BLE Connection 1.28s @ 0dBm...')
-
-				results = repeat_captureOnce(repeat_cnt_pulse, captureOnce, trigger_cnt_pulse, sample_cnt_pulse)
-				list_cc_ble_connection_1dot28s = [float(format(results[1], '.3f')),
-												  float(format(results[2], '.3f')),
-												  float(format(results[3], '.3f')),
-												  float(format(results[4], '.3f')),
-												  float(format(results[5], '.0f'))]
-				df_cc_ble_connection_1dot28s = DataFrame(list_cc_ble_connection_1dot28s,
-														 index=['1.Average (mA)', '2.Max', '3.Min', '4.Sdev',
-																'5.Count'],
-														 columns=['BLE Connection 1.28s @ 0dBm'])
-
-				joined_result_DF = joined_result_DF.join(df_cc_ble_connection_1dot28s)
+				for i in range(int(dmm_count)):
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BLE_Conn_1dot28s_0dbm',
+					                                                        dmm_count, mythread_list)[i])
 
 				cc_bt_init_status(dut, ref, 0)
 
@@ -864,19 +644,9 @@ try:
 				cc_ble_connection_1dot28s(ref_bd_address)
 				time.sleep(5)
 				logger_append.info('Measuring BLE Connection 1.28s @ 4dBm...')
-
-				results = repeat_captureOnce(repeat_cnt_pulse, captureOnce, trigger_cnt_pulse, sample_cnt_pulse)
-				list_cc_ble_connection_1dot28s = [float(format(results[1], '.3f')),
-												  float(format(results[2], '.3f')),
-												  float(format(results[3], '.3f')),
-												  float(format(results[4], '.3f')),
-												  float(format(results[5], '.0f'))]
-				df_cc_ble_connection_1dot28s = DataFrame(list_cc_ble_connection_1dot28s,
-														 index=['1.Average (mA)', '2.Max', '3.Min', '4.Sdev',
-																'5.Count'],
-														 columns=['BLE Connection 1.28s @ 4dBm'])
-
-				joined_result_DF = joined_result_DF.join(df_cc_ble_connection_1dot28s)
+				for i in range(int(dmm_count)):
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BLE_Conn_1dot28s_4dbm',
+					                                                        dmm_count, mythread_list)[i])
 
 				cc_bt_init_status(dut, ref, 0)
 
@@ -888,19 +658,9 @@ try:
 				cc_ble_connection_1dot28s(ref_bd_address)
 				time.sleep(5)
 				logger_append.info('Measuring BLE Connection 1.28s @ 12.5dBm...')
-
-				results = repeat_captureOnce(repeat_cnt_pulse, captureOnce, trigger_cnt_pulse, sample_cnt_pulse)
-				list_cc_ble_connection_1dot28s = [float(format(results[1], '.3f')),
-												  float(format(results[2], '.3f')),
-												  float(format(results[3], '.3f')),
-												  float(format(results[4], '.3f')),
-												  float(format(results[5], '.0f'))]
-				df_cc_ble_connection_1dot28s = DataFrame(list_cc_ble_connection_1dot28s,
-														 index=['1.Average (mA)', '2.Max', '3.Min', '4.Sdev',
-																'5.Count'],
-														 columns=['BLE Connection 1.28s @ 12.5dBm'])
-
-				joined_result_DF = joined_result_DF.join(df_cc_ble_connection_1dot28s)
+				for i in range(int(dmm_count)):
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BLE_Conn_1dot28s_12dot5dbm',
+					                                                        dmm_count, mythread_list)[i])
 
 				cc_bt_init_status(dut, ref, 0)
 

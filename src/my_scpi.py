@@ -28,19 +28,19 @@ ch.setFormatter(formatter)
 visa.logger.addHandler(ch)
 
 class MyThreading(threading.Thread):
-	# def __init__(self, group=None, target=None, name=None, args=(), kwargs=None, *, daemon=None):
-	def __init__(self, group=None, target=None, name=None, args=(), kwargs=None, daemon=None):
+	def __init__(self, group=None, target=None, name=None, args=(), kwargs=None, *, daemon=None):
+	# def __init__(self, group=None, target=None, name=None, args=(), kwargs=None, daemon=None):
 		threading.Thread.__init__(self, group, target, name, args, kwargs, daemon=daemon)
 		self._return = None
 
 	def run(self):
-		lock = threading.Lock()
-		lock.acquire()
+		# lock = threading.Lock()
+		# lock.acquire()
 		print('>>>> Starting', self.name)
 		if self._target is not None:
 			self._return = self._target(*self._args, **self._kwargs)
 		print('>>>> Exiting', self.name)
-		lock.release()
+		# lock.release()
 
 	def join(self):
 		threading.Thread.join(self)
@@ -131,14 +131,13 @@ def resultFormat(result):
 
 
 def captureOnce(trigger_count, sample_count, myinst):
-	myinst.write('TRIG:COUN {0}'.format(trigger_count))  # Sets the trigger count to X
-	myinst.write('SAMP:COUN {0}'.format(sample_count))  # Sets X readings per trigger, above 284 sample will be error
 	print(myinst)
-	# checkOPC(myinst_list)
-
 	# Clear all calculations before we start
 	myinst.write('CALC:AVER:CLE')
 	print('Statistic cleared\n')
+
+	myinst.write('TRIG:COUN {0}'.format(trigger_count))  # Sets the trigger count to X
+	myinst.write('SAMP:COUN {0}'.format(sample_count))  # Sets X readings per trigger, above 284 sample will be error
 
 	# Turn on Stat calculations for future readings
 	myinst.write('CALC:STAT ON')
@@ -193,21 +192,21 @@ def captureOnce(trigger_count, sample_count, myinst):
 	myinst.write('CALC:STAT?')
 	print('\nCalc Enable/Disable: ', myinst.read())
 
+	myinst.write('CALC:AVER:CLE')
+	print('Statistic cleared\n')
+
 	return readings, np.mean(readings), np.max(readings), np.min(readings), np.std(readings), np.count_nonzero(readings)
 
 
-def repeat_captureOnce(times, captureOnce, *args):
-	pname = multiprocessing.current_process().name
-	print('>>>> Starting', pname)
-	readings_all = []
-	for i in range(times):
-		for i_readings in captureOnce(*args)[0]:
-			readings_all.append(i_readings)
-		# print(readings_all)
-	print('>>>> Exiting', pname)
-	return readings_all, np.mean(readings_all), np.max(readings_all), np.min(readings_all), np.std(
-		readings_all), np.count_nonzero(readings_all)
-
+# Function: report capture function if need more samples
+# def repeat_captureOnce(times, captureOnce, *args):
+# 	readings_all = []
+# 	for i in range(times):
+# 		for i_readings in captureOnce(*args)[0]:
+# 			readings_all.append(i_readings)
+# 		# print(readings_all)
+# 	return readings_all, np.mean(readings_all), np.max(readings_all), np.min(readings_all), \
+# 	       np.std(readings_all), np.count_nonzero(readings_all)
 
 try:
 	start_time = time.time()
@@ -216,15 +215,12 @@ try:
 	rm = visa.ResourceManager()
 	dmm_count = str(config['DMM'].get('DMM_count'))
 
-	repeat_cnt_flat = int(config['Test_Case_Sample'].get('Flat_Repeat_Count'))
 	trigger_cnt_flat = int(config['Test_Case_Sample'].get('Flat_Trigger_Count'))
 	sample_cnt_flat = int(config['Test_Case_Sample'].get('Flat_Sample_Count'))
 
-	repeat_cnt_pulse = int(config['Test_Case_Sample'].get('Pulse_Repeat_Count'))
 	trigger_cnt_pulse = int(config['Test_Case_Sample'].get('Pulse_Trigger_Count'))
 	sample_cnt_pulse = int(config['Test_Case_Sample'].get('Pulse_Sample_Count'))
 
-	repeat_cnt_active = int(config['Test_Case_Sample'].get('Active_Repeat_Count'))
 	trigger_cnt_active = int(config['Test_Case_Sample'].get('Active_Trigger_Count'))
 	sample_cnt_active = int(config['Test_Case_Sample'].get('Active_Sample_Count'))
 
@@ -265,12 +261,9 @@ try:
 		for i in mythread_name_list:
 			i += str('_' + str(case_name))
 			mythread_name_list_new.append(i)
-		# print(mythread_name_list_new, '!!!!!!!!!!!!!!!!')
 		for i in range(len(mythread_name_list_new)):
-			mythread_name_list_new[i] = MyThreading(target=repeat_captureOnce,
-														  args=(repeat_cnt_pulse,
-																captureOnce,
-																trigger_cnt_pulse,
+			mythread_name_list_new[i] = MyThreading(target=captureOnce,
+														  args=(trigger_cnt_pulse,
 																sample_cnt_pulse,
 																myinst_list[i],))
 			mythread_name_list_new[i].start()
@@ -297,9 +290,10 @@ try:
 				print('Something wrong with BD address. Exciting....')
 				sys.exit(1)
 
-	def wrap_join_DF(case_name, dmm_count, mythread_list):
+	def wrap_join_DF(case_name, dmm_count):
 		temp_list = []
 		startThread(str(case_name))
+		# print('>>>>>>>>>>>><<<<<<<<', mythread_list)
 		for i in reversed(range(int(dmm_count))):
 			temp_list.append(DataFrame(resultFormat(mythread_list[i].join()),
 											 index=['1.Average (mA)', '2.Max', '3.Min', '4.Sdev', '5.Count'],
@@ -308,7 +302,9 @@ try:
 			mythread_list.pop(i)
 			print('Thread list after pop:', mythread_list)
 		print('Final thread list(should be empty):', mythread_list)
-		print(temp_list)
+
+		for i in temp_list:
+			print(i)
 		return temp_list
 
 	if str(config['BASIC'].get('Select_ChipVersion')) == '8977' or '8997' or '8987':
@@ -317,7 +313,7 @@ try:
 		cc_bt_init_status(dut, ref, 0)
 		time.sleep(1)
 		logger_append.info('Measuring deep sleep...')
-		joined_DF_list = wrap_join_DF('deep_sleep', dmm_count, mythread_list)
+		joined_DF_list = wrap_join_DF('Deep_Sleep', dmm_count)
 
 		if str(config['Test_Case'].get('BT_Enable')) == '1':
 			if str(config['Test_Case'].get('BT_Idle')) == '1':
@@ -325,10 +321,8 @@ try:
 				cc_bt_idle()
 				time.sleep(2)
 				logger_append.info('Measuring BT Idle...')
-
 				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('bt_idle', dmm_count, mythread_list)[i])
-
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_Idle', dmm_count)[i])
 				cc_bt_init_status(dut, ref, 0)
 
 			if str(config['Test_Case'].get('BT_Pscan')) == '1':
@@ -338,7 +332,7 @@ try:
 				logger_append.info('Measuring BT Pscan...')
 
 				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('bt_pscan', dmm_count, mythread_list)[i])
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_Pscan', dmm_count)[i])
 
 				cc_bt_init_status(dut, ref, 0)
 
@@ -348,7 +342,7 @@ try:
 				time.sleep(3)
 				logger_append.info('Measuring BT Iscan...')
 				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('bt_iscan', dmm_count, mythread_list)[i])
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('bt_Iscan', dmm_count)[i])
 				cc_bt_init_status(dut, ref, 0)
 
 			if str(config['Test_Case'].get('BT_PIscan')) == '1':
@@ -357,7 +351,7 @@ try:
 				time.sleep(3)
 				logger_append.info('Measuring BT PIscan...')
 				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('bt_piscan', dmm_count, mythread_list)[i])
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('bt_PIscan', dmm_count)[i])
 				cc_bt_init_status(dut, ref, 0)
 
 			if str(config['Test_Case'].get('BT_ACL_Sniff_1.28s_Master_0dBm')) == '1':
@@ -367,8 +361,8 @@ try:
 				time.sleep(5)
 				logger_append.info('Measuring BT ACL Sniff 1.28s Master @ 0dBm...')
 				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('bt_acl_sniff_1dot28s_master_0dbm',
-					                                                        dmm_count, mythread_list)[i])
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_ACL_Sniff_1dot28s_Master_0dBm',
+					                                                        dmm_count)[i])
 
 				cc_bt_init_status(dut, ref, 0)
 
@@ -381,8 +375,8 @@ try:
 				time.sleep(5)
 				logger_append.info('Measuring BT ACL Sniff 1.28s Master @ 4dBm...')
 				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('bt_acl_sniff_1dot28s_master_4dbm',
-					                                                        dmm_count, mythread_list)[i])
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_ACL_Sniff_1dot28s_Master_4dBm',
+					                                                        dmm_count)[i])
 				cc_bt_init_status(dut, ref, 0)
 
 			if str(config['Test_Case'].get('BT_ACL_Sniff_1.28s_Master_12.5dBm')) == '1':
@@ -394,8 +388,8 @@ try:
 				time.sleep(5)
 				logger_append.info('Measuring BT ACL Sniff 1.28s Master @ 12.5dBm...')
 				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('bt_acl_sniff_1dot28s_master_12dot5dbm',
-					                                                        dmm_count, mythread_list)[i])
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_ACL_Sniff_1dot28s_Master_12dot5dBm',
+					                                                        dmm_count)[i])
 
 				cc_bt_init_status(dut, ref, 0)
 
@@ -407,8 +401,8 @@ try:
 				time.sleep(5)
 				logger_append.info('Measuring BT ACL Sniff 0.5s Master @ 0dBm...')
 				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('bt_acl_sniff_dot5s_master_0dbm',
-					                                                        dmm_count, mythread_list)[i])
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_ACL_Sniff_0dot5s_Master_0dBm',
+					                                                        dmm_count)[i])
 
 				cc_bt_init_status(dut, ref, 0)
 
@@ -422,8 +416,8 @@ try:
 				time.sleep(5)
 				logger_append.info('Measuring BT ACL Sniff 0.5s Master @ 4dBm...')
 				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('bt_acl_sniff_dot5s_master_4dbm',
-					                                                        dmm_count, mythread_list)[i])
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_ACL_Sniff_0dot5s_Master_4dBm',
+					                                                        dmm_count)[i])
 				cc_bt_init_status(dut, ref, 0)
 
 			if str(config['Test_Case'].get('BT_ACL_Sniff_0.5s_Master_12.5dBm')) == '1':
@@ -436,8 +430,8 @@ try:
 				time.sleep(5)
 				logger_append.info('Measuring BT ACL Sniff 0.5s Master @ 12.5dBm...')
 				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('bt_acl_sniff_dot5s_master_12dot5dbm',
-					                                                        dmm_count, mythread_list)[i])
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_Acl_Sniff_0dot5s_Master_12dot5dBm',
+					                                                        dmm_count)[i])
 
 				cc_bt_init_status(dut, ref, 0)
 
@@ -452,8 +446,8 @@ try:
 				time.sleep(10)
 				logger_append.info('Measuring BT SCO HV3 Master @ 0dBm...')
 				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('bt_sco_hv3_master_0dbm',
-					                                                        dmm_count, mythread_list)[i])
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_SCO_HV3_Master_0dBm',
+					                                                        dmm_count)[i])
 
 				cc_bt_init_status(dut, ref, 0)
 
@@ -468,8 +462,8 @@ try:
 				time.sleep(10)
 				logger_append.info('Measuring BT SCO HV3 Master @ 4dBm...')
 				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('bt_sco_hv3_master_4dbm',
-					                                                        dmm_count, mythread_list)[i])
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_SCO_HV3_Master_4dBm',
+					                                                        dmm_count)[i])
 
 				cc_bt_init_status(dut, ref, 0)
 
@@ -484,8 +478,8 @@ try:
 				time.sleep(10)
 				logger_append.info('Measuring BT SCO HV3 Master @ 12.5dBm...')
 				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('bt_sco_hv3_master_12dot5dbm',
-					                                                        dmm_count, mythread_list)[i])
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_SCO_HV3_Master_12dot5dBm',
+					                                                        dmm_count)[i])
 
 				cc_bt_init_status(dut, ref, 0)
 
@@ -500,8 +494,8 @@ try:
 				time.sleep(10)
 				logger_append.info('Measuring BT SCO EV3 Master @ 0dBm...')
 				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('bt_sco_ev3_master_0dbm',
-					                                                        dmm_count, mythread_list)[i])
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_SCO_EV3_Master_0dBm',
+					                                                        dmm_count)[i])
 
 				cc_bt_init_status(dut, ref, 0)
 
@@ -516,8 +510,8 @@ try:
 				time.sleep(10)
 				logger_append.info('Measuring BT SCO EV3 Master @ 4dBm...')
 				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('bt_sco_ev3_master_4dbm',
-					                                                        dmm_count, mythread_list)[i])
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_SCO_EV3_Master_4dBm',
+					                                                        dmm_count)[i])
 
 				cc_bt_init_status(dut, ref, 0)
 
@@ -532,8 +526,8 @@ try:
 				time.sleep(10)
 				logger_append.info('Measuring BT SCO EV3 Master @ 12.5dBm...')
 				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('bt_sco_ev3_master_12dot5dbm',
-					                                                        dmm_count, mythread_list)[i])
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_SCO_EV3_Master_12dot5dBm',
+					                                                        dmm_count)[i])
 
 				cc_bt_init_status(dut, ref, 0)
 
@@ -553,8 +547,8 @@ try:
 				time.sleep(3)
 				logger_append.info('Measuring BLE Adv 1.28s 3-Channel @ 0dBm...')
 				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BLE_Adv_1dot28s_3Channel_0dbm',
-					                                                        dmm_count, mythread_list)[i])
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BLE_Adv_1dot28s_3Channel_0dBm',
+					                                                        dmm_count)[i])
 
 				cc_bt_init_status(dut, ref, 0)
 
@@ -567,8 +561,8 @@ try:
 				time.sleep(3)
 				logger_append.info('Measuring BLE Adv 1.28s 3-Channel @ 4dBm...')
 				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BLE_Adv_1dot28s_3Channel_4dbm',
-					                                                        dmm_count, mythread_list)[i])
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BLE_Adv_1dot28s_3Channel_4dBm',
+					                                                        dmm_count)[i])
 
 				cc_bt_init_status(dut, ref, 0)
 
@@ -581,8 +575,8 @@ try:
 				time.sleep(3)
 				logger_append.info('Measuring BLE Adv 1.28s 3-Channel @ 12.5dBm...')
 				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BLE_Adv_1dot28s_3Channel_12dot5dbm',
-					                                                        dmm_count, mythread_list)[i])
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BLE_Adv_1dot28s_3Channel_12dot5dBm',
+					                                                        dmm_count)[i])
 
 				cc_bt_init_status(dut, ref, 0)
 
@@ -593,8 +587,8 @@ try:
 				time.sleep(3)
 				logger_append.info('Measuring BLE Scan 1.28s...')
 				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BLE_scan_1dot28s',
-					                                                        dmm_count, mythread_list)[i])
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BLE_Scan_1dot28s',
+					                                                        dmm_count)[i])
 
 				cc_bt_init_status(dut, ref, 0)
 
@@ -605,8 +599,8 @@ try:
 				time.sleep(3)
 				logger_append.info('Measuring BLE Scan 1s...')
 				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BLE_scan_1s',
-					                                                        dmm_count, mythread_list)[i])
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BLE_Scan_1s',
+					                                                        dmm_count)[i])
 
 				cc_bt_init_status(dut, ref, 0)
 
@@ -617,8 +611,8 @@ try:
 				time.sleep(3)
 				logger_append.info('Measuring BLE Scan 10ms...')
 				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BLE_scan_10ms',
-					                                                        dmm_count, mythread_list)[i])
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BLE_Scan_10ms',
+					                                                        dmm_count)[i])
 
 				cc_bt_init_status(dut, ref, 0)
 
@@ -631,8 +625,8 @@ try:
 				time.sleep(5)
 				logger_append.info('Measuring BLE Connection 1.28s @ 0dBm...')
 				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BLE_Conn_1dot28s_0dbm',
-					                                                        dmm_count, mythread_list)[i])
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BLE_Conn_1dot28s_0dBm',
+					                                                        dmm_count)[i])
 
 				cc_bt_init_status(dut, ref, 0)
 
@@ -645,8 +639,8 @@ try:
 				time.sleep(5)
 				logger_append.info('Measuring BLE Connection 1.28s @ 4dBm...')
 				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BLE_Conn_1dot28s_4dbm',
-					                                                        dmm_count, mythread_list)[i])
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BLE_Conn_1dot28s_4dBm',
+					                                                        dmm_count)[i])
 
 				cc_bt_init_status(dut, ref, 0)
 
@@ -659,8 +653,8 @@ try:
 				time.sleep(5)
 				logger_append.info('Measuring BLE Connection 1.28s @ 12.5dBm...')
 				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BLE_Conn_1dot28s_12dot5dbm',
-					                                                        dmm_count, mythread_list)[i])
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BLE_Conn_1dot28s_12dot5dBm',
+					                                                        dmm_count)[i])
 
 				cc_bt_init_status(dut, ref, 0)
 

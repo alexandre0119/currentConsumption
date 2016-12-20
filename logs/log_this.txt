@@ -11434,3 +11434,1256 @@ Close instrument connection.
 Close instrument connection.
 
 --- 932.88 seconds | 15.55 minutes ---
+Chip version is selected as 8977
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+Measuring deep sleep...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 23 01
+Measuring BT Idle...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 pscan
+Measuring BT Pscan...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 iscan
+Measuring BT Iscan...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 piscan
+Measuring BT PIscan...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cc --role=m 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci0 hcon -t acl 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci1 hcon -t acl 11:22:33:44:55:66
+sleep 1
+hcitool -i hci0 sniff 00:1B:DC:06:69:91 0x0800 0x0800 0x01 0x00
+Measuring BT ACL Sniff 1.28s Master @ 0dBm...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 32 00 00 00 00 00 00
+hcitool -i hci0 cc --role=m 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci0 hcon -t acl 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci1 hcon -t acl 11:22:33:44:55:66
+sleep 1
+hcitool -i hci0 sniff 00:1B:DC:06:69:91 0x0800 0x0800 0x01 0x00
+Measuring BT ACL Sniff 1.28s Master @ 4dBm...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 43 00 00 00 00 00 00
+hcitool -i hci0 cc --role=m 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci0 hcon -t acl 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci1 hcon -t acl 11:22:33:44:55:66
+sleep 1
+hcitool -i hci0 sniff 00:1B:DC:06:69:91 0x0800 0x0800 0x01 0x00
+Measuring BT ACL Sniff 1.28s Master @ 12.5dBm...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cc --role=m 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci0 hcon -t acl 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci1 hcon -t acl 11:22:33:44:55:66
+sleep 1
+hcitool -i hci0 sniff 00:1B:DC:06:69:91 0x0320 0x0320 0x01 0x00
+Measuring BT ACL Sniff 0.5s Master @ 0dBm...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 32 00 00 00 00 00 00
+hcitool -i hci0 cc --role=m 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci0 hcon -t acl 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci1 hcon -t acl 11:22:33:44:55:66
+sleep 1
+hcitool -i hci0 sniff 00:1B:DC:06:69:91 0x0320 0x0320 0x01 0x00
+Measuring BT ACL Sniff 0.5s Master @ 4dBm...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cc --role=m 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci0 hcon -t acl 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci1 hcon -t acl 11:22:33:44:55:66
+sleep 1
+hcitool -i hci0 sniff 00:1B:DC:06:69:91 0x0800 0x0800 0x01 0x00
+hcitool -i hci0 scc 00:1B:DC:06:69:91 1F40 1F40 0007 60 00 03C4
+Measuring BT SCO HV3 Master @ 0dBm...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 32 00 00 00 00 00 00
+hcitool -i hci0 cc --role=m 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci0 hcon -t acl 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci1 hcon -t acl 11:22:33:44:55:66
+sleep 1
+hcitool -i hci0 sniff 00:1B:DC:06:69:91 0x0800 0x0800 0x01 0x00
+hcitool -i hci0 scc 00:1B:DC:06:69:91 1F40 1F40 0007 60 00 03C4
+Measuring BT SCO HV3 Master @ 4dBm...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 43 00 00 00 00 00 00
+hcitool -i hci0 cc --role=m 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci0 hcon -t acl 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci1 hcon -t acl 11:22:33:44:55:66
+sleep 1
+hcitool -i hci0 sniff 00:1B:DC:06:69:91 0x0800 0x0800 0x01 0x00
+hcitool -i hci0 scc 00:1B:DC:06:69:91 1F40 1F40 0007 60 00 03C4
+Measuring BT SCO HV3 Master @ 12.5dBm...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cc --role=m 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci0 hcon -t acl 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci1 hcon -t acl 11:22:33:44:55:66
+sleep 1
+hcitool -i hci0 sniff 00:1B:DC:06:69:91 0x0800 0x0800 0x01 0x00
+hcitool -i hci0 scc 00:1B:DC:06:69:91 1F40 1F40 0007 60 00 03C8
+Measuring BT SCO EV3 Master @ 0dBm...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 32 00 00 00 00 00 00
+hcitool -i hci0 cc --role=m 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci0 hcon -t acl 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci1 hcon -t acl 11:22:33:44:55:66
+sleep 1
+hcitool -i hci0 sniff 00:1B:DC:06:69:91 0x0800 0x0800 0x01 0x00
+hcitool -i hci0 scc 00:1B:DC:06:69:91 1F40 1F40 0007 60 00 03C8
+Measuring BT SCO EV3 Master @ 4dBm...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 43 00 00 00 00 00 00
+hcitool -i hci0 cc --role=m 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci0 hcon -t acl 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci1 hcon -t acl 11:22:33:44:55:66
+sleep 1
+hcitool -i hci0 sniff 00:1B:DC:06:69:91 0x0800 0x0800 0x01 0x00
+hcitool -i hci0 scc 00:1B:DC:06:69:91 1F40 1F40 0007 60 00 03C8
+Measuring BT SCO EV3 Master @ 12.5dBm...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 08 06 00 08 00 08 03 00 00 BC 9A 78 56 34 12 07 00
+sleep 1
+hcitool -i hci0 cmd 08 08 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00
+sleep 1
+hcitool -i hci0 cmd 0x08 0x0A 0x01
+Measuring BLE Adv 1.28s 3-Channel @ 0dBm...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 32 00 00 00 00 00 00
+hcitool -i hci0 cmd 08 06 00 08 00 08 03 00 00 BC 9A 78 56 34 12 07 00
+sleep 1
+hcitool -i hci0 cmd 08 08 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00
+sleep 1
+hcitool -i hci0 cmd 0x08 0x0A 0x01
+Measuring BLE Adv 1.28s 3-Channel @ 4dBm...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 43 00 00 00 00 00 00
+hcitool -i hci0 cmd 08 06 00 08 00 08 03 00 00 BC 9A 78 56 34 12 07 00
+sleep 1
+hcitool -i hci0 cmd 08 08 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00
+sleep 1
+hcitool -i hci0 cmd 0x08 0x0A 0x01
+Measuring BLE Adv 1.28s 3-Channel @ 12.5dBm...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 08 09 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00
+sleep 1
+hcitool -i hci0 cmd 08 0B 01 00 08 10 00 00 00
+sleep 1
+hcitool -i hci0 cmd 08 0C 01 01
+Measuring BLE Scan 1.28s...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 08 09 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00
+sleep 1
+hcitool -i hci0 cmd 08 0B 01 40 06 10 00 00 00
+sleep 1
+hcitool -i hci0 cmd 08 0C 01 01
+Measuring BLE Scan 1s...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 08 09 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00
+sleep 1
+hcitool -i hci0 cmd 08 0B 01 10 00 10 00 00 00
+sleep 1
+hcitool -i hci0 cmd 08 0C 01 01
+Measuring BLE Scan 10ms...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci1 cmd 08 06 00 08 00 08 00 00 00 BC 9A 78 56 34 12 07 00
+sleep 1
+hcitool -i hci1 cmd 08 08 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00
+sleep 1
+hcitool -i hci1 cmd 0x08 0x0A 0x01
+sleep 1
+hcitool -i hci0 cmd 08 09 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00
+sleep 1
+hcitool -i hci0 cmd 08 0B 01 10 00 10 00 00 00
+sleep 1
+hcitool -i hci0 cmd 08 0C 01 01
+sleep 2
+hcitool -i hci0 cmd 08 0C 01 00
+sleep 2
+hcitool -i hci0 cmd 08 0D 10 00 10 00 00 00 91 69 06 DC 1B 00 00 00 04 00 04 00 00 00 08 10 00 10 00
+sleep 2
+hcitool -i hci0 cmd 08 13 80 00 00 04 00 04 00 00 00 08 10 00 10 00
+Measuring BLE Connection 1.28s @ 0dBm...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 32 00 00 00 00 00 00
+hcitool -i hci1 cmd 08 06 00 08 00 08 00 00 00 BC 9A 78 56 34 12 07 00
+sleep 1
+hcitool -i hci1 cmd 08 08 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00
+sleep 1
+hcitool -i hci1 cmd 0x08 0x0A 0x01
+sleep 1
+hcitool -i hci0 cmd 08 09 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00
+sleep 1
+hcitool -i hci0 cmd 08 0B 01 10 00 10 00 00 00
+sleep 1
+hcitool -i hci0 cmd 08 0C 01 01
+sleep 2
+hcitool -i hci0 cmd 08 0C 01 00
+sleep 2
+hcitool -i hci0 cmd 08 0D 10 00 10 00 00 00 91 69 06 DC 1B 00 00 00 04 00 04 00 00 00 08 10 00 10 00
+sleep 2
+hcitool -i hci0 cmd 08 13 80 00 00 04 00 04 00 00 00 08 10 00 10 00
+Measuring BLE Connection 1.28s @ 4dBm...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 43 00 00 00 00 00 00
+hcitool -i hci1 cmd 08 06 00 08 00 08 00 00 00 BC 9A 78 56 34 12 07 00
+sleep 1
+hcitool -i hci1 cmd 08 08 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00
+sleep 1
+hcitool -i hci1 cmd 0x08 0x0A 0x01
+sleep 1
+hcitool -i hci0 cmd 08 09 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00
+sleep 1
+hcitool -i hci0 cmd 08 0B 01 10 00 10 00 00 00
+sleep 1
+hcitool -i hci0 cmd 08 0C 01 01
+sleep 2
+hcitool -i hci0 cmd 08 0C 01 00
+sleep 2
+hcitool -i hci0 cmd 08 0D 10 00 10 00 00 00 91 69 06 DC 1B 00 00 00 04 00 04 00 00 00 08 10 00 10 00
+sleep 2
+hcitool -i hci0 cmd 08 13 80 00 00 04 00 04 00 00 00 08 10 00 10 00
+Measuring BLE Connection 1.28s @ 12.5dBm...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+Close instrument connection.
+Close instrument connection.
+
+--- 14024.77 seconds | 233.75 minutes ---
+Chip version is selected as 8977
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+Measuring deep sleep...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 23 01
+Measuring BT Idle...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 pscan
+Measuring BT Pscan...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 iscan
+Measuring BT Iscan...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 piscan
+Measuring BT PIscan...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+Chip version is selected as 8977
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+Measuring deep sleep...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 23 01
+Measuring BT Idle...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 pscan
+Measuring BT Pscan...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 iscan
+Measuring BT Iscan...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 piscan
+Measuring BT PIscan...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cc --role=m 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci0 hcon -t acl 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci1 hcon -t acl 11:22:33:44:55:66
+sleep 1
+hcitool -i hci0 sniff 00:1B:DC:06:69:91 0x0800 0x0800 0x01 0x00
+Measuring BT ACL Sniff 1.28s Master @ 0dBm...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 32 00 00 00 00 00 00
+hcitool -i hci0 cc --role=m 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci0 hcon -t acl 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci1 hcon -t acl 11:22:33:44:55:66
+sleep 1
+hcitool -i hci0 sniff 00:1B:DC:06:69:91 0x0800 0x0800 0x01 0x00
+Measuring BT ACL Sniff 1.28s Master @ 4dBm...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 43 00 00 00 00 00 00
+hcitool -i hci0 cc --role=m 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci0 hcon -t acl 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci1 hcon -t acl 11:22:33:44:55:66
+sleep 1
+hcitool -i hci0 sniff 00:1B:DC:06:69:91 0x0800 0x0800 0x01 0x00
+Measuring BT ACL Sniff 1.28s Master @ 12.5dBm...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cc --role=m 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci0 hcon -t acl 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci1 hcon -t acl 11:22:33:44:55:66
+sleep 1
+hcitool -i hci0 sniff 00:1B:DC:06:69:91 0x0320 0x0320 0x01 0x00
+Measuring BT ACL Sniff 0.5s Master @ 0dBm...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 32 00 00 00 00 00 00
+hcitool -i hci0 cc --role=m 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci0 hcon -t acl 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci1 hcon -t acl 11:22:33:44:55:66
+sleep 1
+hcitool -i hci0 sniff 00:1B:DC:06:69:91 0x0320 0x0320 0x01 0x00
+Measuring BT ACL Sniff 0.5s Master @ 4dBm...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cc --role=m 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci0 hcon -t acl 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci1 hcon -t acl 11:22:33:44:55:66
+sleep 1
+hcitool -i hci0 sniff 00:1B:DC:06:69:91 0x0800 0x0800 0x01 0x00
+hcitool -i hci0 scc 00:1B:DC:06:69:91 1F40 1F40 0007 60 00 03C4
+Measuring BT SCO HV3 Master @ 0dBm...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 32 00 00 00 00 00 00
+hcitool -i hci0 cc --role=m 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci0 hcon -t acl 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci1 hcon -t acl 11:22:33:44:55:66
+sleep 1
+hcitool -i hci0 sniff 00:1B:DC:06:69:91 0x0800 0x0800 0x01 0x00
+hcitool -i hci0 scc 00:1B:DC:06:69:91 1F40 1F40 0007 60 00 03C4
+Measuring BT SCO HV3 Master @ 4dBm...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 43 00 00 00 00 00 00
+hcitool -i hci0 cc --role=m 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci0 hcon -t acl 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci1 hcon -t acl 11:22:33:44:55:66
+sleep 1
+hcitool -i hci0 sniff 00:1B:DC:06:69:91 0x0800 0x0800 0x01 0x00
+hcitool -i hci0 scc 00:1B:DC:06:69:91 1F40 1F40 0007 60 00 03C4
+Measuring BT SCO HV3 Master @ 12.5dBm...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cc --role=m 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci0 hcon -t acl 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci1 hcon -t acl 11:22:33:44:55:66
+sleep 1
+hcitool -i hci0 sniff 00:1B:DC:06:69:91 0x0800 0x0800 0x01 0x00
+hcitool -i hci0 scc 00:1B:DC:06:69:91 1F40 1F40 0007 60 00 03C8
+Measuring BT SCO EV3 Master @ 0dBm...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 32 00 00 00 00 00 00
+hcitool -i hci0 cc --role=m 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci0 hcon -t acl 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci1 hcon -t acl 11:22:33:44:55:66
+sleep 1
+hcitool -i hci0 sniff 00:1B:DC:06:69:91 0x0800 0x0800 0x01 0x00
+hcitool -i hci0 scc 00:1B:DC:06:69:91 1F40 1F40 0007 60 00 03C8
+Measuring BT SCO EV3 Master @ 4dBm...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 43 00 00 00 00 00 00
+hcitool -i hci0 cc --role=m 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci0 hcon -t acl 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci1 hcon -t acl 11:22:33:44:55:66
+sleep 1
+hcitool -i hci0 sniff 00:1B:DC:06:69:91 0x0800 0x0800 0x01 0x00
+hcitool -i hci0 scc 00:1B:DC:06:69:91 1F40 1F40 0007 60 00 03C8
+Measuring BT SCO EV3 Master @ 12.5dBm...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 08 06 00 08 00 08 03 00 00 BC 9A 78 56 34 12 07 00
+sleep 1
+hcitool -i hci0 cmd 08 08 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00
+sleep 1
+hcitool -i hci0 cmd 0x08 0x0A 0x01
+Measuring BLE Adv 1.28s 3-Channel @ 0dBm...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 32 00 00 00 00 00 00
+hcitool -i hci0 cmd 08 06 00 08 00 08 03 00 00 BC 9A 78 56 34 12 07 00
+sleep 1
+hcitool -i hci0 cmd 08 08 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00
+sleep 1
+hcitool -i hci0 cmd 0x08 0x0A 0x01
+Measuring BLE Adv 1.28s 3-Channel @ 4dBm...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 43 00 00 00 00 00 00
+hcitool -i hci0 cmd 08 06 00 08 00 08 03 00 00 BC 9A 78 56 34 12 07 00
+sleep 1
+hcitool -i hci0 cmd 08 08 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00
+sleep 1
+hcitool -i hci0 cmd 0x08 0x0A 0x01
+Measuring BLE Adv 1.28s 3-Channel @ 12.5dBm...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 08 09 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00
+sleep 1
+hcitool -i hci0 cmd 08 0B 01 00 08 10 00 00 00
+sleep 1
+hcitool -i hci0 cmd 08 0C 01 01
+Measuring BLE Scan 1.28s...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 08 09 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00
+sleep 1
+hcitool -i hci0 cmd 08 0B 01 40 06 10 00 00 00
+sleep 1
+hcitool -i hci0 cmd 08 0C 01 01
+Measuring BLE Scan 1s...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 08 09 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00
+sleep 1
+hcitool -i hci0 cmd 08 0B 01 10 00 10 00 00 00
+sleep 1
+hcitool -i hci0 cmd 08 0C 01 01
+Measuring BLE Scan 10ms...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci1 cmd 08 06 00 08 00 08 00 00 00 BC 9A 78 56 34 12 07 00
+sleep 1
+hcitool -i hci1 cmd 08 08 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00
+sleep 1
+hcitool -i hci1 cmd 0x08 0x0A 0x01
+sleep 1
+hcitool -i hci0 cmd 08 09 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00
+sleep 1
+hcitool -i hci0 cmd 08 0B 01 10 00 10 00 00 00
+sleep 1
+hcitool -i hci0 cmd 08 0C 01 01
+sleep 2
+hcitool -i hci0 cmd 08 0C 01 00
+sleep 2
+hcitool -i hci0 cmd 08 0D 10 00 10 00 00 00 91 69 06 DC 1B 00 00 00 04 00 04 00 00 00 08 10 00 10 00
+sleep 2
+hcitool -i hci0 cmd 08 13 80 00 00 04 00 04 00 00 00 08 10 00 10 00
+Measuring BLE Connection 1.28s @ 0dBm...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 32 00 00 00 00 00 00
+hcitool -i hci1 cmd 08 06 00 08 00 08 00 00 00 BC 9A 78 56 34 12 07 00
+sleep 1
+hcitool -i hci1 cmd 08 08 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00
+sleep 1
+hcitool -i hci1 cmd 0x08 0x0A 0x01
+sleep 1
+hcitool -i hci0 cmd 08 09 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00
+sleep 1
+hcitool -i hci0 cmd 08 0B 01 10 00 10 00 00 00
+sleep 1
+hcitool -i hci0 cmd 08 0C 01 01
+sleep 2
+hcitool -i hci0 cmd 08 0C 01 00
+sleep 2
+hcitool -i hci0 cmd 08 0D 10 00 10 00 00 00 91 69 06 DC 1B 00 00 00 04 00 04 00 00 00 08 10 00 10 00
+sleep 2
+hcitool -i hci0 cmd 08 13 80 00 00 04 00 04 00 00 00 08 10 00 10 00
+Measuring BLE Connection 1.28s @ 4dBm...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 43 00 00 00 00 00 00
+hcitool -i hci1 cmd 08 06 00 08 00 08 00 00 00 BC 9A 78 56 34 12 07 00
+sleep 1
+hcitool -i hci1 cmd 08 08 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00
+sleep 1
+hcitool -i hci1 cmd 0x08 0x0A 0x01
+sleep 1
+hcitool -i hci0 cmd 08 09 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00
+sleep 1
+hcitool -i hci0 cmd 08 0B 01 10 00 10 00 00 00
+sleep 1
+hcitool -i hci0 cmd 08 0C 01 01
+sleep 2
+hcitool -i hci0 cmd 08 0C 01 00
+sleep 2
+hcitool -i hci0 cmd 08 0D 10 00 10 00 00 00 91 69 06 DC 1B 00 00 00 04 00 04 00 00 00 08 10 00 10 00
+sleep 2
+hcitool -i hci0 cmd 08 13 80 00 00 04 00 04 00 00 00 08 10 00 10 00
+Measuring BLE Connection 1.28s @ 12.5dBm...
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+Close instrument connection.
+Close instrument connection.
+Close instrument connection.
+
+--- 16468.51 seconds | 274.48 minutes ---

@@ -342,7 +342,7 @@ try:
 				time.sleep(3)
 				logger_append.info('Measuring BT Iscan...')
 				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('bt_Iscan', dmm_count)[i])
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_Iscan', dmm_count)[i])
 				cc_bt_init_status(dut, ref, 0)
 
 			if str(config['Test_Case'].get('BT_PIscan')) == '1':
@@ -351,7 +351,7 @@ try:
 				time.sleep(3)
 				logger_append.info('Measuring BT PIscan...')
 				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('bt_PIscan', dmm_count)[i])
+					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_PIscan', dmm_count)[i])
 				cc_bt_init_status(dut, ref, 0)
 
 			if str(config['Test_Case'].get('BT_ACL_Sniff_1.28s_Master_0dBm')) == '1':

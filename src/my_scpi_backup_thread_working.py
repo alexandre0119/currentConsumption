@@ -292,9 +292,8 @@ try:
 
 	def wrap_join_DF(case_name, dmm_count):
 		temp_list = []
-		logger_append.info('???????????????????????????????????????????')
 		startThread(str(case_name))
-		print('>>>>>>>>>>>><<<<<<<<', mythread_list)
+		# print('>>>>>>>>>>>><<<<<<<<', mythread_list)
 		for i in reversed(range(int(dmm_count))):
 			temp_list.append(DataFrame(resultFormat(mythread_list[i].join()),
 											 index=['1.Average (mA)', '2.Max', '3.Min', '4.Sdev', '5.Count'],

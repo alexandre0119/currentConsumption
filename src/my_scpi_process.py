@@ -7,7 +7,6 @@ import visa
 import time
 import sys
 import threading
-import multiprocessing
 import numpy as np
 from pyvisa import util
 import logging
@@ -15,6 +14,8 @@ from src.my_logging import *
 import configparser
 from src.my_ssh import *
 from pandas import DataFrame, ExcelWriter
+import multiprocessing
+from functools import partial
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -23,53 +24,9 @@ visa.logger.setLevel(logging.INFO)
 ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
 # formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-formatter = logging.Formatter('(%(threadName)-10s) %(message)s',)
+formatter = logging.Formatter('(%(threadName)-10s) %(message)s', )
 ch.setFormatter(formatter)
 visa.logger.addHandler(ch)
-
-class MyThreading(threading.Thread):
-	def __init__(self, group=None, target=None, name=None, args=(), kwargs=None, *, daemon=None):
-	# def __init__(self, group=None, target=None, name=None, args=(), kwargs=None, daemon=None):
-		threading.Thread.__init__(self, group, target, name, args, kwargs, daemon=daemon)
-		self._return = None
-
-	def run(self):
-		# lock = threading.Lock()
-		# lock.acquire()
-		print('>>>> Starting', self.name)
-		if self._target is not None:
-			self._return = self._target(*self._args, **self._kwargs)
-		print('>>>> Exiting', self.name)
-		# lock.release()
-
-	def join(self):
-		threading.Thread.join(self)
-		return self._return
-
-# Define Functions for Binary Data Management
-
-def binblock_raw(data_in):
-	# This function interprets the header for a definite binary block
-	# and returns the raw binary data for both definite and indefinite binary blocks
-
-	startpos = data_in.find("#")
-	if startpos < 0:
-		raise IOError("No start of block found")
-	lenlen = int(data_in[startpos + 1:startpos + 2])  # get the data length length
-
-	# If it's a definite length binary block
-	if lenlen > 0:
-		# Get the length from the header
-		offset = startpos + 2 + lenlen
-		datalen = int(data_in[startpos + 2:startpos + 2 + lenlen])
-	else:
-		# If it's an indefinite length binary block get the length from the transfer itself
-		offset = startpos + 2
-		datalen = len(data_in) - offset - 1
-
-	# Extract the data out into a list.
-	return data_in[offset:offset + datalen]
-
 
 def queryError(myinst_list):
 	for i in myinst_list:
@@ -95,14 +52,15 @@ def dmmInit(myinst_list):
 		i.write('*CLS')  # Clear first
 		i.write('*IDN?')  # Get the device ID
 		# util.get_debug_info()
+
 		print('Device ID: ', i.read())
-		checkOPC(myinst_list)
+		# checkOPC(myinst_list) # Issue here
 
 		# Config current measurement range to 3A and read back
 		i.write('CONF:CURR:DC 3')
 		i.write('CONF?')
 		print('Current Config: ', i.read())
-		checkOPC(myinst_list)
+		# checkOPC(myinst_list) # Issue here
 
 		# Number of Readings = Sample Count x Trigger Count
 		i.write('TRIG:SOUR IMM')  # Immediate (continuous) trigger
@@ -124,14 +82,15 @@ def dmmInit(myinst_list):
 
 def resultFormat(result):
 	return [float(format(result[1], '.4f')),
-			float(format(result[2], '.4f')),
-			float(format(result[3], '.4f')),
-			float(format(result[4], '.4f')),
-			float(format(result[5], '.0f'))]
+	        float(format(result[2], '.4f')),
+	        float(format(result[3], '.4f')),
+	        float(format(result[4], '.4f')),
+	        float(format(result[5], '.0f'))]
 
 
 def captureOnce(trigger_count, sample_count, myinst):
-	print(myinst)
+	print('Capture One 00000000000000000000000000')
+	# print(myinst)
 	# Clear all calculations before we start
 	myinst.write('CALC:AVER:CLE')
 	print('Statistic cleared\n')
@@ -198,18 +157,69 @@ def captureOnce(trigger_count, sample_count, myinst):
 	return readings, np.mean(readings), np.max(readings), np.min(readings), np.std(readings), np.count_nonzero(readings)
 
 
-# Function: report capture function if need more samples
-# def repeat_captureOnce(times, captureOnce, *args):
-# 	readings_all = []
-# 	for i in range(times):
-# 		for i_readings in captureOnce(*args)[0]:
-# 			readings_all.append(i_readings)
-# 		# print(readings_all)
-# 	return readings_all, np.mean(readings_all), np.max(readings_all), np.min(readings_all), \
-# 	       np.std(readings_all), np.count_nonzero(readings_all)
+def start_process():
+	logger_append.info('Starting', multiprocessing.current_process().name)
 
-try:
+
+def startProcess(case_name):
+	# pool_size = multiprocessing.cpu_count() * 2
+	pool_size = int(dmm_count)
+	pool = multiprocessing.Pool(processes=pool_size, initializer=start_process, )
+
+	mythread_name_list_new = []
+	pool_output_list = []
+
+	for i in mythread_name_list:
+		i += str('_' + str(case_name))
+		mythread_name_list_new.append(i)
+
+	# logger_append.info(mythread_name_list_new)
+
+	for i in range(len(mythread_name_list_new)):
+		# logger_append.info(myinst_list[i])
+		# print(myinst_list)
+		print('Here 22222222222222222222222222222222')
+		pool_output = pool.starmap(captureOnce, [(trigger_cnt_pulse,
+		                                          sample_cnt_pulse,
+		                                          myinst_list[i])])
+		print('Here 33333333333333333333333333333333')
+		logger_append.info(pool_output)
+
+		pool_output_list.append(pool_output)
+		mythread_list.append(mythread_name_list_new[i])
+
+	pool.close()
+	pool.join()
+
+	return mythread_list, pool_output_list
+
+
+def wrap_join_DF(case_name, dmm_count):
+		temp_list = []
+
+		mythread_list = startProcess(str(case_name))[0]
+		pool_output_list = startProcess(str(case_name))[1]
+		# logger_append.info(mythread_list, '!!!!!!!!!!!!!!!!!!!')
+		# logger_append.info(pool_output_list)
+
+		for i in reversed(range(int(dmm_count))):
+			temp_list.append(DataFrame(resultFormat(pool_output_list(i)),
+			                           index=['1.Average (mA)', '2.Max', '3.Min', '4.Sdev', '5.Count'],
+			                           columns=[str(case_name)]))
+			print('Thread list before pop: ', mythread_list)
+			mythread_list.pop(i)
+			print('Thread list after pop:', mythread_list)
+		print('Final thread list(should be empty):', mythread_list)
+
+		for i in temp_list:
+			print(i)
+		return temp_list
+
+
+if __name__ == '__main__':
+	# multiprocessing.freeze_support()
 	start_time = time.time()
+	print(start_time)
 	# Open Connection
 	# rm = visa.ResourceManager('C:\\Program Files (x86)\\IVI Foundation\\VISA\\WinNT\\agvisa\\agbin\\visa32.dll')
 	rm = visa.ResourceManager()
@@ -225,14 +235,14 @@ try:
 	sample_cnt_active = int(config['Test_Case_Sample'].get('Active_Sample_Count'))
 
 	suffix_name_list = [str(config['BASIC'].get('Excel_Sheet_Name_A')),
-						str(config['BASIC'].get('Excel_Sheet_Name_B')),
-						str(config['BASIC'].get('Excel_Sheet_Name_C')),
-						str(config['BASIC'].get('Excel_Sheet_Name_D')),]
+	                    str(config['BASIC'].get('Excel_Sheet_Name_B')),
+	                    str(config['BASIC'].get('Excel_Sheet_Name_C')),
+	                    str(config['BASIC'].get('Excel_Sheet_Name_D')), ]
 
 	visa_address_list = [str(config['DMM'].get('VISA_address_A')),
-						 str(config['DMM'].get('VISA_address_B')),
-						 str(config['DMM'].get('VISA_address_C')),
-						 str(config['DMM'].get('VISA_address_D'))]
+	                     str(config['DMM'].get('VISA_address_B')),
+	                     str(config['DMM'].get('VISA_address_C')),
+	                     str(config['DMM'].get('VISA_address_D'))]
 
 	myinst_name_list = []
 	mythread_name_list = []
@@ -255,22 +265,8 @@ try:
 		myinst_list.append(myinst_name_list[i])
 		joined_DF_name_list[i] = DataFrame()
 		joined_DF_list.append(joined_DF_name_list[i])
+	# logger_append.info(myinst_list)
 
-	def startThread(case_name):
-		mythread_name_list_new = []
-		for i in mythread_name_list:
-			i += str('_' + str(case_name))
-			mythread_name_list_new.append(i)
-		for i in range(len(mythread_name_list_new)):
-			mythread_name_list_new[i] = MyThreading(target=captureOnce,
-														  args=(trigger_cnt_pulse,
-																sample_cnt_pulse,
-																myinst_list[i],))
-			mythread_name_list_new[i].start()
-			mythread_list.append(mythread_name_list_new[i])
-
-		# print(mythread_list, '!!!!!!!')
-		return mythread_list
 
 	queryError(myinst_list)
 
@@ -290,23 +286,6 @@ try:
 				print('Something wrong with BD address. Exciting....')
 				sys.exit(1)
 
-	def wrap_join_DF(case_name, dmm_count):
-		temp_list = []
-		logger_append.info('???????????????????????????????????????????')
-		startThread(str(case_name))
-		print('>>>>>>>>>>>><<<<<<<<', mythread_list)
-		for i in reversed(range(int(dmm_count))):
-			temp_list.append(DataFrame(resultFormat(mythread_list[i].join()),
-											 index=['1.Average (mA)', '2.Max', '3.Min', '4.Sdev', '5.Count'],
-											 columns=[str(case_name)]))
-			print('Thread list before pop: ', mythread_list)
-			mythread_list.pop(i)
-			print('Thread list after pop:', mythread_list)
-		print('Final thread list(should be empty):', mythread_list)
-
-		for i in temp_list:
-			print(i)
-		return temp_list
 
 	if str(config['BASIC'].get('Select_ChipVersion')) == '8977' or '8997' or '8987':
 		logger_append.info('Chip version is selected as {0}'.format(str(config['BASIC'].get('Select_ChipVersion'))))
@@ -398,7 +377,7 @@ try:
 				cc_bt_init_status(dut, ref, 0)
 				time.sleep(1)
 				cc_bt_acl_sniff_0dot5s_master(dut_bd_address,
-											  ref_bd_address)
+				                              ref_bd_address)
 				time.sleep(5)
 				logger_append.info('Measuring BT ACL Sniff 0.5s Master @ 0dBm...')
 				for i in range(int(dmm_count)):
@@ -413,7 +392,7 @@ try:
 				cc_bt_set_power_level(4)
 				time.sleep(1)
 				cc_bt_acl_sniff_0dot5s_master(dut_bd_address,
-											  ref_bd_address)
+				                              ref_bd_address)
 				time.sleep(5)
 				logger_append.info('Measuring BT ACL Sniff 0.5s Master @ 4dBm...')
 				for i in range(int(dmm_count)):
@@ -427,7 +406,7 @@ try:
 				cc_bt_set_power_level(12.5)
 				time.sleep(1)
 				cc_bt_acl_sniff_0dot5s_master(dut_bd_address,
-											  ref_bd_address)
+				                              ref_bd_address)
 				time.sleep(5)
 				logger_append.info('Measuring BT ACL Sniff 0.5s Master @ 12.5dBm...')
 				for i in range(int(dmm_count)):
@@ -685,12 +664,6 @@ try:
 		logger_append.info('Close instrument connection.')
 
 	logger_append.info('\n--- {0} seconds | {1} minutes ---'.format(format((time.time() - start_time), '.2f'),
-																  format((time.time() - start_time) / 60, '.2f')))
+	                                                                format((time.time() - start_time) / 60, '.2f')))
 
-except Exception as err:
-	print('Exception: ' + str(err.message))
-	sys.exit(1)
-
-finally:
-	# perform clean up operations
 	print('\n=== Complete ===\n')

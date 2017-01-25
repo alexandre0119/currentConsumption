@@ -3,6 +3,7 @@
 ## Feature
 - Add SW/HW all version information
 - Get temp reading
+- use multiprocessing instead of multithreading
 
 ## Bug
 - Bug 1

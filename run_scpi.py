@@ -2,4 +2,9 @@
 # -*- coding: utf-8 -*-
 # Author: Alex Wang
 
-from src import my_scpi
+# from src import my_scpi
+
+if __name__ ==  '__main__':
+	from src import my_scpi_process
+
+

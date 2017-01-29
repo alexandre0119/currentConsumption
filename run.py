@@ -2,9 +2,12 @@
 # -*- coding: utf-8 -*-
 # Author: Alex Wang
 
-# from src import my_scpi
+#import src.my_scpi_process
+import src.my_flow as my_flow
 
 if __name__ ==  '__main__':
-	from src import my_scpi_process
+	my_flow.main_flow()
+
+
 
 

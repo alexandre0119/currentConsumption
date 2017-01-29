@@ -10,7 +10,6 @@ import threading
 import numpy as np
 from pyvisa import util
 import logging
-from src.my_logging import *
 import configparser
 from src.my_ssh import *
 from pandas import DataFrame, ExcelWriter
@@ -50,31 +49,25 @@ def dmmInit(myinst_list):
 
 		# *IDN? - Query Instrumnet ID
 		i.write('*CLS')  # Clear first
-		i.write('*IDN?')  # Get the device ID
-		# util.get_debug_info()
-
-		print('Device ID: ', i.read())
-		# checkOPC(myinst_list) # Issue here
 
 		# Config current measurement range to 3A and read back
 		i.write('CONF:CURR:DC 3')
 		i.write('CONF?')
 		print('Current Config: ', i.read())
-		# checkOPC(myinst_list) # Issue here
 
 		# Number of Readings = Sample Count x Trigger Count
 		i.write('TRIG:SOUR IMM')  # Immediate (continuous) trigger
 		i.write('TRIG:SOUR?')
 		print('Trigger Source:', i.read())
-		# i.write('TRIG:DEL:AUTO ON')
-		# i.write('TRIG:DEL:AUTO?')
-		# print('Trigger Delay:', i.read())
+
 		i.write('TRIG:DEL MIN')
 		i.write('TRIG:DEL?')
 		print('Trigger Delay:', i.read())
+
 		i.write('SAMP:SOUR IMM')
 		i.write('SAMP:SOUR?')
 		print('Sample Source:', i.read())
+
 		i.write('SAMP:TIM MIN')
 		i.write('SAMP:TIM?')
 		print('Sample Timer:', i.read())
@@ -216,454 +209,449 @@ def wrap_join_DF(case_name, dmm_count):
 		return temp_list
 
 
-if __name__ == '__main__':
-	# multiprocessing.freeze_support()
-	start_time = time.time()
-	print(start_time)
-	# Open Connection
-	# rm = visa.ResourceManager('C:\\Program Files (x86)\\IVI Foundation\\VISA\\WinNT\\agvisa\\agbin\\visa32.dll')
-	rm = visa.ResourceManager()
-	dmm_count = str(config['DMM'].get('DMM_count'))
 
-	trigger_cnt_flat = int(config['Test_Case_Sample'].get('Flat_Trigger_Count'))
-	sample_cnt_flat = int(config['Test_Case_Sample'].get('Flat_Sample_Count'))
+# Open Connection
+# rm = visa.ResourceManager('C:\\Program Files (x86)\\IVI Foundation\\VISA\\WinNT\\agvisa\\agbin\\visa32.dll')
+rm = visa.ResourceManager()
+dmm_count = str(config['DMM'].get('DMM_count'))
 
-	trigger_cnt_pulse = int(config['Test_Case_Sample'].get('Pulse_Trigger_Count'))
-	sample_cnt_pulse = int(config['Test_Case_Sample'].get('Pulse_Sample_Count'))
+trigger_cnt_flat = int(config['Test_Case_Sample'].get('Flat_Trigger_Count'))
+sample_cnt_flat = int(config['Test_Case_Sample'].get('Flat_Sample_Count'))
 
-	trigger_cnt_active = int(config['Test_Case_Sample'].get('Active_Trigger_Count'))
-	sample_cnt_active = int(config['Test_Case_Sample'].get('Active_Sample_Count'))
+trigger_cnt_pulse = int(config['Test_Case_Sample'].get('Pulse_Trigger_Count'))
+sample_cnt_pulse = int(config['Test_Case_Sample'].get('Pulse_Sample_Count'))
 
-	suffix_name_list = [str(config['BASIC'].get('Excel_Sheet_Name_A')),
-	                    str(config['BASIC'].get('Excel_Sheet_Name_B')),
-	                    str(config['BASIC'].get('Excel_Sheet_Name_C')),
-	                    str(config['BASIC'].get('Excel_Sheet_Name_D')), ]
+trigger_cnt_active = int(config['Test_Case_Sample'].get('Active_Trigger_Count'))
+sample_cnt_active = int(config['Test_Case_Sample'].get('Active_Sample_Count'))
 
-	visa_address_list = [str(config['DMM'].get('VISA_address_A')),
-	                     str(config['DMM'].get('VISA_address_B')),
-	                     str(config['DMM'].get('VISA_address_C')),
-	                     str(config['DMM'].get('VISA_address_D'))]
+suffix_name_list = [str(config['BASIC'].get('Excel_Sheet_Name_A')),
+                    str(config['BASIC'].get('Excel_Sheet_Name_B')),
+                    str(config['BASIC'].get('Excel_Sheet_Name_C')),
+                    str(config['BASIC'].get('Excel_Sheet_Name_D')), ]
 
-	myinst_name_list = []
-	mythread_name_list = []
-	joined_DF_name_list = []
-	myinst_list = []
-	mythread_list = []
-	joined_DF_list = []
+visa_address_list = [str(config['DMM'].get('VISA_address_A')),
+                     str(config['DMM'].get('VISA_address_B')),
+                     str(config['DMM'].get('VISA_address_C')),
+                     str(config['DMM'].get('VISA_address_D'))]
 
-	# if dmm_count == '1':
-	for suffix_name in suffix_name_list[0: int(dmm_count)]:
-		myinst_name_list.append('{0}_{1}'.format('myinst', suffix_name))
-		mythread_name_list.append('{0}_{1}'.format('mythread', suffix_name))
-		joined_DF_name_list.append('{0}_{1}'.format('joined_DF', suffix_name))
-	# print(myinst_name_list)
-	# print(mythread_name_list)
-	# print(joined_DF_name_list)
+myinst_name_list = []
+mythread_name_list = []
+joined_DF_name_list = []
+myinst_list = []
+mythread_list = []
+joined_DF_list = []
 
-	for i in range(len(myinst_name_list)):
-		myinst_name_list[i] = rm.open_resource(visa_address_list[i])
-		myinst_list.append(myinst_name_list[i])
-		joined_DF_name_list[i] = DataFrame()
-		joined_DF_list.append(joined_DF_name_list[i])
-	# logger_append.info(myinst_list)
+# if dmm_count == '1':
+for suffix_name in suffix_name_list[0: int(dmm_count)]:
+	myinst_name_list.append('{0}_{1}'.format('myinst', suffix_name))
+	mythread_name_list.append('{0}_{1}'.format('mythread', suffix_name))
+	joined_DF_name_list.append('{0}_{1}'.format('joined_DF', suffix_name))
+# print(myinst_name_list)
+# print(mythread_name_list)
+# print(joined_DF_name_list)
+
+for i in range(len(myinst_name_list)):
+	myinst_name_list[i] = rm.open_resource(visa_address_list[i])
+	myinst_list.append(myinst_name_list[i])
+	joined_DF_name_list[i] = DataFrame()
+	joined_DF_list.append(joined_DF_name_list[i])
+# logger_append.info(myinst_list)
 
 
-	queryError(myinst_list)
+queryError(myinst_list)
 
-	dmmInit(myinst_list)
+dmmInit(myinst_list)
 
-	dut = config['BASIC'].get('Dut')
-	ref = config['BASIC'].get('Ref')
+dut = config['BASIC'].get('Dut')
+ref = config['BASIC'].get('Ref')
 
-	for i in get_hci_bd_address():
-		# print(i.keys(), i.values(), '!!!!!!!!!!!!!!!!!!!!!!')
-		for j, k in i.items():
-			if j == config['BASIC'].get('Dut'):
-				dut_bd_address = k
-			elif j == config['BASIC'].get('Ref'):
-				ref_bd_address = k
-			else:
-				print('Something wrong with BD address. Exciting....')
-				sys.exit(1)
-
-
-	if str(config['BASIC'].get('Select_ChipVersion')) == '8977' or '8997' or '8987':
-		logger_append.info('Chip version is selected as {0}'.format(str(config['BASIC'].get('Select_ChipVersion'))))
-		# Always get deep sleep current
-		cc_bt_init_status(dut, ref, 0)
-		time.sleep(1)
-		logger_append.info('Measuring deep sleep...')
-		joined_DF_list = wrap_join_DF('Deep_Sleep', dmm_count)
-
-		if str(config['Test_Case'].get('BT_Enable')) == '1':
-			if str(config['Test_Case'].get('BT_Idle')) == '1':
-				cc_bt_init_status(dut, ref, 0)
-				cc_bt_idle()
-				time.sleep(2)
-				logger_append.info('Measuring BT Idle...')
-				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_Idle', dmm_count)[i])
-				cc_bt_init_status(dut, ref, 0)
-
-			if str(config['Test_Case'].get('BT_Pscan')) == '1':
-				cc_bt_init_status(dut, ref, 0)
-				cc_bt_pscan()
-				time.sleep(3)
-				logger_append.info('Measuring BT Pscan...')
-
-				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_Pscan', dmm_count)[i])
-
-				cc_bt_init_status(dut, ref, 0)
-
-			if str(config['Test_Case'].get('BT_Iscan')) == '1':
-				cc_bt_init_status(dut, ref, 0)
-				cc_bt_iscan()
-				time.sleep(3)
-				logger_append.info('Measuring BT Iscan...')
-				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_Iscan', dmm_count)[i])
-				cc_bt_init_status(dut, ref, 0)
-
-			if str(config['Test_Case'].get('BT_PIscan')) == '1':
-				cc_bt_init_status(dut, ref, 0)
-				cc_bt_piscan()
-				time.sleep(3)
-				logger_append.info('Measuring BT PIscan...')
-				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_PIscan', dmm_count)[i])
-				cc_bt_init_status(dut, ref, 0)
-
-			if str(config['Test_Case'].get('BT_ACL_Sniff_1.28s_Master_0dBm')) == '1':
-				cc_bt_init_status(dut, ref, 0)
-				time.sleep(1)
-				cc_bt_acl_sniff_1dot28s_master(dut_bd_address, ref_bd_address)
-				time.sleep(5)
-				logger_append.info('Measuring BT ACL Sniff 1.28s Master @ 0dBm...')
-				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_ACL_Sniff_1dot28s_Master_0dBm',
-					                                                        dmm_count)[i])
-
-				cc_bt_init_status(dut, ref, 0)
-
-			if str(config['Test_Case'].get('BT_ACL_Sniff_1.28s_Master_4dBm')) == '1':
-				cc_bt_init_status(dut, ref, 0)
-				time.sleep(1)
-				cc_bt_set_power_level(4)
-				time.sleep(1)
-				cc_bt_acl_sniff_1dot28s_master(dut_bd_address, ref_bd_address)
-				time.sleep(5)
-				logger_append.info('Measuring BT ACL Sniff 1.28s Master @ 4dBm...')
-				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_ACL_Sniff_1dot28s_Master_4dBm',
-					                                                        dmm_count)[i])
-				cc_bt_init_status(dut, ref, 0)
-
-			if str(config['Test_Case'].get('BT_ACL_Sniff_1.28s_Master_12.5dBm')) == '1':
-				cc_bt_init_status(dut, ref, 0)
-				time.sleep(1)
-				cc_bt_set_power_level(12.5)
-				time.sleep(1)
-				cc_bt_acl_sniff_1dot28s_master(dut_bd_address, ref_bd_address)
-				time.sleep(5)
-				logger_append.info('Measuring BT ACL Sniff 1.28s Master @ 12.5dBm...')
-				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_ACL_Sniff_1dot28s_Master_12dot5dBm',
-					                                                        dmm_count)[i])
-
-				cc_bt_init_status(dut, ref, 0)
-
-			if str(config['Test_Case'].get('BT_ACL_Sniff_0.5s_Master_0dBm')) == '1':
-				cc_bt_init_status(dut, ref, 0)
-				time.sleep(1)
-				cc_bt_acl_sniff_0dot5s_master(dut_bd_address,
-				                              ref_bd_address)
-				time.sleep(5)
-				logger_append.info('Measuring BT ACL Sniff 0.5s Master @ 0dBm...')
-				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_ACL_Sniff_0dot5s_Master_0dBm',
-					                                                        dmm_count)[i])
-
-				cc_bt_init_status(dut, ref, 0)
-
-			if str(config['Test_Case'].get('BT_ACL_Sniff_0.5s_Master_4dBm')) == '1':
-				cc_bt_init_status(dut, ref, 0)
-				time.sleep(1)
-				cc_bt_set_power_level(4)
-				time.sleep(1)
-				cc_bt_acl_sniff_0dot5s_master(dut_bd_address,
-				                              ref_bd_address)
-				time.sleep(5)
-				logger_append.info('Measuring BT ACL Sniff 0.5s Master @ 4dBm...')
-				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_ACL_Sniff_0dot5s_Master_4dBm',
-					                                                        dmm_count)[i])
-				cc_bt_init_status(dut, ref, 0)
-
-			if str(config['Test_Case'].get('BT_ACL_Sniff_0.5s_Master_12.5dBm')) == '1':
-				cc_bt_init_status(dut, ref, 0)
-				time.sleep(1)
-				cc_bt_set_power_level(12.5)
-				time.sleep(1)
-				cc_bt_acl_sniff_0dot5s_master(dut_bd_address,
-				                              ref_bd_address)
-				time.sleep(5)
-				logger_append.info('Measuring BT ACL Sniff 0.5s Master @ 12.5dBm...')
-				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_Acl_Sniff_0dot5s_Master_12dot5dBm',
-					                                                        dmm_count)[i])
-
-				cc_bt_init_status(dut, ref, 0)
-
-			if str(config['Test_Case'].get('BT_SCO_HV3_Master_0dBm')) == '1':
-				cc_bt_init_status(dut, ref, 0)
-				time.sleep(1)
-				cc_bt_set_power_level(0)
-				time.sleep(1)
-				cc_bt_acl_sniff_1dot28s_master(dut_bd_address, ref_bd_address)
-				time.sleep(5)
-				cc_bt_sco_hv3(ref_bd_address)
-				time.sleep(10)
-				logger_append.info('Measuring BT SCO HV3 Master @ 0dBm...')
-				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_SCO_HV3_Master_0dBm',
-					                                                        dmm_count)[i])
-
-				cc_bt_init_status(dut, ref, 0)
-
-			if str(config['Test_Case'].get('BT_SCO_HV3_Master_4dBm')) == '1':
-				cc_bt_init_status(dut, ref, 0)
-				time.sleep(1)
-				cc_bt_set_power_level(4)
-				time.sleep(1)
-				cc_bt_acl_sniff_1dot28s_master(dut_bd_address, ref_bd_address)
-				time.sleep(5)
-				cc_bt_sco_hv3(ref_bd_address)
-				time.sleep(10)
-				logger_append.info('Measuring BT SCO HV3 Master @ 4dBm...')
-				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_SCO_HV3_Master_4dBm',
-					                                                        dmm_count)[i])
-
-				cc_bt_init_status(dut, ref, 0)
-
-			if str(config['Test_Case'].get('BT_SCO_HV3_Master_12.5dBm')) == '1':
-				cc_bt_init_status(dut, ref, 0)
-				time.sleep(1)
-				cc_bt_set_power_level(12.5)
-				time.sleep(1)
-				cc_bt_acl_sniff_1dot28s_master(dut_bd_address, ref_bd_address)
-				time.sleep(5)
-				cc_bt_sco_hv3(ref_bd_address)
-				time.sleep(10)
-				logger_append.info('Measuring BT SCO HV3 Master @ 12.5dBm...')
-				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_SCO_HV3_Master_12dot5dBm',
-					                                                        dmm_count)[i])
-
-				cc_bt_init_status(dut, ref, 0)
-
-			if str(config['Test_Case'].get('BT_SCO_EV3_Master_0dBm')) == '1':
-				cc_bt_init_status(dut, ref, 0)
-				time.sleep(1)
-				cc_bt_set_power_level(0)
-				time.sleep(1)
-				cc_bt_acl_sniff_1dot28s_master(dut_bd_address, ref_bd_address)
-				time.sleep(5)
-				cc_bt_sco_ev3(ref_bd_address)
-				time.sleep(10)
-				logger_append.info('Measuring BT SCO EV3 Master @ 0dBm...')
-				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_SCO_EV3_Master_0dBm',
-					                                                        dmm_count)[i])
-
-				cc_bt_init_status(dut, ref, 0)
-
-			if str(config['Test_Case'].get('BT_SCO_EV3_Master_4dBm')) == '1':
-				cc_bt_init_status(dut, ref, 0)
-				time.sleep(1)
-				cc_bt_set_power_level(4)
-				time.sleep(1)
-				cc_bt_acl_sniff_1dot28s_master(dut_bd_address, ref_bd_address)
-				time.sleep(5)
-				cc_bt_sco_ev3(ref_bd_address)
-				time.sleep(10)
-				logger_append.info('Measuring BT SCO EV3 Master @ 4dBm...')
-				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_SCO_EV3_Master_4dBm',
-					                                                        dmm_count)[i])
-
-				cc_bt_init_status(dut, ref, 0)
-
-			if str(config['Test_Case'].get('BT_SCO_EV3_Master_12.5dBm')) == '1':
-				cc_bt_init_status(dut, ref, 0)
-				time.sleep(1)
-				cc_bt_set_power_level(12.5)
-				time.sleep(1)
-				cc_bt_acl_sniff_1dot28s_master(dut_bd_address, ref_bd_address)
-				time.sleep(5)
-				cc_bt_sco_ev3(ref_bd_address)
-				time.sleep(10)
-				logger_append.info('Measuring BT SCO EV3 Master @ 12.5dBm...')
-				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_SCO_EV3_Master_12dot5dBm',
-					                                                        dmm_count)[i])
-
-				cc_bt_init_status(dut, ref, 0)
-
-		elif str(config['Test_Case'].get('BT_Enable')) == '0':
-			logger_append.info('Skip all BT test cases')
+for i in get_hci_bd_address():
+	# print(i.keys(), i.values(), '!!!!!!!!!!!!!!!!!!!!!!')
+	for j, k in i.items():
+		if j == config['BASIC'].get('Dut'):
+			dut_bd_address = k
+		elif j == config['BASIC'].get('Ref'):
+			ref_bd_address = k
 		else:
-			logger_append.info('Invalid "BT_Enable" info, pls check config.ini file. Exiting...')
+			print('Something wrong with BD address. Exciting....')
 			sys.exit(1)
 
-		if str(config['Test_Case'].get('BLE_Enable')) == '1':
-			if str(config['Test_Case'].get('BLE_Adv_1.28s_3Channel_0dBm')) == '1':
-				cc_bt_init_status(dut, ref, 0)
-				time.sleep(1)
-				cc_bt_set_power_level(0)
-				time.sleep(1)
-				cc_ble_adv_1dot28s_3channel('1')
-				time.sleep(3)
-				logger_append.info('Measuring BLE Adv 1.28s 3-Channel @ 0dBm...')
-				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BLE_Adv_1dot28s_3Channel_0dBm',
-					                                                        dmm_count)[i])
 
-				cc_bt_init_status(dut, ref, 0)
+if str(config['BASIC'].get('Select_ChipVersion')) == '8977' or '8997' or '8987':
+	logger_append.info('Chip version is selected as {0}'.format(str(config['BASIC'].get('Select_ChipVersion'))))
+	# Always get deep sleep current
+	cc_bt_init_status(dut, ref, 0)
+	time.sleep(1)
+	logger_append.info('Measuring deep sleep...')
+	joined_DF_list = wrap_join_DF('Deep_Sleep', dmm_count)
 
-			if str(config['Test_Case'].get('BLE_Adv_1.28s_3Channel_4dBm')) == '1':
-				cc_bt_init_status(dut, ref, 0)
-				time.sleep(1)
-				cc_bt_set_power_level(4)
-				time.sleep(1)
-				cc_ble_adv_1dot28s_3channel('1')
-				time.sleep(3)
-				logger_append.info('Measuring BLE Adv 1.28s 3-Channel @ 4dBm...')
-				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BLE_Adv_1dot28s_3Channel_4dBm',
-					                                                        dmm_count)[i])
+	if str(config['Test_Case'].get('BT_Enable')) == '1':
+		if str(config['Test_Case'].get('BT_Idle')) == '1':
+			cc_bt_init_status(dut, ref, 0)
+			cc_bt_idle()
+			time.sleep(2)
+			logger_append.info('Measuring BT Idle...')
+			for i in range(int(dmm_count)):
+				joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_Idle', dmm_count)[i])
+			cc_bt_init_status(dut, ref, 0)
 
-				cc_bt_init_status(dut, ref, 0)
+		if str(config['Test_Case'].get('BT_Pscan')) == '1':
+			cc_bt_init_status(dut, ref, 0)
+			cc_bt_pscan()
+			time.sleep(3)
+			logger_append.info('Measuring BT Pscan...')
 
-			if str(config['Test_Case'].get('BLE_Adv_1.28s_3Channel_12.5dBm')) == '1':
-				cc_bt_init_status(dut, ref, 0)
-				time.sleep(1)
-				cc_bt_set_power_level(12.5)
-				time.sleep(1)
-				cc_ble_adv_1dot28s_3channel('1')
-				time.sleep(3)
-				logger_append.info('Measuring BLE Adv 1.28s 3-Channel @ 12.5dBm...')
-				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BLE_Adv_1dot28s_3Channel_12dot5dBm',
-					                                                        dmm_count)[i])
+			for i in range(int(dmm_count)):
+				joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_Pscan', dmm_count)[i])
 
-				cc_bt_init_status(dut, ref, 0)
+			cc_bt_init_status(dut, ref, 0)
 
-			if str(config['Test_Case'].get('BLE_Scan_1.28s')) == '1':
-				cc_bt_init_status(dut, ref, 0)
-				time.sleep(1)
-				cc_ble_scan_1dot28s('1')
-				time.sleep(3)
-				logger_append.info('Measuring BLE Scan 1.28s...')
-				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BLE_Scan_1dot28s',
-					                                                        dmm_count)[i])
+		if str(config['Test_Case'].get('BT_Iscan')) == '1':
+			cc_bt_init_status(dut, ref, 0)
+			cc_bt_iscan()
+			time.sleep(3)
+			logger_append.info('Measuring BT Iscan...')
+			for i in range(int(dmm_count)):
+				joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_Iscan', dmm_count)[i])
+			cc_bt_init_status(dut, ref, 0)
 
-				cc_bt_init_status(dut, ref, 0)
+		if str(config['Test_Case'].get('BT_PIscan')) == '1':
+			cc_bt_init_status(dut, ref, 0)
+			cc_bt_piscan()
+			time.sleep(3)
+			logger_append.info('Measuring BT PIscan...')
+			for i in range(int(dmm_count)):
+				joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_PIscan', dmm_count)[i])
+			cc_bt_init_status(dut, ref, 0)
 
-			if str(config['Test_Case'].get('BLE_Scan_1s')) == '1':
-				cc_bt_init_status(dut, ref, 0)
-				time.sleep(1)
-				cc_ble_scan_1s('1')
-				time.sleep(3)
-				logger_append.info('Measuring BLE Scan 1s...')
-				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BLE_Scan_1s',
-					                                                        dmm_count)[i])
+		if str(config['Test_Case'].get('BT_ACL_Sniff_1.28s_Master_0dBm')) == '1':
+			cc_bt_init_status(dut, ref, 0)
+			time.sleep(1)
+			cc_bt_acl_sniff_1dot28s_master(dut_bd_address, ref_bd_address)
+			time.sleep(5)
+			logger_append.info('Measuring BT ACL Sniff 1.28s Master @ 0dBm...')
+			for i in range(int(dmm_count)):
+				joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_ACL_Sniff_1dot28s_Master_0dBm',
+				                                                        dmm_count)[i])
 
-				cc_bt_init_status(dut, ref, 0)
+			cc_bt_init_status(dut, ref, 0)
 
-			if str(config['Test_Case'].get('BLE_Scan_10ms')) == '1':
-				cc_bt_init_status(dut, ref, 0)
-				time.sleep(1)
-				cc_ble_scan_10ms('1')
-				time.sleep(3)
-				logger_append.info('Measuring BLE Scan 10ms...')
-				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BLE_Scan_10ms',
-					                                                        dmm_count)[i])
+		if str(config['Test_Case'].get('BT_ACL_Sniff_1.28s_Master_4dBm')) == '1':
+			cc_bt_init_status(dut, ref, 0)
+			time.sleep(1)
+			cc_bt_set_power_level(4)
+			time.sleep(1)
+			cc_bt_acl_sniff_1dot28s_master(dut_bd_address, ref_bd_address)
+			time.sleep(5)
+			logger_append.info('Measuring BT ACL Sniff 1.28s Master @ 4dBm...')
+			for i in range(int(dmm_count)):
+				joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_ACL_Sniff_1dot28s_Master_4dBm',
+				                                                        dmm_count)[i])
+			cc_bt_init_status(dut, ref, 0)
 
-				cc_bt_init_status(dut, ref, 0)
+		if str(config['Test_Case'].get('BT_ACL_Sniff_1.28s_Master_12.5dBm')) == '1':
+			cc_bt_init_status(dut, ref, 0)
+			time.sleep(1)
+			cc_bt_set_power_level(12.5)
+			time.sleep(1)
+			cc_bt_acl_sniff_1dot28s_master(dut_bd_address, ref_bd_address)
+			time.sleep(5)
+			logger_append.info('Measuring BT ACL Sniff 1.28s Master @ 12.5dBm...')
+			for i in range(int(dmm_count)):
+				joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_ACL_Sniff_1dot28s_Master_12dot5dBm',
+				                                                        dmm_count)[i])
 
-			if str(config['Test_Case'].get('BLE_Connection_1.28s_0dBm')) == '1':
-				cc_bt_init_status(dut, ref, 0)
-				time.sleep(1)
-				cc_bt_set_power_level(0)
-				time.sleep(1)
-				cc_ble_connection_1dot28s(ref_bd_address)
-				time.sleep(5)
-				logger_append.info('Measuring BLE Connection 1.28s @ 0dBm...')
-				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BLE_Conn_1dot28s_0dBm',
-					                                                        dmm_count)[i])
+			cc_bt_init_status(dut, ref, 0)
 
-				cc_bt_init_status(dut, ref, 0)
+		if str(config['Test_Case'].get('BT_ACL_Sniff_0.5s_Master_0dBm')) == '1':
+			cc_bt_init_status(dut, ref, 0)
+			time.sleep(1)
+			cc_bt_acl_sniff_0dot5s_master(dut_bd_address,
+			                              ref_bd_address)
+			time.sleep(5)
+			logger_append.info('Measuring BT ACL Sniff 0.5s Master @ 0dBm...')
+			for i in range(int(dmm_count)):
+				joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_ACL_Sniff_0dot5s_Master_0dBm',
+				                                                        dmm_count)[i])
 
-			if str(config['Test_Case'].get('BLE_Connection_1.28s_4dBm')) == '1':
-				cc_bt_init_status(dut, ref, 0)
-				time.sleep(1)
-				cc_bt_set_power_level(4)
-				time.sleep(1)
-				cc_ble_connection_1dot28s(ref_bd_address)
-				time.sleep(5)
-				logger_append.info('Measuring BLE Connection 1.28s @ 4dBm...')
-				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BLE_Conn_1dot28s_4dBm',
-					                                                        dmm_count)[i])
+			cc_bt_init_status(dut, ref, 0)
 
-				cc_bt_init_status(dut, ref, 0)
+		if str(config['Test_Case'].get('BT_ACL_Sniff_0.5s_Master_4dBm')) == '1':
+			cc_bt_init_status(dut, ref, 0)
+			time.sleep(1)
+			cc_bt_set_power_level(4)
+			time.sleep(1)
+			cc_bt_acl_sniff_0dot5s_master(dut_bd_address,
+			                              ref_bd_address)
+			time.sleep(5)
+			logger_append.info('Measuring BT ACL Sniff 0.5s Master @ 4dBm...')
+			for i in range(int(dmm_count)):
+				joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_ACL_Sniff_0dot5s_Master_4dBm',
+				                                                        dmm_count)[i])
+			cc_bt_init_status(dut, ref, 0)
 
-			if str(config['Test_Case'].get('BLE_Connection_1.28s_12.5dBm')) == '1':
-				cc_bt_init_status(dut, ref, 0)
-				time.sleep(1)
-				cc_bt_set_power_level(12.5)
-				time.sleep(1)
-				cc_ble_connection_1dot28s(ref_bd_address)
-				time.sleep(5)
-				logger_append.info('Measuring BLE Connection 1.28s @ 12.5dBm...')
-				for i in range(int(dmm_count)):
-					joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BLE_Conn_1dot28s_12dot5dBm',
-					                                                        dmm_count)[i])
+		if str(config['Test_Case'].get('BT_ACL_Sniff_0.5s_Master_12.5dBm')) == '1':
+			cc_bt_init_status(dut, ref, 0)
+			time.sleep(1)
+			cc_bt_set_power_level(12.5)
+			time.sleep(1)
+			cc_bt_acl_sniff_0dot5s_master(dut_bd_address,
+			                              ref_bd_address)
+			time.sleep(5)
+			logger_append.info('Measuring BT ACL Sniff 0.5s Master @ 12.5dBm...')
+			for i in range(int(dmm_count)):
+				joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_Acl_Sniff_0dot5s_Master_12dot5dBm',
+				                                                        dmm_count)[i])
 
-				cc_bt_init_status(dut, ref, 0)
+			cc_bt_init_status(dut, ref, 0)
 
-		elif str(config['Test_Case'].get('BLE_Enable')) == '0':
-			logger_append.info('Skip all BLE test cases')
-		else:
-			logger_append.info('Invalid "BLE_Enable" info, pls check config.ini file')
-			sys.exit(1)
+		if str(config['Test_Case'].get('BT_SCO_HV3_Master_0dBm')) == '1':
+			cc_bt_init_status(dut, ref, 0)
+			time.sleep(1)
+			cc_bt_set_power_level(0)
+			time.sleep(1)
+			cc_bt_acl_sniff_1dot28s_master(dut_bd_address, ref_bd_address)
+			time.sleep(5)
+			cc_bt_sco_hv3(ref_bd_address)
+			time.sleep(10)
+			logger_append.info('Measuring BT SCO HV3 Master @ 0dBm...')
+			for i in range(int(dmm_count)):
+				joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_SCO_HV3_Master_0dBm',
+				                                                        dmm_count)[i])
 
-		my_excel = ExcelWriter('test.xlsx')
-		for i in range(int(dmm_count)):
-			joined_DF_list[i].T.to_excel(my_excel, sheet_name=suffix_name_list[i], index=True)
-		my_excel.save()
+			cc_bt_init_status(dut, ref, 0)
 
+		if str(config['Test_Case'].get('BT_SCO_HV3_Master_4dBm')) == '1':
+			cc_bt_init_status(dut, ref, 0)
+			time.sleep(1)
+			cc_bt_set_power_level(4)
+			time.sleep(1)
+			cc_bt_acl_sniff_1dot28s_master(dut_bd_address, ref_bd_address)
+			time.sleep(5)
+			cc_bt_sco_hv3(ref_bd_address)
+			time.sleep(10)
+			logger_append.info('Measuring BT SCO HV3 Master @ 4dBm...')
+			for i in range(int(dmm_count)):
+				joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_SCO_HV3_Master_4dBm',
+				                                                        dmm_count)[i])
+
+			cc_bt_init_status(dut, ref, 0)
+
+		if str(config['Test_Case'].get('BT_SCO_HV3_Master_12.5dBm')) == '1':
+			cc_bt_init_status(dut, ref, 0)
+			time.sleep(1)
+			cc_bt_set_power_level(12.5)
+			time.sleep(1)
+			cc_bt_acl_sniff_1dot28s_master(dut_bd_address, ref_bd_address)
+			time.sleep(5)
+			cc_bt_sco_hv3(ref_bd_address)
+			time.sleep(10)
+			logger_append.info('Measuring BT SCO HV3 Master @ 12.5dBm...')
+			for i in range(int(dmm_count)):
+				joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_SCO_HV3_Master_12dot5dBm',
+				                                                        dmm_count)[i])
+
+			cc_bt_init_status(dut, ref, 0)
+
+		if str(config['Test_Case'].get('BT_SCO_EV3_Master_0dBm')) == '1':
+			cc_bt_init_status(dut, ref, 0)
+			time.sleep(1)
+			cc_bt_set_power_level(0)
+			time.sleep(1)
+			cc_bt_acl_sniff_1dot28s_master(dut_bd_address, ref_bd_address)
+			time.sleep(5)
+			cc_bt_sco_ev3(ref_bd_address)
+			time.sleep(10)
+			logger_append.info('Measuring BT SCO EV3 Master @ 0dBm...')
+			for i in range(int(dmm_count)):
+				joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_SCO_EV3_Master_0dBm',
+				                                                        dmm_count)[i])
+
+			cc_bt_init_status(dut, ref, 0)
+
+		if str(config['Test_Case'].get('BT_SCO_EV3_Master_4dBm')) == '1':
+			cc_bt_init_status(dut, ref, 0)
+			time.sleep(1)
+			cc_bt_set_power_level(4)
+			time.sleep(1)
+			cc_bt_acl_sniff_1dot28s_master(dut_bd_address, ref_bd_address)
+			time.sleep(5)
+			cc_bt_sco_ev3(ref_bd_address)
+			time.sleep(10)
+			logger_append.info('Measuring BT SCO EV3 Master @ 4dBm...')
+			for i in range(int(dmm_count)):
+				joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_SCO_EV3_Master_4dBm',
+				                                                        dmm_count)[i])
+
+			cc_bt_init_status(dut, ref, 0)
+
+		if str(config['Test_Case'].get('BT_SCO_EV3_Master_12.5dBm')) == '1':
+			cc_bt_init_status(dut, ref, 0)
+			time.sleep(1)
+			cc_bt_set_power_level(12.5)
+			time.sleep(1)
+			cc_bt_acl_sniff_1dot28s_master(dut_bd_address, ref_bd_address)
+			time.sleep(5)
+			cc_bt_sco_ev3(ref_bd_address)
+			time.sleep(10)
+			logger_append.info('Measuring BT SCO EV3 Master @ 12.5dBm...')
+			for i in range(int(dmm_count)):
+				joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BT_SCO_EV3_Master_12dot5dBm',
+				                                                        dmm_count)[i])
+
+			cc_bt_init_status(dut, ref, 0)
+
+	elif str(config['Test_Case'].get('BT_Enable')) == '0':
+		logger_append.info('Skip all BT test cases')
 	else:
-		logger_append.info('Invalid chip version info, pls check config.ini file.')
+		logger_append.info('Invalid "BT_Enable" info, pls check config.ini file. Exiting...')
 		sys.exit(1)
 
-	# util.get_debug_info()
-	checkOPC(myinst_list)
-	queryError(myinst_list)
+	if str(config['Test_Case'].get('BLE_Enable')) == '1':
+		if str(config['Test_Case'].get('BLE_Adv_1.28s_3Channel_0dBm')) == '1':
+			cc_bt_init_status(dut, ref, 0)
+			time.sleep(1)
+			cc_bt_set_power_level(0)
+			time.sleep(1)
+			cc_ble_adv_1dot28s_3channel('1')
+			time.sleep(3)
+			logger_append.info('Measuring BLE Adv 1.28s 3-Channel @ 0dBm...')
+			for i in range(int(dmm_count)):
+				joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BLE_Adv_1dot28s_3Channel_0dBm',
+				                                                        dmm_count)[i])
 
-	# Close Connection
-	for i in myinst_list:
-		i.write('DISP:TEXT "Complete..."')
-		i.close()
-		logger_append.info('Close instrument connection.')
+			cc_bt_init_status(dut, ref, 0)
 
-	logger_append.info('\n--- {0} seconds | {1} minutes ---'.format(format((time.time() - start_time), '.2f'),
-	                                                                format((time.time() - start_time) / 60, '.2f')))
+		if str(config['Test_Case'].get('BLE_Adv_1.28s_3Channel_4dBm')) == '1':
+			cc_bt_init_status(dut, ref, 0)
+			time.sleep(1)
+			cc_bt_set_power_level(4)
+			time.sleep(1)
+			cc_ble_adv_1dot28s_3channel('1')
+			time.sleep(3)
+			logger_append.info('Measuring BLE Adv 1.28s 3-Channel @ 4dBm...')
+			for i in range(int(dmm_count)):
+				joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BLE_Adv_1dot28s_3Channel_4dBm',
+				                                                        dmm_count)[i])
 
-	print('\n=== Complete ===\n')
+			cc_bt_init_status(dut, ref, 0)
+
+		if str(config['Test_Case'].get('BLE_Adv_1.28s_3Channel_12.5dBm')) == '1':
+			cc_bt_init_status(dut, ref, 0)
+			time.sleep(1)
+			cc_bt_set_power_level(12.5)
+			time.sleep(1)
+			cc_ble_adv_1dot28s_3channel('1')
+			time.sleep(3)
+			logger_append.info('Measuring BLE Adv 1.28s 3-Channel @ 12.5dBm...')
+			for i in range(int(dmm_count)):
+				joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BLE_Adv_1dot28s_3Channel_12dot5dBm',
+				                                                        dmm_count)[i])
+
+			cc_bt_init_status(dut, ref, 0)
+
+		if str(config['Test_Case'].get('BLE_Scan_1.28s')) == '1':
+			cc_bt_init_status(dut, ref, 0)
+			time.sleep(1)
+			cc_ble_scan_1dot28s('1')
+			time.sleep(3)
+			logger_append.info('Measuring BLE Scan 1.28s...')
+			for i in range(int(dmm_count)):
+				joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BLE_Scan_1dot28s',
+				                                                        dmm_count)[i])
+
+			cc_bt_init_status(dut, ref, 0)
+
+		if str(config['Test_Case'].get('BLE_Scan_1s')) == '1':
+			cc_bt_init_status(dut, ref, 0)
+			time.sleep(1)
+			cc_ble_scan_1s('1')
+			time.sleep(3)
+			logger_append.info('Measuring BLE Scan 1s...')
+			for i in range(int(dmm_count)):
+				joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BLE_Scan_1s',
+				                                                        dmm_count)[i])
+
+			cc_bt_init_status(dut, ref, 0)
+
+		if str(config['Test_Case'].get('BLE_Scan_10ms')) == '1':
+			cc_bt_init_status(dut, ref, 0)
+			time.sleep(1)
+			cc_ble_scan_10ms('1')
+			time.sleep(3)
+			logger_append.info('Measuring BLE Scan 10ms...')
+			for i in range(int(dmm_count)):
+				joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BLE_Scan_10ms',
+				                                                        dmm_count)[i])
+
+			cc_bt_init_status(dut, ref, 0)
+
+		if str(config['Test_Case'].get('BLE_Connection_1.28s_0dBm')) == '1':
+			cc_bt_init_status(dut, ref, 0)
+			time.sleep(1)
+			cc_bt_set_power_level(0)
+			time.sleep(1)
+			cc_ble_connection_1dot28s(ref_bd_address)
+			time.sleep(5)
+			logger_append.info('Measuring BLE Connection 1.28s @ 0dBm...')
+			for i in range(int(dmm_count)):
+				joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BLE_Conn_1dot28s_0dBm',
+				                                                        dmm_count)[i])
+
+			cc_bt_init_status(dut, ref, 0)
+
+		if str(config['Test_Case'].get('BLE_Connection_1.28s_4dBm')) == '1':
+			cc_bt_init_status(dut, ref, 0)
+			time.sleep(1)
+			cc_bt_set_power_level(4)
+			time.sleep(1)
+			cc_ble_connection_1dot28s(ref_bd_address)
+			time.sleep(5)
+			logger_append.info('Measuring BLE Connection 1.28s @ 4dBm...')
+			for i in range(int(dmm_count)):
+				joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BLE_Conn_1dot28s_4dBm',
+				                                                        dmm_count)[i])
+
+			cc_bt_init_status(dut, ref, 0)
+
+		if str(config['Test_Case'].get('BLE_Connection_1.28s_12.5dBm')) == '1':
+			cc_bt_init_status(dut, ref, 0)
+			time.sleep(1)
+			cc_bt_set_power_level(12.5)
+			time.sleep(1)
+			cc_ble_connection_1dot28s(ref_bd_address)
+			time.sleep(5)
+			logger_append.info('Measuring BLE Connection 1.28s @ 12.5dBm...')
+			for i in range(int(dmm_count)):
+				joined_DF_list[i] = joined_DF_list[i].join(wrap_join_DF('BLE_Conn_1dot28s_12dot5dBm',
+				                                                        dmm_count)[i])
+
+			cc_bt_init_status(dut, ref, 0)
+
+	elif str(config['Test_Case'].get('BLE_Enable')) == '0':
+		logger_append.info('Skip all BLE test cases')
+	else:
+		logger_append.info('Invalid "BLE_Enable" info, pls check config.ini file')
+		sys.exit(1)
+
+	my_excel = ExcelWriter('test.xlsx')
+	for i in range(int(dmm_count)):
+		joined_DF_list[i].T.to_excel(my_excel, sheet_name=suffix_name_list[i], index=True)
+	my_excel.save()
+
+else:
+	logger_append.info('Invalid chip version info, pls check config.ini file.')
+	sys.exit(1)
+
+# util.get_debug_info()
+checkOPC(myinst_list)
+queryError(myinst_list)
+
+# Close Connection
+for i in myinst_list:
+	i.write('DISP:TEXT "Complete..."')
+	i.close()
+	logger_append.info('Close instrument connection.')
+
+
+print('\n=== Complete ===\n')

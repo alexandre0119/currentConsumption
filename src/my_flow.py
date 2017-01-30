@@ -68,13 +68,11 @@ def run_time(start_time, end_time):
 	return delta_time
 
 
-def test_case_wrapper(case_name, enable, *args):
-	enable = str(enable)
-	if enable == '1':
-		# for i in args:
-		# 	i
+def test_case_wrapper(case_name, case_func, enable):
+	enable = int(enable)
+	if enable == 1:
 		print('Measuring {0}......'.format(case_name))
-		# cc_bt_init_status(dut, ref, 0)
+		case_func = case_func
 		data_frame_list = my_dmm.dmm_flow_wrapper(visa_address(),
 		                                     600000, 3, 'IMM', 'MIN', 'TIM', 'MIN',
 		                                     1, 10, case_name, 0)
@@ -87,6 +85,7 @@ def main_flow():
 	start_time = starter()
 
 	joined_data_frame_list = []
+	raw_data_frame_list = []
 	for i in range(len(visa_address())):
 		joined_data_frame_list.append(DataFrame())
 
@@ -94,18 +93,24 @@ def main_flow():
 
 	if str(config['BASIC'].get('Select_ChipVersion')) == '8977' or '8997' or '8987':
 		print('Chip version is selected as {0}'.format(str(config['BASIC'].get('Select_ChipVersion'))))
-		# cc_bt_init_status(dut, ref, 0)
-		case_0_data_frame_list = test_case_wrapper('case_0', 1)
+		case_0_data_frame_list = test_case_wrapper('case_0', 'case_func', 1)
 		for i in range(len(visa_address())):
 			joined_data_frame_list[i] = case_0_data_frame_list[i]
 
 		if str(config['Test_Case'].get('BT_Enable')) == '1':
-			if str(config['Test_Case'].get('BT_Idle')) == '1':
-				# cc_bt_init_status(dut, ref, 0)
-				# cc_bt_idle()
-				case_1_data_frame_list = test_case_wrapper('case_1', 1)
-				for i in range(len(visa_address())):
-					joined_data_frame_list[i] = joined_data_frame_list[i].join(case_1_data_frame_list[i])
+
+			case_1_data_frame_list = test_case_wrapper('case_1', 'case_func', 1)
+			raw_data_frame_list.append(case_1_data_frame_list)
+
+			case_2_data_frame_list = test_case_wrapper('case_2', 'case_func', 1)
+			raw_data_frame_list.append(case_2_data_frame_list)
+
+			case_3_data_frame_list = test_case_wrapper('case_3', 'case_func', 1)
+			raw_data_frame_list.append(case_3_data_frame_list)
+
+	for i_visa_address in range(len(visa_address())):
+		for i_data_frame in raw_data_frame_list:
+			joined_data_frame_list[i] = joined_data_frame_list[i].join(i_data_frame[i_visa_address])
 
 	excel_sheet_name_list = ['3_3', '1_8']
 

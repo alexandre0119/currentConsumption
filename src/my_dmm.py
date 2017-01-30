@@ -6,6 +6,7 @@ import visa
 import numpy as np
 from pandas import DataFrame, ExcelWriter
 
+
 # import configparser
 # def testtest():
 # 	config = configparser.ConfigParser()
@@ -210,7 +211,7 @@ def dmm_reading_format(reading):
 	        float(format(reading[3], '.4f')),
 	        float(format(reading[4], '.4f')),
 	        float(format(reading[5], '.0f')),
-	        ','.join(map(str, reading[0])),]
+	        ','.join(map(str, reading[0])), ]
 
 
 def join_dataframe(case_name, reading):
@@ -219,7 +220,36 @@ def join_dataframe(case_name, reading):
 	                        columns=[str(case_name)])
 	return data_framed
 
-def test_flow():
+
+def dmm_flow_wrapper(visa_address,
+                     timeout, current_range, trigger_source, trigger_delay,
+                     sample_source, sample_timer,
+                     trigger_count, sample_count,
+                     case_name, enable_print):
+	my_inst_list = open_connection(visa_address)
+	# query_error(my_inst_list, enable_print)
+	# check_opc(my_inst_list, enable_print)
+	# get_idn(my_inst_list, enable_print)
+	text_display(my_inst_list, 'Running...')
+	dmm_init(my_inst_list, timeout, current_range, trigger_source, trigger_delay,
+	         sample_source, sample_timer, enable_print)
+	data_frame_list = []
+	for i in my_inst_list:
+		reading = measure_single_dmm(i, trigger_count, sample_count, enable_print)
+		reading_formatted = dmm_reading_format(reading)
+		data_frame = join_dataframe(case_name, reading_formatted)
+		data_frame_list.append(data_frame)
+
+	print(data_frame_list)
+
+	# Close connection
+	text_display(my_inst_list, 'Completed...')
+	close_connection(my_inst_list)
+
+	return data_frame_list
+
+
+def sample_flow():
 	"""
 	Example test flow
 	:return:
@@ -248,4 +278,4 @@ def test_flow():
 	close_connection(myinst_list)
 
 
-# ctest_flow()
+# sample_flow()

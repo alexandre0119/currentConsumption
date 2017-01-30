@@ -4,22 +4,28 @@
 
 import src.my_time as my_time
 import src.my_dmm as my_dmm
+import src.my_excel as my_excel
 import configparser
 from pandas import DataFrame, ExcelWriter
+
+
+def load_config(config_name):
+	config = configparser.ConfigParser()
+	config.read(config_name)
+	return config
 
 def visa_address():
 	"""
 	Get VISA address list based on running instrument number
 	:return: VISA address list
 	"""
-	config = configparser.ConfigParser()
-	config.read('config.ini')
+	config = load_config('config.ini')
 
 	dmm_count = int(str(config['DMM'].get('DMM_count')))
 	visa_address_list_all = [str(config['DMM'].get('VISA_address_A')),
-							 str(config['DMM'].get('VISA_address_B')),
-							 str(config['DMM'].get('VISA_address_C')),
-							 str(config['DMM'].get('VISA_address_D'))]
+	                         str(config['DMM'].get('VISA_address_B')),
+	                         str(config['DMM'].get('VISA_address_C')),
+	                         str(config['DMM'].get('VISA_address_D'))]
 
 	visa_address_list = []
 
@@ -29,46 +35,86 @@ def visa_address():
 	return visa_address_list
 
 
-def main_flow():
+def starter():
 	start_str = '''
-================================================
-Program starts @ {0}
-------------------------------------------------
-	'''
+	================================================
+	Program starts @ {0}
+	------------------------------------------------
+		'''
 	print(start_str.format(my_time.now_formatted()))
 	start_time = my_time.now()
+	return start_time
 
-	# print(visa_address())
-	my_inst_list = my_dmm.open_connection(visa_address())
-	# my_dmm.query_error(my_inst_list, 1)
-	# my_dmm.check_opc(my_inst_list, 1)
-	# my_dmm.get_idn(my_inst_list, 1)
-	my_dmm.text_display(my_inst_list, 'Running...')
-	my_dmm.dmm_init(my_inst_list, 600000, 3, 'IMM', 'MIN', 'TIM', 'MIN', 0)
 
-	joined_dataframe_list = []
-	for i in my_inst_list:
-		reading = my_dmm.measure_single_dmm(i, 1, 10, 0)
-		reading = my_dmm.dmm_reading_format(reading)
-		joined_dataframe = my_dmm.join_dataframe('Test', reading)
-		joined_dataframe_list.append(joined_dataframe)
-		print(joined_dataframe)
-		print('\n')
-
-	my_excel = ExcelWriter('test.xlsx')
-	for i in joined_dataframe_list:
-		i.T.to_excel(my_excel, sheet_name='test', index=True)
-	my_excel.save()
-
-	# Close connection
-	my_dmm.close_connection(my_inst_list)
-	# Calculate time
-	end_time = my_time.now()
-	delta_time = my_time.time_delta(start_time, end_time)
+def ender():
 	end_str = '''
-------------------------------------------------
-Program ends @ {0}
-Program total running time: {1}
-================================================
+	------------------------------------------------
+	Program ends @ {0}
+	================================================
 	'''
-	print(end_str.format(my_time.now_formatted(), delta_time))
+	end_time = my_time.now()
+	print(end_str.format(my_time.now_formatted()))
+	return end_time
+
+
+def run_time(start_time, end_time):
+	run_time_str = '''
+	------------------------------------------------
+	Program total running time: {0}
+	================================================
+	'''
+	delta_time = my_time.time_delta(start_time, end_time)
+	print(run_time_str.format(delta_time))
+	return delta_time
+
+
+def test_case_wrapper(case_name, enable, *args):
+	enable = str(enable)
+	if enable == '1':
+		# for i in args:
+		# 	i
+		print('Measuring {0}......'.format(case_name))
+		# cc_bt_init_status(dut, ref, 0)
+		data_frame_list = my_dmm.dmm_flow_wrapper(visa_address(),
+		                                     600000, 3, 'IMM', 'MIN', 'TIM', 'MIN',
+		                                     1, 10, case_name, 0)
+		return data_frame_list
+	else:
+		print('Skip {0}......'.format(case_name))
+
+
+def main_flow():
+	start_time = starter()
+
+	joined_data_frame_list = []
+	for i in range(len(visa_address())):
+		joined_data_frame_list.append(DataFrame())
+
+	config = load_config('config.ini')
+
+	if str(config['BASIC'].get('Select_ChipVersion')) == '8977' or '8997' or '8987':
+		print('Chip version is selected as {0}'.format(str(config['BASIC'].get('Select_ChipVersion'))))
+		# cc_bt_init_status(dut, ref, 0)
+		case_0_data_frame_list = test_case_wrapper('case_0', 1)
+		for i in range(len(visa_address())):
+			joined_data_frame_list[i] = case_0_data_frame_list[i]
+
+		if str(config['Test_Case'].get('BT_Enable')) == '1':
+			if str(config['Test_Case'].get('BT_Idle')) == '1':
+				# cc_bt_init_status(dut, ref, 0)
+				# cc_bt_idle()
+				case_1_data_frame_list = test_case_wrapper('case_1', 1)
+				for i in range(len(visa_address())):
+					joined_data_frame_list[i] = joined_data_frame_list[i].join(case_1_data_frame_list[i])
+
+	excel_sheet_name_list = ['3_3', '1_8']
+
+	my_excel_obj = my_excel.open_excel('test.xlsx')
+
+	for i in range(len(visa_address())):
+		my_excel.write_excel(my_excel_obj, joined_data_frame_list[i], excel_sheet_name_list[i], True)
+
+	my_excel.save_excel(my_excel_obj)
+
+	end_time = ender()
+	run_time(start_time, end_time)

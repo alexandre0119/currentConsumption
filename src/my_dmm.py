@@ -4,6 +4,7 @@
 
 import visa
 import numpy as np
+from pandas import DataFrame, ExcelWriter
 
 # import configparser
 # def testtest():
@@ -121,9 +122,9 @@ def dmm_init(inst_list, timeout, current_range,
 	"""
 	for i in inst_list:
 
-		i.timeout = timeout # Set timeout
+		i.timeout = timeout  # Set timeout
 
-		i.write('*CLS') # Clear
+		i.write('*CLS')  # Clear
 
 		# Config current measurement range and read back
 		i.write('CONF:CURR:DC {0}'.format(current_range))
@@ -170,26 +171,26 @@ def dmm_init(inst_list, timeout, current_range,
 		# i.write('INIT')
 
 
-def measure_single_inst(inst, trigger_count, sample_count, enable_print):
+def measure_single_dmm(inst, trigger_count, sample_count, enable_print):
 	"""
 	Get DMM readings and statistics
-	:param inst_list: Instrument list
+	:param inst: Instrument list
 	:param trigger_count: trigger count
 	:param sample_count: sample count
 	:param enable_print: enable print out
 	:return: raw data list, mean list, max list, min list, std list, count list
 	"""
-	inst.write('CALC:AVER:CLE') # Clear statistics
+	inst.write('CALC:AVER:CLE')  # Clear statistics
 	inst.write('TRIG:COUN {0}'.format(trigger_count))  # Sets the trigger count to X
 	inst.write('SAMP:COUN {0}'.format(sample_count))  # Sets X readings per trigger
-	inst.write('CALC:STAT ON') # Turn on Stat calculations for future readings
+	inst.write('CALC:STAT ON')  # Turn on Stat calculations for future readings
 
-	inst.write('READ?') # Get readings
+	inst.write('READ?')  # Get readings
 
 	reading = str(inst.read()).strip().split(',')
 	readings = []
 	for i_reading in reading:
-		readings.append(float(format(float(i_reading) * 1000, 'f'))) # convert unit to mA, default is A
+		readings.append(float(format(float(i_reading) * 1000, 'f')))  # convert unit to mA, default is A
 
 	if enable_print == 1:
 		print('Average/Mean: {0:.4f} mA'.format(np.mean(readings)))
@@ -202,6 +203,21 @@ def measure_single_inst(inst, trigger_count, sample_count, enable_print):
 
 	return readings, np.mean(readings), np.max(readings), np.min(readings), np.std(readings), np.count_nonzero(readings)
 
+
+def dmm_reading_format(reading):
+	return [float(format(reading[1], '.4f')),
+	        float(format(reading[2], '.4f')),
+	        float(format(reading[3], '.4f')),
+	        float(format(reading[4], '.4f')),
+	        float(format(reading[5], '.0f')),
+	        ','.join(map(str, reading[0])),]
+
+
+def join_dataframe(case_name, reading):
+	data_framed = DataFrame(reading,
+	                        index=['1.Average (mA)', '2.Max', '3.Min', '4.Sdev', '5.Count', '6.Raw'],
+	                        columns=[str(case_name)])
+	return data_framed
 
 def test_flow():
 	"""
@@ -219,8 +235,17 @@ def test_flow():
 	# !!! Seems 34410/34411 MIN sample time is about 35ms, timing violation error show is smaller !!!
 	# dmm_init(myinst_list, 600000, 3, 'IMM', 'MIN', 'TIM', 0.0001, 0)
 	dmm_init(myinst_list, 600000, 3, 'IMM', 'MIN', 'TIM', 'MIN', 0)
+
+	dmm_reading_list = []
 	for i in myinst_list:
-		print(measure_single_inst(i, 1, 10, 1))
+		reading = measure_single_dmm(i, 1, 10, 0)
+		reading = dmm_reading_format(reading)
+		dmm_reading_list.append(reading)
+		# print(reading)
+		print(join_dataframe('Test', reading))
+		print('\n')
+
 	close_connection(myinst_list)
 
-# test_flow()
+
+# ctest_flow()

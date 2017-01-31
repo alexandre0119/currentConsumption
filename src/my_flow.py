@@ -5,6 +5,7 @@
 import src.my_time as my_time
 import src.my_dmm as my_dmm
 import src.my_excel as my_excel
+import src.my_ssh as my_ssh
 import configparser
 from pandas import DataFrame, ExcelWriter
 
@@ -84,35 +85,48 @@ def test_case_wrapper(case_name, case_func, enable):
 def main_flow():
 	start_time = starter()
 
+	# Design joined data frame list based on connected Inst number, and init with empty DataFrame()
 	joined_data_frame_list = []
-	raw_data_frame_list = []
 	for i in range(len(visa_address())):
 		joined_data_frame_list.append(DataFrame())
 
 	config = load_config('config.ini')
+	dut = config['BASIC'].get('Dut')
+	ref = config['BASIC'].get('Ref')
 
 	if str(config['BASIC'].get('Select_ChipVersion')) == '8977' or '8997' or '8987':
+		# Print chip version
 		print('Chip version is selected as {0}'.format(str(config['BASIC'].get('Select_ChipVersion'))))
+		# Get case_0 return data frame list: [inst_1_data_frame, inst_2_data_frame, ...]
 		case_0_data_frame_list = test_case_wrapper('case_0', 'case_func', 1)
+		# Assign first data frame list to joined data frame list as initiate value
 		for i in range(len(visa_address())):
 			joined_data_frame_list[i] = case_0_data_frame_list[i]
 
 		if str(config['Test_Case'].get('BT_Enable')) == '1':
+			# Get case_1 return data frame list: [inst_1_data_frame, inst_2_data_frame, ...]
+			if str(config['Test_Case'].get('BT_Idle')) == '1':
+				# cc_bt_init_status = my_ssh.cc_bt_init_status(dut, ref, 0)
+				case_1_data_frame_list = test_case_wrapper('case_1', 'case_func', 1)
+				for i in range(len(visa_address())):
+					joined_data_frame_list[i] = joined_data_frame_list[i].join(case_1_data_frame_list[i])
+			else:
+				test_case_wrapper('case_1', 'case_func', 0)
 
-			case_1_data_frame_list = test_case_wrapper('case_1', 'case_func', 1)
-			raw_data_frame_list.append(case_1_data_frame_list)
+			if str(config['Test_Case'].get('BT_Pscan')) == '1':
+				case_2_data_frame_list = test_case_wrapper('case_2', 'case_func', 1)
+				for i in range(len(visa_address())):
+					joined_data_frame_list[i] = joined_data_frame_list[i].join(case_2_data_frame_list[i])
+			else:
+				test_case_wrapper('case_2', 'case_func', 0)
 
-			case_2_data_frame_list = test_case_wrapper('case_2', 'case_func', 1)
-			raw_data_frame_list.append(case_2_data_frame_list)
+	print(joined_data_frame_list)
 
-			case_3_data_frame_list = test_case_wrapper('case_3', 'case_func', 1)
-			raw_data_frame_list.append(case_3_data_frame_list)
-
-	for i_visa_address in range(len(visa_address())):
-		for i_data_frame in raw_data_frame_list:
-			joined_data_frame_list[i] = joined_data_frame_list[i].join(i_data_frame[i_visa_address])
-
-	excel_sheet_name_list = ['3_3', '1_8']
+	# Write to different sheet
+	excel_sheet_name_list = [str(config['BASIC'].get('Excel_Sheet_Name_A')),
+	                    str(config['BASIC'].get('Excel_Sheet_Name_B')),
+	                    str(config['BASIC'].get('Excel_Sheet_Name_C')),
+	                    str(config['BASIC'].get('Excel_Sheet_Name_D')), ]
 
 	my_excel_obj = my_excel.open_excel('test.xlsx')
 

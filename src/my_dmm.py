@@ -240,7 +240,7 @@ def dmm_flow_wrapper(visa_address,
 		data_frame = join_dataframe(case_name, reading_formatted)
 		data_frame_list.append(data_frame)
 
-	print(data_frame_list)
+	# print(data_frame_list)
 
 	# Close connection
 	text_display(my_inst_list, 'Completed...')

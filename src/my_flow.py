@@ -15,6 +15,7 @@ def load_config(config_name):
 	config.read(config_name)
 	return config
 
+
 def visa_address():
 	"""
 	Get VISA address list based on running instrument number
@@ -38,9 +39,9 @@ def visa_address():
 
 def starter():
 	start_str = '''
-	================================================
+	================================================================
 	Program starts @ {0}
-	------------------------------------------------
+	----------------------------------------------------------------
 		'''
 	print(start_str.format(my_time.now_formatted()))
 	start_time = my_time.now()
@@ -49,9 +50,9 @@ def starter():
 
 def ender():
 	end_str = '''
-	------------------------------------------------
+	----------------------------------------------------------------
 	Program ends @ {0}
-	================================================
+	================================================================
 	'''
 	end_time = my_time.now()
 	print(end_str.format(my_time.now_formatted()))
@@ -60,9 +61,9 @@ def ender():
 
 def run_time(start_time, end_time):
 	run_time_str = '''
-	------------------------------------------------
+	----------------------------------------------------------------
 	Program total running time: {0}
-	================================================
+	================================================================
 	'''
 	delta_time = my_time.time_delta(start_time, end_time)
 	print(run_time_str.format(delta_time))
@@ -73,8 +74,8 @@ def test_case_init_wrapper(case_name, case_func, *args, **kwargs):
 	print('Measuring {0}......'.format(case_name))
 	case_func(*args, **kwargs)
 	data_frame_list = my_dmm.dmm_flow_wrapper(visa_address(),
-	                                     600000, 3, 'IMM', 'MIN', 'TIM', 'MIN',
-	                                     1, 10, case_name, 0)
+	                                          600000, 3, 'IMM', 'MIN', 'TIM', 'MIN',
+	                                          1, 10, case_name, 0)
 	return data_frame_list
 
 
@@ -84,8 +85,8 @@ def test_case_wrapper(case_name, joined_data_frame_list, enable, case_func, *arg
 		print('Measuring {0}......'.format(case_name))
 		case_func(*args, **kwargs)
 		data_frame_list = my_dmm.dmm_flow_wrapper(visa_address(),
-		                                     600000, 3, 'IMM', 'MIN', 'TIM', 'MIN',
-		                                     1, 10, case_name, 0)
+		                                          600000, 3, 'IMM', 'MIN', 'TIM', 'MIN',
+		                                          1, 10, case_name, 0)
 		for i in range(len(visa_address())):
 			joined_data_frame_list[i] = joined_data_frame_list[i].join(data_frame_list[i])
 		return joined_data_frame_list
@@ -129,14 +130,13 @@ def main_flow():
 			                                           config['Test_Case'].get('BT_Iscan'),
 			                                           my_ssh.cc_bt_init_status, dut, ref, 0)
 
-
 	# print(joined_data_frame_list)
 
 	# Write to different sheet
 	excel_sheet_name_list = [str(config['BASIC'].get('Excel_Sheet_Name_A')),
-	                    str(config['BASIC'].get('Excel_Sheet_Name_B')),
-	                    str(config['BASIC'].get('Excel_Sheet_Name_C')),
-	                    str(config['BASIC'].get('Excel_Sheet_Name_D')), ]
+	                         str(config['BASIC'].get('Excel_Sheet_Name_B')),
+	                         str(config['BASIC'].get('Excel_Sheet_Name_C')),
+	                         str(config['BASIC'].get('Excel_Sheet_Name_D')), ]
 
 	my_excel_obj = my_excel.open_excel('test.xlsx')
 

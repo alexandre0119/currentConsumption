@@ -69,17 +69,29 @@ def run_time(start_time, end_time):
 	return delta_time
 
 
-def test_case_wrapper(case_name, case_func, enable):
-	enable = int(enable)
+def test_case_init_wrapper(case_name, case_func, *args, **kwargs):
+	print('Measuring {0}......'.format(case_name))
+	case_func(*args, **kwargs)
+	data_frame_list = my_dmm.dmm_flow_wrapper(visa_address(),
+	                                     600000, 3, 'IMM', 'MIN', 'TIM', 'MIN',
+	                                     1, 10, case_name, 0)
+	return data_frame_list
+
+
+def test_case_wrapper(case_name, joined_data_frame_list, enable, case_func, *args, **kwargs):
+	enable = int(str(enable))
 	if enable == 1:
 		print('Measuring {0}......'.format(case_name))
-		case_func = case_func
+		case_func(*args, **kwargs)
 		data_frame_list = my_dmm.dmm_flow_wrapper(visa_address(),
 		                                     600000, 3, 'IMM', 'MIN', 'TIM', 'MIN',
 		                                     1, 10, case_name, 0)
-		return data_frame_list
+		for i in range(len(visa_address())):
+			joined_data_frame_list[i] = joined_data_frame_list[i].join(data_frame_list[i])
+		return joined_data_frame_list
 	else:
 		print('Skip {0}......'.format(case_name))
+		return joined_data_frame_list
 
 
 def main_flow():
@@ -98,29 +110,27 @@ def main_flow():
 		# Print chip version
 		print('Chip version is selected as {0}'.format(str(config['BASIC'].get('Select_ChipVersion'))))
 		# Get case_0 return data frame list: [inst_1_data_frame, inst_2_data_frame, ...]
-		case_0_data_frame_list = test_case_wrapper('case_0', 'case_func', 1)
+		case_0_data_frame_list = test_case_init_wrapper('Deep_Sleep', my_ssh.cc_bt_init_status, dut, ref, 0)
 		# Assign first data frame list to joined data frame list as initiate value
 		for i in range(len(visa_address())):
 			joined_data_frame_list[i] = case_0_data_frame_list[i]
 
 		if str(config['Test_Case'].get('BT_Enable')) == '1':
 			# Get case_1 return data frame list: [inst_1_data_frame, inst_2_data_frame, ...]
-			if str(config['Test_Case'].get('BT_Idle')) == '1':
-				# cc_bt_init_status = my_ssh.cc_bt_init_status(dut, ref, 0)
-				case_1_data_frame_list = test_case_wrapper('case_1', 'case_func', 1)
-				for i in range(len(visa_address())):
-					joined_data_frame_list[i] = joined_data_frame_list[i].join(case_1_data_frame_list[i])
-			else:
-				test_case_wrapper('case_1', 'case_func', 0)
+			joined_data_frame_list = test_case_wrapper('case_1', joined_data_frame_list,
+			                                           config['Test_Case'].get('BT_Idle'),
+			                                           my_ssh.cc_bt_init_status, dut, ref, 0)
 
-			if str(config['Test_Case'].get('BT_Pscan')) == '1':
-				case_2_data_frame_list = test_case_wrapper('case_2', 'case_func', 1)
-				for i in range(len(visa_address())):
-					joined_data_frame_list[i] = joined_data_frame_list[i].join(case_2_data_frame_list[i])
-			else:
-				test_case_wrapper('case_2', 'case_func', 0)
+			joined_data_frame_list = test_case_wrapper('case_2', joined_data_frame_list,
+			                                           config['Test_Case'].get('BT_Pscan'),
+			                                           my_ssh.cc_bt_init_status, dut, ref, 0)
 
-	print(joined_data_frame_list)
+			joined_data_frame_list = test_case_wrapper('case_3', joined_data_frame_list,
+			                                           config['Test_Case'].get('BT_Iscan'),
+			                                           my_ssh.cc_bt_init_status, dut, ref, 0)
+
+
+	# print(joined_data_frame_list)
 
 	# Write to different sheet
 	excel_sheet_name_list = [str(config['BASIC'].get('Excel_Sheet_Name_A')),

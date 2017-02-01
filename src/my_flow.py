@@ -6,14 +6,10 @@ import src.my_time as my_time
 import src.my_dmm as my_dmm
 import src.my_excel as my_excel
 import src.my_ssh as my_ssh
-import configparser
+import src.my_bt_case as my_bt_case
+import src.my_config as my_config
+import src.my_send_ssh_cmd as my_send_ssh_cmd
 from pandas import DataFrame, ExcelWriter
-
-
-def load_config(config_name):
-	config = configparser.ConfigParser()
-	config.read(config_name)
-	return config
 
 
 def visa_address():
@@ -21,7 +17,7 @@ def visa_address():
 	Get VISA address list based on running instrument number
 	:return: VISA address list
 	"""
-	config = load_config('config.ini')
+	config = my_config.load_config('config.ini')
 
 	dmm_count = int(str(config['DMM'].get('DMM_count')))
 	visa_address_list_all = [str(config['DMM'].get('VISA_address_A')),
@@ -103,32 +99,33 @@ def main_flow():
 	for i in range(len(visa_address())):
 		joined_data_frame_list.append(DataFrame())
 
-	config = load_config('config.ini')
-	dut = config['BASIC'].get('Dut')
-	ref = config['BASIC'].get('Ref')
+	config = my_config.load_config('config.ini')
+	chip_version = str(config['BASIC'].get('Select_ChipVersion'))
+	dut = str(config['BASIC'].get('Dut'))
+	ref = str(config['BASIC'].get('Ref'))
 
 	if str(config['BASIC'].get('Select_ChipVersion')) == '8977' or '8997' or '8987':
 		# Print chip version
 		print('Chip version is selected as {0}'.format(str(config['BASIC'].get('Select_ChipVersion'))))
 		# Get case_0 return data frame list: [inst_1_data_frame, inst_2_data_frame, ...]
-		case_0_data_frame_list = test_case_init_wrapper('Deep_Sleep', my_ssh.cc_bt_init_status, dut, ref, 0)
+		case_0_data_frame_list = test_case_init_wrapper('Deep_Sleep', my_send_ssh_cmd.cc_bt_init_status, dut, ref, 0)
 		# Assign first data frame list to joined data frame list as initiate value
 		for i in range(len(visa_address())):
 			joined_data_frame_list[i] = case_0_data_frame_list[i]
 
 		if str(config['Test_Case'].get('BT_Enable')) == '1':
 			# Get case_1 return data frame list: [inst_1_data_frame, inst_2_data_frame, ...]
-			joined_data_frame_list = test_case_wrapper('case_1', joined_data_frame_list,
+			joined_data_frame_list = test_case_wrapper('BT_Idle', joined_data_frame_list,
 			                                           config['Test_Case'].get('BT_Idle'),
-			                                           my_ssh.cc_bt_init_status, dut, ref, 0)
+			                                           my_send_ssh_cmd.cc_bt_init_status, dut, ref, 0)
 
-			joined_data_frame_list = test_case_wrapper('case_2', joined_data_frame_list,
+			joined_data_frame_list = test_case_wrapper('BT_Pscan', joined_data_frame_list,
 			                                           config['Test_Case'].get('BT_Pscan'),
-			                                           my_ssh.cc_bt_init_status, dut, ref, 0)
+			                                           my_send_ssh_cmd.cc_bt_init_status, dut, ref, 0)
 
-			joined_data_frame_list = test_case_wrapper('case_3', joined_data_frame_list,
+			joined_data_frame_list = test_case_wrapper('BT_Iscan', joined_data_frame_list,
 			                                           config['Test_Case'].get('BT_Iscan'),
-			                                           my_ssh.cc_bt_init_status, dut, ref, 0)
+			                                           my_send_ssh_cmd.cc_bt_init_status, dut, ref, 0)
 
 	# print(joined_data_frame_list)
 

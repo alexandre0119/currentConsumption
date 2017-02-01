@@ -302,3 +302,4 @@ class BLE(Init):
 			.format(self.hci_dut, self.hci_ref, ref_address)
 		logger_append.info(cmd)
 		return cmd
+

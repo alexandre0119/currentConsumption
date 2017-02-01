@@ -16,7 +16,7 @@ from pandas import DataFrame, ExcelWriter
 # testtest()
 
 
-def open_connection(visa_address_list):
+def open_connection_dmm(visa_address_list):
 	"""
 	Open connection for DMM
 	:param visa_address_list: Instruments visa address as list
@@ -226,7 +226,7 @@ def dmm_flow_wrapper(visa_address,
                      sample_source, sample_timer,
                      trigger_count, sample_count,
                      case_name, enable_print):
-	my_inst_list = open_connection(visa_address)
+	my_inst_list = open_connection_dmm(visa_address)
 	# query_error(my_inst_list, enable_print)
 	# check_opc(my_inst_list, enable_print)
 	# get_idn(my_inst_list, enable_print)
@@ -256,7 +256,7 @@ def sample_flow():
 	"""
 	mylist = ['TCPIP0::192.168.1.11::inst0::INSTR', 'TCPIP0::192.168.1.10::inst0::INSTR']
 	# mylist = ['TCPIP0::192.168.1.11::inst0::INSTR']
-	myinst_list = open_connection(mylist)
+	myinst_list = open_connection_dmm(mylist)
 	query_error(myinst_list, 1)
 	# check_opc(myinst_list, 1)
 	# get_idn(myinst_list, 1)

@@ -11,7 +11,7 @@ from pandas import DataFrame, ExcelWriter
 # def testtest():
 # 	config = configparser.ConfigParser()
 # 	config.read('config.ini')
-# 	dmm_count = int(str(config['DMM'].get('DMM_count')))
+# 	dmm_count = int(str(config['DMM'].get('DMM_Count')))
 # 	print(dmm_count)
 # testtest()
 

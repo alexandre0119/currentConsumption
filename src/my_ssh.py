@@ -65,32 +65,15 @@ class SSH:
 
 
 def open_connection_ssh():
-	config = my_config.load_config('config.ini')
-	ssh_server = str(config['SSH'].get('ssh_server'))
-	ssh_username = str(config['SSH'].get('ssh_username'))
-	ssh_password = str(config['SSH'].get('ssh_password'))
+	"""
+	Open SSH connection based on server, username and password
+	:return: SSH connection
+	"""
+	ssh_server = my_config.config_ssh_server()
+	ssh_username = my_config.config_ssh_username()
+	ssh_password = my_config.config_ssh_password()
 	connection = SSH(ssh_server, ssh_username, ssh_password)
 	return connection
-
-# open_connection_ssh().send_command('whoami')
-# open_connection_ssh().send_command('ls -l; pwd')
-# dir_run = 'cd' + ' ' + str(config['Directory'].get('BluetoothScriptDirectory')) + ';ls;' + './'
-#
-# init = Init(str(config['BASIC'].get('Select_ChipVersion')),
-#             str(config['BASIC'].get('Dut')),
-#             str(config['BASIC'].get('Ref')))
-#
-# set_power_level = PowerLevel(str(config['BASIC'].get('Select_ChipVersion')),
-#                              str(config['BASIC'].get('Dut')),
-#                              str(config['BASIC'].get('Ref')))
-#
-# bt = BT(str(config['BASIC'].get('Select_ChipVersion')),
-#         str(config['BASIC'].get('Dut')),
-#         str(config['BASIC'].get('Ref')))
-#
-# ble = BLE(str(config['BASIC'].get('Select_ChipVersion')),
-#           str(config['BASIC'].get('Dut')),
-#           str(config['BASIC'].get('Ref')))
 
 
 def get_hci_bd_address():
@@ -116,90 +99,41 @@ def get_hci_bd_address():
 	return list_address
 
 
-def cc_bt_reset(hci):
-	open_connection_ssh().send_command(bt.bt_reset(hci))
 
+# def cc_bt_acl_sniff_1dot28s_master(dut_address, ref_address):
+# 	open_connection_ssh().send_command(bt.bt_acl_sniff_1dot28s_master(dut_address, ref_address))
 
-def cc_bt_deepsleep():
-	open_connection_ssh().send_command(bt.bt_deepsleep())
-
-
-def cc_bt_noscan():
-	open_connection_ssh().send_command(bt.bt_noscan())
-
-
-def cc_bt_set_power_level(power_level):
-	# print(set_power_level.bt_set_power_level(power_level), '!!!!!!!!!!!!!!!!!!!!!!!!')
-	open_connection_ssh().send_command(set_power_level.bt_set_power_level(power_level))
-
-
-def cc_bt_idle():
-	open_connection_ssh().send_command(bt.bt_idle())
-
-
-def cc_bt_pscan():
-	open_connection_ssh().send_command(bt.bt_pscan())
-
-
-def cc_bt_iscan():
-	open_connection_ssh().send_command(bt.bt_iscan())
-
-
-def cc_bt_piscan():
-	open_connection_ssh().send_command(bt.bt_piscan())
-
-
-def cc_bt_init_status(hci_dut, hci_ref, power_level):
-	cc_bt_reset(hci_dut)
-	cc_bt_reset(hci_ref)
-	cc_bt_deepsleep()
-	cc_bt_noscan()
-	cc_bt_set_power_level(power_level)
-
-
-def cc_bt_acl_sniff_1dot28s_master(dut_address, ref_address):
-	# print(bt.bt_acl_sniff_1dot28s_master(dut_address, ref_address), '!!!!!!!!!!!!!!!!!!!!!!!!')
-	open_connection_ssh().send_command(bt.bt_acl_sniff_1dot28s_master(dut_address, ref_address))
-
-
-def cc_bt_acl_sniff_0dot5s_master(dut_address, ref_address):
-	# print(bt.bt_acl_sniff_1dot28s_master(dut_address, ref_address), '!!!!!!!!!!!!!!!!!!!!!!!!')
-	open_connection_ssh().send_command(bt.bt_acl_sniff_0dot5s_master(dut_address, ref_address))
-
-
-def cc_bt_sco_hv3(ref_address):
-	# print(bt.bt_sco_hv3(ref_address), '!!!!!!!!!!!!!!!!!!!!!!!!')
-	open_connection_ssh().send_command(bt.bt_sco_hv3(ref_address))
-
-
-def cc_bt_sco_ev3(ref_address):
-	# print(bt.bt_sco_ev3(ref_address), '!!!!!!!!!!!!!!!!!!!!!!!!')
-	open_connection_ssh().send_command(bt.bt_sco_ev3(ref_address))
-
-
-def cc_ble_adv_1dot28s_3channel(enable):
-	# print(ble.ble_adv_1dot28s_3channel(enable), '!!!!!!!!!!!!!!!!!!!!!!!!')
-	open_connection_ssh().send_command(ble.ble_adv_1dot28s_3channel(enable))
-
-
-def cc_ble_scan_1dot28s(enable):
-	# print(ble.ble_scan_1dot28s(enable), '!!!!!!!!!!!!!!!!!!!!!!!!')
-	open_connection_ssh().send_command(ble.ble_scan_1dot28s(enable))
-
-
-def cc_ble_scan_1s(enable):
-	# print(ble.ble_scan_1s(enable), '!!!!!!!!!!!!!!!!!!!!!!!!')
-	open_connection_ssh().send_command(ble.ble_scan_1s(enable))
-
-
-def cc_ble_scan_10ms(enable):
-	# print(ble.ble_scan_10ms(enable), '!!!!!!!!!!!!!!!!!!!!!!!!')
-	open_connection_ssh().send_command(ble.ble_scan_10ms(enable))
-
-
-def cc_ble_connection_1dot28s(ref_address):
-	# print(ble.ble_connection_1dot28s(ref_address), '!!!!!!!!!!!!!!!!!!!!!!!!')
-	open_connection_ssh().send_command(ble.ble_connection_1dot28s(ref_address))
+#
+# def cc_bt_acl_sniff_0dot5s_master(dut_address, ref_address):
+# 	open_connection_ssh().send_command(bt.bt_acl_sniff_0dot5s_master(dut_address, ref_address))
+#
+#
+# def cc_bt_sco_hv3(ref_address):
+# 	open_connection_ssh().send_command(bt.bt_sco_hv3(ref_address))
+#
+#
+# def cc_bt_sco_ev3(ref_address):
+# 	open_connection_ssh().send_command(bt.bt_sco_ev3(ref_address))
+#
+#
+# def cc_ble_adv_1dot28s_3channel(enable):
+# 	open_connection_ssh().send_command(ble.ble_adv_1dot28s_3channel(enable))
+#
+#
+# def cc_ble_scan_1dot28s(enable):
+# 	open_connection_ssh().send_command(ble.ble_scan_1dot28s(enable))
+#
+#
+# def cc_ble_scan_1s(enable):
+# 	open_connection_ssh().send_command(ble.ble_scan_1s(enable))
+#
+#
+# def cc_ble_scan_10ms(enable):
+# 	open_connection_ssh().send_command(ble.ble_scan_10ms(enable))
+#
+#
+# def cc_ble_connection_1dot28s(ref_address):
+# 	open_connection_ssh().send_command(ble.ble_connection_1dot28s(ref_address))
 
 
 """

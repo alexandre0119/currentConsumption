@@ -8,7 +8,7 @@ import src.my_excel as my_excel
 import src.my_ssh as my_ssh
 import src.my_bt_case as my_bt_case
 import src.my_config as my_config
-import src.my_send_ssh_cmd as my_send_ssh_cmd
+import src.my_ssh_send_cmd as my_ssh_send_cmd
 from pandas import DataFrame, ExcelWriter
 
 
@@ -19,11 +19,11 @@ def visa_address():
 	"""
 	config = my_config.load_config('config.ini')
 
-	dmm_count = int(str(config['DMM'].get('DMM_count')))
-	visa_address_list_all = [str(config['DMM'].get('VISA_address_A')),
-	                         str(config['DMM'].get('VISA_address_B')),
-	                         str(config['DMM'].get('VISA_address_C')),
-	                         str(config['DMM'].get('VISA_address_D'))]
+	dmm_count = int(str(config['DMM'].get('DMM_Count')))
+	visa_address_list_all = [str(config['DMM'].get('VISA_Address_A')),
+	                         str(config['DMM'].get('VISA_Address_B')),
+	                         str(config['DMM'].get('VISA_Address_C')),
+	                         str(config['DMM'].get('VISA_Address_D'))]
 
 	visa_address_list = []
 
@@ -100,15 +100,16 @@ def main_flow():
 		joined_data_frame_list.append(DataFrame())
 
 	config = my_config.load_config('config.ini')
-	chip_version = str(config['BASIC'].get('Select_ChipVersion'))
-	dut = str(config['BASIC'].get('Dut'))
-	ref = str(config['BASIC'].get('Ref'))
+	dut = my_config.config_dut()
+	ref = my_config.config_ref()
 
-	if str(config['BASIC'].get('Select_ChipVersion')) == '8977' or '8997' or '8987':
+	if str(config['BASIC'].get('Chip_Version')) == '8977' or '8997' or '8987':
 		# Print chip version
-		print('Chip version is selected as {0}'.format(str(config['BASIC'].get('Select_ChipVersion'))))
+		print('Chip version is selected as {0}'.format(str(config['BASIC'].get('Chip_Version'))))
+
 		# Get case_0 return data frame list: [inst_1_data_frame, inst_2_data_frame, ...]
-		case_0_data_frame_list = test_case_init_wrapper('Deep_Sleep', my_send_ssh_cmd.cc_bt_init_status, dut, ref, 0)
+		case_0_data_frame_list = test_case_init_wrapper('Deep_Sleep', my_ssh_send_cmd.cc_bt_init_status, dut, ref, 0)
+
 		# Assign first data frame list to joined data frame list as initiate value
 		for i in range(len(visa_address())):
 			joined_data_frame_list[i] = case_0_data_frame_list[i]
@@ -117,15 +118,25 @@ def main_flow():
 			# Get case_1 return data frame list: [inst_1_data_frame, inst_2_data_frame, ...]
 			joined_data_frame_list = test_case_wrapper('BT_Idle', joined_data_frame_list,
 			                                           config['Test_Case'].get('BT_Idle'),
-			                                           my_send_ssh_cmd.cc_bt_init_status, dut, ref, 0)
+			                                           my_ssh_send_cmd.cc_bt_idle, dut, ref, 0)
 
-			joined_data_frame_list = test_case_wrapper('BT_Pscan', joined_data_frame_list,
-			                                           config['Test_Case'].get('BT_Pscan'),
-			                                           my_send_ssh_cmd.cc_bt_init_status, dut, ref, 0)
+			joined_data_frame_list = test_case_wrapper('BT_P_Scan', joined_data_frame_list,
+			                                           config['Test_Case'].get('BT_P_Scan'),
+			                                           my_ssh_send_cmd.cc_bt_pscan, dut, ref, 0)
 
-			joined_data_frame_list = test_case_wrapper('BT_Iscan', joined_data_frame_list,
-			                                           config['Test_Case'].get('BT_Iscan'),
-			                                           my_send_ssh_cmd.cc_bt_init_status, dut, ref, 0)
+			joined_data_frame_list = test_case_wrapper('BT_I_Scan', joined_data_frame_list,
+			                                           config['Test_Case'].get('BT_I_Scan'),
+			                                           my_ssh_send_cmd.cc_bt_iscan, dut, ref, 0)
+
+			joined_data_frame_list = test_case_wrapper('BT_PI_Scan', joined_data_frame_list,
+			                                           config['Test_Case'].get('BT_PI_Scan'),
+			                                           my_ssh_send_cmd.cc_bt_piscan, dut, ref, 0)
+
+			# joined_data_frame_list = test_case_wrapper('BT_ACL_Sniff_1dot28s_Master_0dBm',
+			#                                            joined_data_frame_list,
+			#                                            config['Test_Case'].get('BT_ACL_Sniff_1.28s_Master_0dBm'),
+			#                                            my_ssh_send_cmd.cc_bt_acl_sniff_1dot28s_master, dut, ref, 0)
+
 
 	# print(joined_data_frame_list)
 

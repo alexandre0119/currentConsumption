@@ -213,7 +213,7 @@ try:
 	# Open Connection
 	# rm = visa.ResourceManager('C:\\Program Files (x86)\\IVI Foundation\\VISA\\WinNT\\agvisa\\agbin\\visa32.dll')
 	rm = visa.ResourceManager()
-	dmm_count = str(config['DMM'].get('DMM_count'))
+	dmm_count = str(config['DMM'].get('DMM_Count'))
 
 	trigger_cnt_flat = int(config['Test_Case_Sample'].get('Flat_Trigger_Count'))
 	sample_cnt_flat = int(config['Test_Case_Sample'].get('Flat_Sample_Count'))
@@ -229,10 +229,10 @@ try:
 						str(config['BASIC'].get('Excel_Sheet_Name_C')),
 						str(config['BASIC'].get('Excel_Sheet_Name_D')),]
 
-	visa_address_list = [str(config['DMM'].get('VISA_address_A')),
-						 str(config['DMM'].get('VISA_address_B')),
-						 str(config['DMM'].get('VISA_address_C')),
-						 str(config['DMM'].get('VISA_address_D'))]
+	visa_address_list = [str(config['DMM'].get('VISA_Address_A')),
+						 str(config['DMM'].get('VISA_Address_B')),
+						 str(config['DMM'].get('VISA_Address_C')),
+						 str(config['DMM'].get('VISA_Address_D'))]
 
 	myinst_name_list = []
 	mythread_name_list = []
@@ -307,8 +307,8 @@ try:
 			print(i)
 		return temp_list
 
-	if str(config['BASIC'].get('Select_ChipVersion')) == '8977' or '8997' or '8987':
-		logger_append.info('Chip version is selected as {0}'.format(str(config['BASIC'].get('Select_ChipVersion'))))
+	if str(config['BASIC'].get('Chip_Version')) == '8977' or '8997' or '8987':
+		logger_append.info('Chip version is selected as {0}'.format(str(config['BASIC'].get('Chip_Version'))))
 		# Always get deep sleep current
 		cc_bt_init_status(dut, ref, 0)
 		time.sleep(1)

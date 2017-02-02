@@ -9,7 +9,9 @@ import src.my_ssh as my_ssh
 import src.my_bt_case as my_bt_case
 import src.my_config as my_config
 import src.my_ssh_send_cmd as my_ssh_send_cmd
+import src.my_ssh_get_cmd as my_ssh_get_cmd
 from pandas import DataFrame, ExcelWriter
+import sys
 
 
 def visa_address():
@@ -102,6 +104,8 @@ def main_flow():
 	config = my_config.load_config('config.ini')
 	dut = my_config.config_dut()
 	ref = my_config.config_ref()
+	dut_bd_addr = my_ssh_get_cmd.bd_addr()[0]
+	ref_bd_addr = my_ssh_get_cmd.bd_addr()[1]
 
 	if str(config['BASIC'].get('Chip_Version')) == '8977' or '8997' or '8987':
 		# Print chip version
@@ -113,6 +117,7 @@ def main_flow():
 		# Assign first data frame list to joined data frame list as initiate value
 		for i in range(len(visa_address())):
 			joined_data_frame_list[i] = case_0_data_frame_list[i]
+
 
 		if str(config['Test_Case'].get('BT_Enable')) == '1':
 			# Get case_1 return data frame list: [inst_1_data_frame, inst_2_data_frame, ...]
@@ -132,10 +137,13 @@ def main_flow():
 			                                           config['Test_Case'].get('BT_PI_Scan'),
 			                                           my_ssh_send_cmd.cc_bt_piscan, dut, ref, 0)
 
-			# joined_data_frame_list = test_case_wrapper('BT_ACL_Sniff_1dot28s_Master_0dBm',
-			#                                            joined_data_frame_list,
-			#                                            config['Test_Case'].get('BT_ACL_Sniff_1.28s_Master_0dBm'),
-			#                                            my_ssh_send_cmd.cc_bt_acl_sniff_1dot28s_master, dut, ref, 0)
+			joined_data_frame_list = test_case_wrapper('BT_ACL_Sniff_1dot28s_Master_0dBm',
+			                                           joined_data_frame_list,
+			                                           config['Test_Case'].get('BT_ACL_Sniff_1.28s_Master_0dBm'),
+			                                           my_ssh_send_cmd.cc_bt_acl_sniff_1dot28s_master,
+			                                           dut, dut_bd_addr,
+			                                           ref, ref_bd_addr,
+			                                           0)
 
 
 	# print(joined_data_frame_list)

@@ -78,11 +78,12 @@ def open_connection_ssh():
 
 def get_hci_bd_address():
 	data = open_connection_ssh().send_command('hciconfig')[0]
+	print('!!!!!!!!!!!!!!!!', open_connection_ssh().send_command('hciconfig'))
 	# logger_append.info(data)
 	regex_bd_address = re.compile(r'[\s]*BD Address:[\s]*' +
 	                              r'(?P<bd_address>[0-9a-fA-F]+:[0-9a-fA-F]+:[0-9a-fA-F]+:[0-9a-fA-F]+:[0-9a-fA-F]+:[0-9a-fA-F]+)')
 	regex_hci = re.compile(r'[\s]?(?P<hci>hci[0-9]+):')
-	list_address = []
+	bd_addr_list = []
 	for line_number in range(len(data)):
 		line_content = data[line_number]
 		match_hci = regex_hci.match(line_content)
@@ -93,10 +94,10 @@ def get_hci_bd_address():
 			match_bd_address = regex_bd_address.match(line_content)
 			if match_bd_address:
 				# logger_append.info('Match found: {0}'.format(match_bd_address.group('bd_address')))
-				list_address.append({
+				bd_addr_list.append({
 					match_hci.group('hci').strip(): match_bd_address.group('bd_address').strip()})
-	# logger_append.info(list_address)
-	return list_address
+	# logger_append.info(bd_addr_list)
+	return bd_addr_list
 
 
 

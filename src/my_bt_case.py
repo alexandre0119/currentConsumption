@@ -24,17 +24,17 @@ class PowerLevel(Init):
 		self.hci_dut = hci_dut
 		self.hci_ref = hci_ref
 		self.bt_power_index = {'8977':
-			                       {'0': str(config['Robin3_8977_Power_Index'].get('0_dBm')),
-			                        '4': str(config['Robin3_8977_Power_Index'].get('4_dBm')),
-			                        'Max': str(config['Robin3_8977_Power_Index'].get('Max_dBm'))},
+			                       {'0': str(config['Robin3_8977_Power_Index'].get('0_dBm_Pin')),
+			                        '4': str(config['Robin3_8977_Power_Index'].get('4_dBm_Pin')),
+			                        'Max': str(config['Robin3_8977_Power_Index'].get('Max_dBm_Pin'))},
 		                       '8997':
-			                       {'0': str(config['KF2_8997_Power_Index'].get('0_dBm')),
-			                        '4': str(config['KF2_8997_Power_Index'].get('4_dBm')),
-			                        'Max': str(config['KF2_8997_Power_Index'].get('Max_dBm'))},
+			                       {'0': str(config['KF2_8997_Power_Index'].get('0_dBm_Pin')),
+			                        '4': str(config['KF2_8997_Power_Index'].get('4_dBm_Pin')),
+			                        'Max': str(config['KF2_8997_Power_Index'].get('Max_dBm_Pin'))},
 		                       '8987':
-			                       {'0': str(config['CA2_8987_Power_Index'].get('0_dBm')),
-			                        '4': str(config['CA2_8987_Power_Index'].get('4_dBm')),
-			                        'Max': str(config['CA2_8987_Power_Index'].get('Max_dBm'))}
+			                       {'0': str(config['CA2_8987_Power_Index'].get('0_dBm_Pin')),
+			                        '4': str(config['CA2_8987_Power_Index'].get('4_dBm_Pin')),
+			                        'Max': str(config['CA2_8987_Power_Index'].get('Max_dBm_Pin'))}
 		                       }
 
 	def bt_set_power_level(self, power_level):

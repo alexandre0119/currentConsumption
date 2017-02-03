@@ -99,37 +99,6 @@ def get_hci_bd_address():
 	# logger_append.info(bd_addr_list)
 	return bd_addr_list
 
-
-
-#
-# def cc_bt_sco_hv3(ref_address):
-# 	open_connection_ssh().send_command(bt.bt_sco_hv3(ref_address))
-#
-#
-# def cc_bt_sco_ev3(ref_address):
-# 	open_connection_ssh().send_command(bt.bt_sco_ev3(ref_address))
-#
-#
-# def cc_ble_adv_1dot28s_3channel(enable):
-# 	open_connection_ssh().send_command(ble.ble_adv_1dot28s_3channel(enable))
-#
-#
-# def cc_ble_scan_1dot28s(enable):
-# 	open_connection_ssh().send_command(ble.ble_scan_1dot28s(enable))
-#
-#
-# def cc_ble_scan_1s(enable):
-# 	open_connection_ssh().send_command(ble.ble_scan_1s(enable))
-#
-#
-# def cc_ble_scan_10ms(enable):
-# 	open_connection_ssh().send_command(ble.ble_scan_10ms(enable))
-#
-#
-# def cc_ble_connection_1dot28s(ref_address):
-# 	open_connection_ssh().send_command(ble.ble_connection_1dot28s(ref_address))
-
-
 """
 I finally figured out that .execute_command() is basically a single session,
 so doing a .execute_command('cd scripts') and then executing the script with

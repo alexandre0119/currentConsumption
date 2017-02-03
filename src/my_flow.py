@@ -84,12 +84,12 @@ def test_case_wrapper(case_name, joined_data_frame_list, enable, case_func, *arg
 		case_func(*args, **kwargs)
 		data_frame_list = my_dmm.dmm_flow_wrapper(visa_address(),
 		                                          600000, 3, 'IMM', 'MIN', 'TIM', 'MIN',
-		                                          1, 300, case_name, 0)
+		                                          1, 600, case_name, 0)
 		for i in range(len(visa_address())):
 			joined_data_frame_list[i] = joined_data_frame_list[i].join(data_frame_list[i])
 		return joined_data_frame_list
 	else:
-		print('Skip {0}......'.format(case_name))
+		print('Skip <{0}> ......'.format(case_name))
 		return joined_data_frame_list
 
 
@@ -232,6 +232,89 @@ def main_flow():
 			                                           dut, dut_bd_addr,
 			                                           ref, ref_bd_addr,
 			                                           'Max')
+		elif str(config['Test_Case'].get('BT_Enable')) == '0':
+			print('Skip all BT test cases')
+		else:
+			print('Invalid "BT_Enable" info, pls check config.ini file. Exiting...')
+			sys.exit(1)
+
+		if str(config['Test_Case'].get('BLE_Enable')) == '1':
+			joined_data_frame_list = test_case_wrapper('BLE Adv 1.28s interval 3 channels @ 0 dBm at Pin',
+			                                           joined_data_frame_list,
+			                                           config['Test_Case'].get('BLE_Adv_1.28s_3Channel_0-dBm-pin'),
+			                                           my_ssh_send_cmd.cc_ble_adv_1dot28s_3channel,
+			                                           dut,
+			                                           ref,
+			                                           '0', 1)
+
+			joined_data_frame_list = test_case_wrapper('BLE Adv 1.28s interval 3 channels @ 4 dBm at Pin',
+			                                           joined_data_frame_list,
+			                                           config['Test_Case'].get('BLE_Adv_1.28s_3Channel_4-dBm-pin'),
+			                                           my_ssh_send_cmd.cc_ble_adv_1dot28s_3channel,
+			                                           dut,
+			                                           ref,
+			                                           '0', 1)
+
+			joined_data_frame_list = test_case_wrapper('BLE Adv 1.28s interval 3 channels @ Max dBm at Pin',
+			                                           joined_data_frame_list,
+			                                           config['Test_Case'].get('BLE_Adv_1.28s_3Channel_Max-dBm-pin'),
+			                                           my_ssh_send_cmd.cc_ble_adv_1dot28s_3channel,
+			                                           dut,
+			                                           ref,
+			                                           '0', 1)
+
+			joined_data_frame_list = test_case_wrapper('BLE Scan 1.28s interval',
+			                                           joined_data_frame_list,
+			                                           config['Test_Case'].get('BLE_Scan_1.28s'),
+			                                           my_ssh_send_cmd.cc_ble_scan_1dot28s,
+			                                           dut,
+			                                           ref,
+			                                           '0', 1)
+
+			joined_data_frame_list = test_case_wrapper('BLE Scan 1s interval',
+			                                           joined_data_frame_list,
+			                                           config['Test_Case'].get('BLE_Scan_1s'),
+			                                           my_ssh_send_cmd.cc_ble_scan_1s,
+			                                           dut,
+			                                           ref,
+			                                           '0', 1)
+
+			joined_data_frame_list = test_case_wrapper('BLE Scan 10ms interval',
+			                                           joined_data_frame_list,
+			                                           config['Test_Case'].get('BLE_Scan_10ms'),
+			                                           my_ssh_send_cmd.cc_ble_scan_10ms,
+			                                           dut,
+			                                           ref,
+			                                           '0', 1)
+
+			joined_data_frame_list = test_case_wrapper('BLE Connection 1.28s interval @ 0 dBm at Pin',
+			                                           joined_data_frame_list,
+			                                           config['Test_Case'].get('BLE_Connection_1.28s_0-dBm-pin'),
+			                                           my_ssh_send_cmd.cc_ble_connection_1dot28s,
+			                                           dut,
+			                                           ref, ref_bd_addr,
+			                                           '0')
+
+			joined_data_frame_list = test_case_wrapper('BLE Connection 1.28s interval @ 4 dBm at Pin',
+			                                           joined_data_frame_list,
+			                                           config['Test_Case'].get('BLE_Connection_1.28s_4-dBm-pin'),
+			                                           my_ssh_send_cmd.cc_ble_connection_1dot28s,
+			                                           dut,
+			                                           ref, ref_bd_addr,
+			                                           '4')
+
+			joined_data_frame_list = test_case_wrapper('BLE Connection 1.28s interval @ Max dBm at Pin',
+			                                           joined_data_frame_list,
+			                                           config['Test_Case'].get('BLE_Connection_1.28s_Max-dBm-pin'),
+			                                           my_ssh_send_cmd.cc_ble_connection_1dot28s,
+			                                           dut,
+			                                           ref, ref_bd_addr,
+			                                           'Max')
+		elif str(config['Test_Case'].get('BLE_Enable')) == '0':
+			print('Skip all BLE test cases')
+		else:
+			print('Invalid "BLE_Enable" info, pls check config.ini file')
+			sys.exit(1)
 
 	# print(joined_data_frame_list)
 

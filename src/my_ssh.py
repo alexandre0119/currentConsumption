@@ -101,13 +101,6 @@ def get_hci_bd_address():
 
 
 
-# def cc_bt_acl_sniff_1dot28s_master(dut_address, ref_address):
-# 	open_connection_ssh().send_command(bt.bt_acl_sniff_1dot28s_master(dut_address, ref_address))
-
-#
-# def cc_bt_acl_sniff_0dot5s_master(dut_address, ref_address):
-# 	open_connection_ssh().send_command(bt.bt_acl_sniff_0dot5s_master(dut_address, ref_address))
-#
 #
 # def cc_bt_sco_hv3(ref_address):
 # 	open_connection_ssh().send_command(bt.bt_sco_hv3(ref_address))

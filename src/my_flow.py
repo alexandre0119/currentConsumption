@@ -84,7 +84,7 @@ def test_case_wrapper(case_name, joined_data_frame_list, enable, case_func, *arg
 		case_func(*args, **kwargs)
 		data_frame_list = my_dmm.dmm_flow_wrapper(visa_address(),
 		                                          600000, 3, 'IMM', 'MIN', 'TIM', 'MIN',
-		                                          1, 10, case_name, 0)
+		                                          1, 6000, case_name, 0)
 		for i in range(len(visa_address())):
 			joined_data_frame_list[i] = joined_data_frame_list[i].join(data_frame_list[i])
 		return joined_data_frame_list
@@ -112,7 +112,7 @@ def main_flow():
 		print('Chip version is selected as {0}'.format(str(config['BASIC'].get('Chip_Version'))))
 
 		# Get case_0 return data frame list: [inst_1_data_frame, inst_2_data_frame, ...]
-		case_0_data_frame_list = test_case_init_wrapper('Deep_Sleep', my_ssh_send_cmd.cc_bt_init_status, dut, ref, 0)
+		case_0_data_frame_list = test_case_init_wrapper('Deep Sleep', my_ssh_send_cmd.cc_bt_init_status, dut, ref, 0)
 
 		# Assign first data frame list to joined data frame list as initiate value
 		for i in range(len(visa_address())):
@@ -121,30 +121,117 @@ def main_flow():
 
 		if str(config['Test_Case'].get('BT_Enable')) == '1':
 			# Get case_1 return data frame list: [inst_1_data_frame, inst_2_data_frame, ...]
-			joined_data_frame_list = test_case_wrapper('BT_Idle', joined_data_frame_list,
+			joined_data_frame_list = test_case_wrapper('BT Idle', joined_data_frame_list,
 			                                           config['Test_Case'].get('BT_Idle'),
 			                                           my_ssh_send_cmd.cc_bt_idle, dut, ref, 0)
 
-			joined_data_frame_list = test_case_wrapper('BT_P_Scan', joined_data_frame_list,
+			joined_data_frame_list = test_case_wrapper('BT Page Scan', joined_data_frame_list,
 			                                           config['Test_Case'].get('BT_P_Scan'),
 			                                           my_ssh_send_cmd.cc_bt_pscan, dut, ref, 0)
 
-			joined_data_frame_list = test_case_wrapper('BT_I_Scan', joined_data_frame_list,
+			joined_data_frame_list = test_case_wrapper('BT Inquiry Scan', joined_data_frame_list,
 			                                           config['Test_Case'].get('BT_I_Scan'),
 			                                           my_ssh_send_cmd.cc_bt_iscan, dut, ref, 0)
 
-			joined_data_frame_list = test_case_wrapper('BT_PI_Scan', joined_data_frame_list,
+			joined_data_frame_list = test_case_wrapper('BT Page & Inquiry Scan', joined_data_frame_list,
 			                                           config['Test_Case'].get('BT_PI_Scan'),
 			                                           my_ssh_send_cmd.cc_bt_piscan, dut, ref, 0)
 
-			joined_data_frame_list = test_case_wrapper('BT_ACL_Sniff_1dot28s_Master_0dBm',
+			joined_data_frame_list = test_case_wrapper('BT ACL Sniff 1.28s interval Master @ 0dBm at Pin',
 			                                           joined_data_frame_list,
-			                                           config['Test_Case'].get('BT_ACL_Sniff_1.28s_Master_0dBm'),
+			                                           config['Test_Case'].get('BT_ACL_Sniff_1.28s_Master_0-dBm-pin'),
 			                                           my_ssh_send_cmd.cc_bt_acl_sniff_1dot28s_master,
 			                                           dut, dut_bd_addr,
 			                                           ref, ref_bd_addr,
-			                                           0)
+			                                           '0')
 
+			joined_data_frame_list = test_case_wrapper('BT ACL Sniff 1.28s interval Master @ 4dBm at Pin',
+			                                           joined_data_frame_list,
+			                                           config['Test_Case'].get('BT_ACL_Sniff_1.28s_Master_4-dBm-pin'),
+			                                           my_ssh_send_cmd.cc_bt_acl_sniff_1dot28s_master,
+			                                           dut, dut_bd_addr,
+			                                           ref, ref_bd_addr,
+			                                           '4')
+
+			joined_data_frame_list = test_case_wrapper('BT ACL Sniff 1.28s interval Master @ Max dBm at Pin',
+			                                           joined_data_frame_list,
+			                                           config['Test_Case'].get('BT_ACL_Sniff_1.28s_Master_Max-dBm-pin'),
+			                                           my_ssh_send_cmd.cc_bt_acl_sniff_1dot28s_master,
+			                                           dut, dut_bd_addr,
+			                                           ref, ref_bd_addr,
+			                                           'Max')
+
+			joined_data_frame_list = test_case_wrapper('BT ACL Sniff 0.5s interval Master @ 0 dBm at Pin',
+			                                           joined_data_frame_list,
+			                                           config['Test_Case'].get('BT_ACL_Sniff_0.5s_Master_0-dBm-pin'),
+			                                           my_ssh_send_cmd.cc_bt_acl_sniff_0dot5s_master,
+			                                           dut, dut_bd_addr,
+			                                           ref, ref_bd_addr,
+			                                           '0')
+
+			joined_data_frame_list = test_case_wrapper('BT ACL Sniff 0.5s interval Master @ 4 dBm at Pin',
+			                                           joined_data_frame_list,
+			                                           config['Test_Case'].get('BT_ACL_Sniff_0.5s_Master_4-dBm-pin'),
+			                                           my_ssh_send_cmd.cc_bt_acl_sniff_0dot5s_master,
+			                                           dut, dut_bd_addr,
+			                                           ref, ref_bd_addr,
+			                                           '4')
+
+			joined_data_frame_list = test_case_wrapper('BT ACL Sniff 0.5s interval Master @ Max dBm at Pin',
+			                                           joined_data_frame_list,
+			                                           config['Test_Case'].get('BT_ACL_Sniff_0.5s_Master_Max-dBm-pin'),
+			                                           my_ssh_send_cmd.cc_bt_acl_sniff_0dot5s_master,
+			                                           dut, dut_bd_addr,
+			                                           ref, ref_bd_addr,
+			                                           'Max')
+
+			joined_data_frame_list = test_case_wrapper('BT SCO HV3 Master @ 0 dBm at Pin',
+			                                           joined_data_frame_list,
+			                                           config['Test_Case'].get('BT_SCO_HV3_Master_0-dBm-pin'),
+			                                           my_ssh_send_cmd.cc_bt_sco_hv3,
+			                                           dut, dut_bd_addr,
+			                                           ref, ref_bd_addr,
+			                                           '0')
+
+			joined_data_frame_list = test_case_wrapper('BT SCO HV3 Master @ 4 dBm at Pin',
+			                                           joined_data_frame_list,
+			                                           config['Test_Case'].get('BT_SCO_HV3_Master_4-dBm-pin'),
+			                                           my_ssh_send_cmd.cc_bt_sco_hv3,
+			                                           dut, dut_bd_addr,
+			                                           ref, ref_bd_addr,
+			                                           '4')
+
+			joined_data_frame_list = test_case_wrapper('BT SCO HV3 Master @ Max dBm at Pin',
+			                                           joined_data_frame_list,
+			                                           config['Test_Case'].get('BT_SCO_HV3_Master_Max-dBm-pin'),
+			                                           my_ssh_send_cmd.cc_bt_sco_hv3,
+			                                           dut, dut_bd_addr,
+			                                           ref, ref_bd_addr,
+			                                           'Max')
+
+			joined_data_frame_list = test_case_wrapper('BT SCO EV3 Master @ 0 dBm at Pin',
+			                                           joined_data_frame_list,
+			                                           config['Test_Case'].get('BT_SCO_EV3_Master_0-dBm-pin'),
+			                                           my_ssh_send_cmd.cc_bt_sco_ev3,
+			                                           dut, dut_bd_addr,
+			                                           ref, ref_bd_addr,
+			                                           '0')
+
+			joined_data_frame_list = test_case_wrapper('BT SCO EV3 Master @ 4 dBm at Pin',
+			                                           joined_data_frame_list,
+			                                           config['Test_Case'].get('BT_SCO_EV3_Master_4-dBm-pin'),
+			                                           my_ssh_send_cmd.cc_bt_sco_ev3,
+			                                           dut, dut_bd_addr,
+			                                           ref, ref_bd_addr,
+			                                           '4')
+
+			joined_data_frame_list = test_case_wrapper('BT SCO EV3 Master @ Max dBm at Pin',
+			                                           joined_data_frame_list,
+			                                           config['Test_Case'].get('BT_SCO_EV3_Master_Max-dBm-pin'),
+			                                           my_ssh_send_cmd.cc_bt_sco_ev3,
+			                                           dut, dut_bd_addr,
+			                                           ref, ref_bd_addr,
+			                                           'Max')
 
 	# print(joined_data_frame_list)
 

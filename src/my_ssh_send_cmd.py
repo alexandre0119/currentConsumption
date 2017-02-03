@@ -119,3 +119,28 @@ def cc_bt_acl_sniff_1dot28s_master(hci_dut, dut_addr, hci_ref, ref_addr, power_l
 	time.sleep(1)
 	my_ssh.open_connection_ssh().send_command(bt_bt_init().bt_acl_sniff_1dot28s_master(dut_addr, ref_addr))
 	time.sleep(1)
+
+
+def cc_bt_acl_sniff_0dot5s_master(hci_dut, dut_addr, hci_ref, ref_addr, power_level):
+	cc_bt_init_status(hci_dut, hci_ref, power_level)
+	time.sleep(1)
+	my_ssh.open_connection_ssh().send_command(bt_bt_init().bt_acl_sniff_0dot5s_master(dut_addr, ref_addr))
+	time.sleep(1)
+
+
+def cc_bt_sco_hv3(hci_dut, dut_addr, hci_ref, ref_addr, power_level):
+	cc_bt_init_status(hci_dut, hci_ref, power_level)
+	time.sleep(1)
+	cc_bt_acl_sniff_1dot28s_master(hci_dut, dut_addr, hci_ref, ref_addr, power_level)
+	time.sleep(1)
+	my_ssh.open_connection_ssh().send_command(bt_bt_init().bt_sco_hv3(ref_addr))
+	time.sleep(5)
+
+
+def cc_bt_sco_ev3(hci_dut, dut_addr, hci_ref, ref_addr, power_level):
+	cc_bt_init_status(hci_dut, hci_ref, power_level)
+	time.sleep(1)
+	cc_bt_acl_sniff_1dot28s_master(hci_dut, dut_addr, hci_ref, ref_addr, power_level)
+	time.sleep(1)
+	my_ssh.open_connection_ssh().send_command(bt_bt_init().bt_sco_ev3(ref_addr))
+	time.sleep(5)

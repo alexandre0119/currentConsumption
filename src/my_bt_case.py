@@ -26,15 +26,15 @@ class PowerLevel(Init):
 		self.bt_power_index = {'8977':
 			                       {'0': str(config['Robin3_8977_Power_Index'].get('0_dBm')),
 			                        '4': str(config['Robin3_8977_Power_Index'].get('4_dBm')),
-			                        '12.5': str(config['Robin3_8977_Power_Index'].get('12.5_dBm'))},
+			                        'Max': str(config['Robin3_8977_Power_Index'].get('Max_dBm'))},
 		                       '8997':
 			                       {'0': str(config['KF2_8997_Power_Index'].get('0_dBm')),
 			                        '4': str(config['KF2_8997_Power_Index'].get('4_dBm')),
-			                        '12.5': str(config['KF2_8997_Power_Index'].get('12.5_dBm'))},
+			                        'Max': str(config['KF2_8997_Power_Index'].get('Max_dBm'))},
 		                       '8987':
 			                       {'0': str(config['CA2_8987_Power_Index'].get('0_dBm')),
 			                        '4': str(config['CA2_8987_Power_Index'].get('4_dBm')),
-			                        '12.5': str(config['CA2_8987_Power_Index'].get('12.5_dBm'))}
+			                        'Max': str(config['CA2_8987_Power_Index'].get('Max_dBm'))}
 		                       }
 
 	def bt_set_power_level(self, power_level):
@@ -49,8 +49,8 @@ class PowerLevel(Init):
 			# print(set_power, '$$$$$$$$$$$$$$$$$$$$$$')
 			elif power_level == '4':
 				set_power = self.bt_power_index[self.chip_version]['4']
-			elif power_level == '12.5':
-				set_power = self.bt_power_index[self.chip_version]['12.5']
+			elif power_level == 'Max':
+				set_power = self.bt_power_index[self.chip_version]['Max']
 			else:
 				logger_append.info('Invalid input power level')
 		elif self.chip_version == '8997':
@@ -59,8 +59,8 @@ class PowerLevel(Init):
 			# print(set_power, '$$$$$$$$$$$$$$$$$$$$$$')
 			elif power_level == '4':
 				set_power = self.bt_power_index[self.chip_version]['4']
-			elif power_level == '12.5':
-				set_power = self.bt_power_index[self.chip_version]['12.5']
+			elif power_level == 'Max':
+				set_power = self.bt_power_index[self.chip_version]['Max']
 			else:
 				logger_append.info('Invalid input power level')
 		elif self.chip_version == '8987':
@@ -69,8 +69,8 @@ class PowerLevel(Init):
 			# print(set_power, '$$$$$$$$$$$$$$$$$$$$$$')
 			elif power_level == '4':
 				set_power = self.bt_power_index[self.chip_version]['4']
-			elif power_level == '12.5':
-				set_power = self.bt_power_index[self.chip_version]['12.5']
+			elif power_level == 'Max':
+				set_power = self.bt_power_index[self.chip_version]['Max']
 			else:
 				logger_append.info('Invalid input power level')
 		else:
@@ -138,7 +138,7 @@ class BT(Init):
 		      'hcitool -i {0} hcon -t acl {3}\n' \
 		      'sleep 1\n' \
 		      'hcitool -i {1} hcon -t acl {2}\n' \
-		      'sleep 1\n' \
+		      'sleep 2\n' \
 		      'hcitool -i {0} sniff {3} 0x0800 0x0800 0x01 0x00' \
 			.format(self.hci_dut, self.hci_ref, dut_address, ref_address)
 		logger_append.info(cmd)
@@ -157,7 +157,7 @@ class BT(Init):
 		      'hcitool -i {0} hcon -t acl {3}\n' \
 		      'sleep 1\n' \
 		      'hcitool -i {1} hcon -t acl {2}\n' \
-		      'sleep 1\n' \
+		      'sleep 2\n' \
 		      'hcitool -i {0} sniff {3} 0x0320 0x0320 0x01 0x00' \
 			.format(self.hci_dut, self.hci_ref, dut_address, ref_address)
 		logger_append.info(cmd)

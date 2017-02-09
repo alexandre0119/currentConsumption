@@ -16,19 +16,21 @@ import sys
 
 def visa_address():
 	"""
-	Get VISA address list based on running instrument number
+	Get VISA address list based on running instrument number and their addresses from config file
 	:return: VISA address list
 	"""
+	# Init config file
 	config = my_config.load_config('config.ini')
-
+	# Get config file instrument count (DMM count): how many DMM are connected and measuring data
 	dmm_count = int(str(config['DMM'].get('DMM_Count')))
+	# Get config file DMM VISA address
 	visa_address_list_all = [str(config['DMM'].get('VISA_Address_A')),
 	                         str(config['DMM'].get('VISA_Address_B')),
 	                         str(config['DMM'].get('VISA_Address_C')),
 	                         str(config['DMM'].get('VISA_Address_D'))]
 
+	# Append VISA address to a list and return
 	visa_address_list = []
-
 	for i in range(int(dmm_count)):
 		visa_address_list.append(visa_address_list_all[i])
 
@@ -84,7 +86,7 @@ def test_case_wrapper(case_name, joined_data_frame_list, enable, case_func, *arg
 		case_func(*args, **kwargs)
 		data_frame_list = my_dmm.dmm_flow_wrapper(visa_address(),
 		                                          600000, 3, 'IMM', 'MIN', 'TIM', 'MIN',
-		                                          1, 600, case_name, 0)
+		                                          1, 10, case_name, 0)
 		for i in range(len(visa_address())):
 			joined_data_frame_list[i] = joined_data_frame_list[i].join(data_frame_list[i])
 		return joined_data_frame_list
@@ -327,9 +329,10 @@ def main_flow():
 	my_excel_obj = my_excel.open_excel('test.xlsx')
 
 	for i in range(len(visa_address())):
-		my_excel.write_excel(my_excel_obj, joined_data_frame_list[i], excel_sheet_name_list[i], True)
+		# Convert the dataframe to an XlsxWriter Excel object.
+		my_excel.write_excel(my_excel_obj, joined_data_frame_list[i], excel_sheet_name_list[i])
 
-	my_excel.save_excel(my_excel_obj)
+	my_excel.close_excel(my_excel_obj)
 
 	end_time = ender()
 	run_time(start_time, end_time)

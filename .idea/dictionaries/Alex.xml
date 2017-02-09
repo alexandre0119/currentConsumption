@@ -5,6 +5,7 @@
       <w>ender</w>
       <w>myexcel</w>
       <w>xlsx</w>
+      <w>xlsxwriter</w>
     </words>
   </dictionary>
 </component>

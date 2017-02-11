@@ -45,12 +45,11 @@ def starter(enable_print=1):
 	----------------------------------------------------------------
 	'''
 	if enable_print == 1:
-		print(start_str.format(my_time.now_formatted()))
 		start_time = my_time.now()
-		return start_time
+		print(start_str.format(my_time.now_formatted(start_time)))
 	else:
 		start_time = my_time.now()
-		return start_time
+		return start_time, my_time.now_formatted(start_time)
 
 
 def ender(enable_print=1):
@@ -61,11 +60,10 @@ def ender(enable_print=1):
 	'''
 	if enable_print == 1:
 		end_time = my_time.now()
-		print(end_str.format(my_time.now_formatted()))
-		return end_time
+		print(end_str.format(my_time.now_formatted(end_time)))
 	else:
 		end_time = my_time.now()
-		return end_time
+		return end_time, my_time.now_formatted(end_time)
 
 
 def run_time(start_time, end_time, enable_print=1):
@@ -77,7 +75,6 @@ def run_time(start_time, end_time, enable_print=1):
 	if enable_print == 1:
 		delta_time = my_time.time_delta(start_time, end_time)
 		print(run_time_str.format(delta_time))
-		return delta_time
 	else:
 		delta_time = my_time.time_delta(start_time, end_time)
 		return delta_time
@@ -88,7 +85,7 @@ def test_case_init_wrapper(case_name, case_func, *args, **kwargs):
 	case_func(*args, **kwargs)
 	data_frame_list = my_dmm.dmm_flow_wrapper(visa_address(),
 	                                          600000, 3, 'IMM', 'MIN', 'TIM', 'MIN',
-	                                          1, 10, case_name, 0)
+	                                          1, 1000, case_name, 0)
 	return data_frame_list
 
 
@@ -99,7 +96,7 @@ def test_case_wrapper(case_name, joined_data_frame_list, enable, case_func, *arg
 		case_func(*args, **kwargs)
 		data_frame_list = my_dmm.dmm_flow_wrapper(visa_address(),
 		                                          600000, 3, 'IMM', 'MIN', 'TIM', 'MIN',
-		                                          1, 10, case_name, 0)
+		                                          1, 1000, case_name, 0)
 		for i in range(len(visa_address())):
 			joined_data_frame_list[i] = joined_data_frame_list[i].join(data_frame_list[i])
 		return joined_data_frame_list
@@ -109,8 +106,9 @@ def test_case_wrapper(case_name, joined_data_frame_list, enable, case_func, *arg
 
 
 def main_flow():
-	start_time = starter(0)
 	starter(1)
+	start_time = starter(0)[0]
+	start_time_formatted = starter(0)[1]
 
 	# Design joined data frame list based on connected Inst number, and init with empty DataFrame()
 	joined_data_frame_list = []
@@ -334,7 +332,8 @@ def main_flow():
 	# print(joined_data_frame_list)
 
 	ender(1)
-	end_time = ender(0)
+	end_time = ender(0)[0]
+	end_time_formatted = ender(0)[1]
 
 	delta_time = run_time(start_time, end_time, 0)
 	run_time(start_time, end_time, 1)
@@ -352,8 +351,8 @@ def main_flow():
 	                                    ('DUT BD address', [dut_bd_addr]),
 	                                    ('REF BD address', [ref_bd_addr]),
 	                                    ('Test Engineer', ['Alex Wang']),
-	                                    ('Start Time', [start_time]),
-	                                    ('End Time', [end_time]),
+	                                    ('Start Time', [start_time_formatted]),
+	                                    ('End Time', [end_time_formatted]),
 	                                    ('Run Time', [delta_time]))))
 	sheet_version = 'Version'
 
@@ -376,8 +375,12 @@ def main_flow():
 	cell_item_subject = ['B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B9', 'B10', 'B11', 'B12']
 	cell_item_content = ['C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9', 'C10', 'C11', 'C12']
 	for i in range(len(df_version.columns.values)):
-		worksheet_version.write(cell_item_subject[i], df_version.columns.values[i], format_item_subject)
-		worksheet_version.write(cell_item_content[i], df_version[df_version.columns.values[i]].values[0], format_item_content)
+		worksheet_version.write(cell_item_subject[i],
+		                        df_version.columns.values[i],
+		                        format_item_subject)
+		worksheet_version.write(cell_item_content[i],
+		                        df_version[df_version.columns.values[i]].values[0],
+		                        format_item_content)
 		# print(df_version[df_version.columns.values[i]].values)
 
 	for i in range(len(visa_address())):
@@ -386,5 +389,3 @@ def main_flow():
 
 	my_excel.close_workbook(workbook)
 	my_excel.close_excel(excel_writer)
-
-

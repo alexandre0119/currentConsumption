@@ -243,7 +243,7 @@ def dmm_flow_wrapper(visa_address,
 	# print(data_frame_list)
 
 	# Close connection
-	text_display(my_inst_list, 'Completed...')
+	text_display(my_inst_list, 'Waiting...')
 	close_connection(my_inst_list)
 
 	return data_frame_list

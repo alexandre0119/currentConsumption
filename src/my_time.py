@@ -24,13 +24,13 @@ def time_zone():
 	return str(time_zone_info)
 
 
-def now_formatted():
+def now_formatted(now_time):
 	"""
 	Get current date and time formatted using datetime
 	:return: current date and time formatted
 	"""
-	format = "%A %m-%d-%Y %H:%M:%S"
-	now_formatted_info = datetime.datetime.now().strftime(format) + ' ' + time_zone()
+	format = "%H:%M:%S %m-%d-%Y %A"
+	now_formatted_info = now_time.strftime(format) + ' ' + time_zone()
 	return now_formatted_info
 
 
@@ -44,6 +44,13 @@ def sleep(t):
 	return t
 
 
+def strfdelta(t_delta, fmt):
+	d = {"days": t_delta.days}
+	d["hours"], rem = divmod(t_delta.seconds, 3600)
+	d["minutes"], d["seconds"] = divmod(rem, 60)
+	return fmt.format(**d)
+
+
 def time_delta(start_time, end_time):
 	"""
 	Get time duration between start time and end time
@@ -52,7 +59,8 @@ def time_delta(start_time, end_time):
 	:return: delta from start time to end time
 	"""
 	delta = end_time - start_time
-	return delta
+	delta_formatted = strfdelta(delta, "{hours}:{minutes}:{seconds} {days} days")
+	return delta_formatted
 
 # # Examples
 # print(now())

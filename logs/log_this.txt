@@ -16038,3 +16038,601 @@ hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
 sleep 1
 hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
 hcitool -i hci0 cmd 3F 23 01
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 23 01
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 23 01
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 23 01
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 23 01
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 23 01
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 23 01
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 23 01
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 23 01
+hciconfig hci0 reset
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 23 01
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 23 01
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 23 01
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 23 01
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 23 01
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 23 01
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 23 01
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 23 01
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 3F 23 01
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 pscan
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 iscan
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hciconfig hci0 piscan
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cc --role=m 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci0 hcon -t acl 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci1 hcon -t acl 00:50:43:22:0E:37
+sleep 2
+hcitool -i hci0 sniff 00:1B:DC:06:69:91 0x0800 0x0800 0x01 0x00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 32 00 00 00 00 00 00
+hcitool -i hci0 cc --role=m 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci0 hcon -t acl 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci1 hcon -t acl 00:50:43:22:0E:37
+sleep 2
+hcitool -i hci0 sniff 00:1B:DC:06:69:91 0x0800 0x0800 0x01 0x00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 43 00 00 00 00 00 00
+hcitool -i hci0 cc --role=m 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci0 hcon -t acl 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci1 hcon -t acl 00:50:43:22:0E:37
+sleep 2
+hcitool -i hci0 sniff 00:1B:DC:06:69:91 0x0800 0x0800 0x01 0x00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cc --role=m 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci0 hcon -t acl 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci1 hcon -t acl 00:50:43:22:0E:37
+sleep 2
+hcitool -i hci0 sniff 00:1B:DC:06:69:91 0x0320 0x0320 0x01 0x00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 32 00 00 00 00 00 00
+hcitool -i hci0 cc --role=m 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci0 hcon -t acl 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci1 hcon -t acl 00:50:43:22:0E:37
+sleep 2
+hcitool -i hci0 sniff 00:1B:DC:06:69:91 0x0320 0x0320 0x01 0x00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 43 00 00 00 00 00 00
+hcitool -i hci0 cc --role=m 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci0 hcon -t acl 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci1 hcon -t acl 00:50:43:22:0E:37
+sleep 2
+hcitool -i hci0 sniff 00:1B:DC:06:69:91 0x0320 0x0320 0x01 0x00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cc --role=m 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci0 hcon -t acl 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci1 hcon -t acl 00:50:43:22:0E:37
+sleep 2
+hcitool -i hci0 sniff 00:1B:DC:06:69:91 0x0800 0x0800 0x01 0x00
+hcitool -i hci0 scc 00:1B:DC:06:69:91 1F40 1F40 0007 60 00 03C4
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 32 00 00 00 00 00 00
+hcitool -i hci0 cc --role=m 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci0 hcon -t acl 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci1 hcon -t acl 00:50:43:22:0E:37
+sleep 2
+hcitool -i hci0 sniff 00:1B:DC:06:69:91 0x0800 0x0800 0x01 0x00
+hcitool -i hci0 scc 00:1B:DC:06:69:91 1F40 1F40 0007 60 00 03C4
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 43 00 00 00 00 00 00
+hcitool -i hci0 cc --role=m 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci0 hcon -t acl 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci1 hcon -t acl 00:50:43:22:0E:37
+sleep 2
+hcitool -i hci0 sniff 00:1B:DC:06:69:91 0x0800 0x0800 0x01 0x00
+hcitool -i hci0 scc 00:1B:DC:06:69:91 1F40 1F40 0007 60 00 03C4
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cc --role=m 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci0 hcon -t acl 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci1 hcon -t acl 00:50:43:22:0E:37
+sleep 2
+hcitool -i hci0 sniff 00:1B:DC:06:69:91 0x0800 0x0800 0x01 0x00
+hcitool -i hci0 scc 00:1B:DC:06:69:91 1F40 1F40 0007 60 00 03C8
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 32 00 00 00 00 00 00
+hcitool -i hci0 cc --role=m 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci0 hcon -t acl 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci1 hcon -t acl 00:50:43:22:0E:37
+sleep 2
+hcitool -i hci0 sniff 00:1B:DC:06:69:91 0x0800 0x0800 0x01 0x00
+hcitool -i hci0 scc 00:1B:DC:06:69:91 1F40 1F40 0007 60 00 03C8
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 43 00 00 00 00 00 00
+hcitool -i hci0 cc --role=m 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci0 hcon -t acl 00:1B:DC:06:69:91
+sleep 1
+hcitool -i hci1 hcon -t acl 00:50:43:22:0E:37
+sleep 2
+hcitool -i hci0 sniff 00:1B:DC:06:69:91 0x0800 0x0800 0x01 0x00
+hcitool -i hci0 scc 00:1B:DC:06:69:91 1F40 1F40 0007 60 00 03C8
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 08 06 00 08 00 08 03 00 00 BC 9A 78 56 34 12 07 00
+sleep 1
+hcitool -i hci0 cmd 08 08 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00
+sleep 1
+hcitool -i hci0 cmd 0x08 0x0A 0x01
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 08 06 00 08 00 08 03 00 00 BC 9A 78 56 34 12 07 00
+sleep 1
+hcitool -i hci0 cmd 08 08 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00
+sleep 1
+hcitool -i hci0 cmd 0x08 0x0A 0x01
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 08 06 00 08 00 08 03 00 00 BC 9A 78 56 34 12 07 00
+sleep 1
+hcitool -i hci0 cmd 08 08 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00
+sleep 1
+hcitool -i hci0 cmd 0x08 0x0A 0x01
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 08 09 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00
+sleep 1
+hcitool -i hci0 cmd 08 0B 01 00 08 10 00 00 00
+sleep 1
+hcitool -i hci0 cmd 08 0C 01 01
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 08 09 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00
+sleep 1
+hcitool -i hci0 cmd 08 0B 01 40 06 10 00 00 00
+sleep 1
+hcitool -i hci0 cmd 08 0C 01 01
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci0 cmd 08 09 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00
+sleep 1
+hcitool -i hci0 cmd 08 0B 01 10 00 10 00 00 00
+sleep 1
+hcitool -i hci0 cmd 08 0C 01 01
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 2A 00 00 00 00 00 00
+hcitool -i hci1 cmd 08 06 00 08 00 08 00 00 00 BC 9A 78 56 34 12 07 00
+sleep 1
+hcitool -i hci1 cmd 08 08 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00
+sleep 1
+hcitool -i hci1 cmd 0x08 0x0A 0x01
+sleep 1
+hcitool -i hci0 cmd 08 09 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00
+sleep 1
+hcitool -i hci0 cmd 08 0B 01 10 00 10 00 00 00
+sleep 1
+hcitool -i hci0 cmd 08 0C 01 01
+sleep 2
+hcitool -i hci0 cmd 08 0C 01 00
+sleep 2
+hcitool -i hci0 cmd 08 0D 10 00 10 00 00 00 91 69 06 DC 1B 00 00 00 04 00 04 00 00 00 08 10 00 10 00
+sleep 2
+hcitool -i hci0 cmd 08 13 80 00 00 04 00 04 00 00 00 08 10 00 10 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 32 00 00 00 00 00 00
+hcitool -i hci1 cmd 08 06 00 08 00 08 00 00 00 BC 9A 78 56 34 12 07 00
+sleep 1
+hcitool -i hci1 cmd 08 08 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00
+sleep 1
+hcitool -i hci1 cmd 0x08 0x0A 0x01
+sleep 1
+hcitool -i hci0 cmd 08 09 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00
+sleep 1
+hcitool -i hci0 cmd 08 0B 01 10 00 10 00 00 00
+sleep 1
+hcitool -i hci0 cmd 08 0C 01 01
+sleep 2
+hcitool -i hci0 cmd 08 0C 01 00
+sleep 2
+hcitool -i hci0 cmd 08 0D 10 00 10 00 00 00 91 69 06 DC 1B 00 00 00 04 00 04 00 00 00 08 10 00 10 00
+sleep 2
+hcitool -i hci0 cmd 08 13 80 00 00 04 00 04 00 00 00 08 10 00 10 00
+hciconfig hci0 reset
+hciconfig hci1 reset
+hcitool -i hci0 cmd 3F 23 02
+hciconfig hci0 noscan
+hcitool -i hci0 cmd 3F 64 9F 01 01 04 00 00 00 00 00 00
+sleep 1
+hcitool -i hci0 cmd 3F 64 B1 01 01 43 00 00 00 00 00 00
+hcitool -i hci1 cmd 08 06 00 08 00 08 00 00 00 BC 9A 78 56 34 12 07 00
+sleep 1
+hcitool -i hci1 cmd 08 08 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00
+sleep 1
+hcitool -i hci1 cmd 0x08 0x0A 0x01
+sleep 1
+hcitool -i hci0 cmd 08 09 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00
+sleep 1
+hcitool -i hci0 cmd 08 0B 01 10 00 10 00 00 00
+sleep 1
+hcitool -i hci0 cmd 08 0C 01 01
+sleep 2
+hcitool -i hci0 cmd 08 0C 01 00
+sleep 2
+hcitool -i hci0 cmd 08 0D 10 00 10 00 00 00 91 69 06 DC 1B 00 00 00 04 00 04 00 00 00 08 10 00 10 00
+sleep 2
+hcitool -i hci0 cmd 08 13 80 00 00 04 00 04 00 00 00 08 10 00 10 00

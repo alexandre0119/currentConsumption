@@ -12,6 +12,7 @@ import src.my_ssh_send_cmd as my_ssh_send_cmd
 import src.my_ssh_get_cmd as my_ssh_get_cmd
 from pandas import DataFrame, ExcelWriter
 import sys
+from collections import OrderedDict
 
 
 def visa_address():
@@ -37,37 +38,49 @@ def visa_address():
 	return visa_address_list
 
 
-def starter():
+def starter(enable_print=1):
 	start_str = '''
 	================================================================
 	Program starts @ {0}
 	----------------------------------------------------------------
-		'''
-	print(start_str.format(my_time.now_formatted()))
-	start_time = my_time.now()
-	return start_time
+	'''
+	if enable_print == 1:
+		print(start_str.format(my_time.now_formatted()))
+		start_time = my_time.now()
+		return start_time
+	else:
+		start_time = my_time.now()
+		return start_time
 
 
-def ender():
+def ender(enable_print=1):
 	end_str = '''
 	----------------------------------------------------------------
 	Program ends @ {0}
 	================================================================
 	'''
-	end_time = my_time.now()
-	print(end_str.format(my_time.now_formatted()))
-	return end_time
+	if enable_print == 1:
+		end_time = my_time.now()
+		print(end_str.format(my_time.now_formatted()))
+		return end_time
+	else:
+		end_time = my_time.now()
+		return end_time
 
 
-def run_time(start_time, end_time):
+def run_time(start_time, end_time, enable_print=1):
 	run_time_str = '''
 	----------------------------------------------------------------
 	Program total running time: {0}
 	================================================================
 	'''
-	delta_time = my_time.time_delta(start_time, end_time)
-	print(run_time_str.format(delta_time))
-	return delta_time
+	if enable_print == 1:
+		delta_time = my_time.time_delta(start_time, end_time)
+		print(run_time_str.format(delta_time))
+		return delta_time
+	else:
+		delta_time = my_time.time_delta(start_time, end_time)
+		return delta_time
 
 
 def test_case_init_wrapper(case_name, case_func, *args, **kwargs):
@@ -96,7 +109,8 @@ def test_case_wrapper(case_name, joined_data_frame_list, enable, case_func, *arg
 
 
 def main_flow():
-	start_time = starter()
+	start_time = starter(0)
+	starter(1)
 
 	# Design joined data frame list based on connected Inst number, and init with empty DataFrame()
 	joined_data_frame_list = []
@@ -119,7 +133,6 @@ def main_flow():
 		# Assign first data frame list to joined data frame list as initiate value
 		for i in range(len(visa_address())):
 			joined_data_frame_list[i] = case_0_data_frame_list[i]
-
 
 		if str(config['Test_Case'].get('BT_Enable')) == '1':
 			# Get case_1 return data frame list: [inst_1_data_frame, inst_2_data_frame, ...]
@@ -320,19 +333,58 @@ def main_flow():
 
 	# print(joined_data_frame_list)
 
+	ender(1)
+	end_time = ender(0)
+
+	delta_time = run_time(start_time, end_time, 0)
+	run_time(start_time, end_time, 1)
+
 	# Write to different sheet
 	excel_sheet_name_list = [str(config['BASIC'].get('Excel_Sheet_Name_A')),
 	                         str(config['BASIC'].get('Excel_Sheet_Name_B')),
 	                         str(config['BASIC'].get('Excel_Sheet_Name_C')),
 	                         str(config['BASIC'].get('Excel_Sheet_Name_D')), ]
 
-	my_excel_obj = my_excel.open_excel('test.xlsx')
+	df_version = DataFrame(OrderedDict((('WLAN Version', ['xx.xx.xx.xx.xx.xx']),
+	                                    ('BT Version', ['xx.xx.xx.xx.xx.xx']),
+	                                    ('Hardware', ['Robin3 WIB module']),
+	                                    ('DUT MAC address', ['xx.xx.xx.xx.xx.xx']),
+	                                    ('DUT BD address', [dut_bd_addr]),
+	                                    ('REF BD address', [ref_bd_addr]),
+	                                    ('Test Engineer', ['Alex Wang']),
+	                                    ('Start Time', [start_time]),
+	                                    ('End Time', [end_time]),
+	                                    ('Run Time', [delta_time]))))
+	sheet_version = 'Version'
+
+	excel_writer = my_excel.open_excel('test.xlsx')
+
+	my_excel.write_excel(excel_writer, df_version, sheet_name=sheet_version)
+
+	workbook = excel_writer.book
+	worksheet_version = excel_writer.sheets[sheet_version]
+
+	my_excel.set_column_width(worksheet_version, 'B', 'B', 18)
+	my_excel.set_column_width(worksheet_version, 'C', 'C', 88)
+
+	format_title = my_excel.format_title(workbook)
+	worksheet_version.merge_range('B2:C2', 'Information', format_title)
+
+	format_item_subject = my_excel.format_item_subject(workbook)
+	format_item_content = my_excel.format_item_content(workbook)
+
+	cell_item_subject = ['B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B9', 'B10', 'B11', 'B12']
+	cell_item_content = ['C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9', 'C10', 'C11', 'C12']
+	for i in range(len(df_version.columns.values)):
+		worksheet_version.write(cell_item_subject[i], df_version.columns.values[i], format_item_subject)
+		worksheet_version.write(cell_item_content[i], df_version[df_version.columns.values[i]].values[0], format_item_content)
+		# print(df_version[df_version.columns.values[i]].values)
 
 	for i in range(len(visa_address())):
 		# Convert the dataframe to an XlsxWriter Excel object.
-		my_excel.write_excel(my_excel_obj, joined_data_frame_list[i], excel_sheet_name_list[i])
+		my_excel.write_excel(excel_writer, joined_data_frame_list[i], excel_sheet_name_list[i])
 
-	my_excel.close_excel(my_excel_obj)
+	my_excel.close_workbook(workbook)
+	my_excel.close_excel(excel_writer)
 
-	end_time = ender()
-	run_time(start_time, end_time)
+

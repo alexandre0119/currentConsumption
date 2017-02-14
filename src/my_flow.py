@@ -85,7 +85,7 @@ def test_case_init_wrapper(case_name, case_func, *args, **kwargs):
 	case_func(*args, **kwargs)
 	data_frame_list = my_dmm.dmm_flow_wrapper(visa_address(),
 	                                          600000, 3, 'IMM', 'MIN', 'TIM', 'MIN',
-	                                          1, 1000, case_name, 0)
+	                                          1, 100, case_name, 0)
 	return data_frame_list
 
 
@@ -96,7 +96,7 @@ def test_case_wrapper(case_name, joined_data_frame_list, enable, case_func, *arg
 		case_func(*args, **kwargs)
 		data_frame_list = my_dmm.dmm_flow_wrapper(visa_address(),
 		                                          600000, 3, 'IMM', 'MIN', 'TIM', 'MIN',
-		                                          1, 1000, case_name, 0)
+		                                          1, 100, case_name, 0)
 		for i in range(len(visa_address())):
 			joined_data_frame_list[i] = joined_data_frame_list[i].join(data_frame_list[i])
 		return joined_data_frame_list

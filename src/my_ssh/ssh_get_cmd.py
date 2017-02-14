@@ -2,13 +2,14 @@
 # -*- coding: utf-8 -*-
 # Author: Alex Wang
 
-import src.my_ssh as my_ssh
+import src.my_ssh.ssh_basic as ssh_basic
 import src.my_config as my_config
 import sys
 import re
-#
+
+
 def get_bd_addr_list():
-	data = my_ssh.open_connection_ssh().send_command('hciconfig')[0]
+	data = ssh_basic.open_connection_ssh().send_command('hciconfig')[0]
 
 	regex_bd_address = re.compile(r'[\s]*BD Address:[\s]*' +
 	                              r'(?P<bd_address>[0-9a-fA-F]+:[0-9a-fA-F]+:[0-9a-fA-F]+:[0-9a-fA-F]+:[0-9a-fA-F]+:[0-9a-fA-F]+)')
@@ -31,8 +32,8 @@ def get_bd_addr_list():
 
 
 def bd_addr():
-	global dut_bd_address
-	global ref_bd_address
+	dut_bd_address = ''
+	ref_bd_address = ''
 	config = my_config.load_config('config.ini')
 	for i in get_bd_addr_list():
 		# print(i.keys(), i.values(), '!!!!!!!!!!!!!!!!!!!!!!')
@@ -45,6 +46,3 @@ def bd_addr():
 				print('Something wrong with BD address. Exciting....')
 				sys.exit(1)
 	return dut_bd_address, ref_bd_address
-
-
-

@@ -4,16 +4,7 @@
 
 import visa
 import numpy as np
-from pandas import DataFrame, ExcelWriter
-
-
-# import configparser
-# def testtest():
-# 	config = configparser.ConfigParser()
-# 	config.read('config.ini')
-# 	dmm_count = int(str(config['DMM'].get('DMM_Count')))
-# 	print(dmm_count)
-# testtest()
+from pandas import DataFrame
 
 
 def open_connection_dmm(visa_address_list):
@@ -206,17 +197,17 @@ def measure_single_dmm(inst, trigger_count, sample_count, enable_print):
 
 
 def dmm_reading_format(reading):
-	return [float(format(reading[1], '.4f')),
-	        float(format(reading[2], '.4f')),
-	        float(format(reading[3], '.4f')),
-	        float(format(reading[4], '.4f')),
+	return [float(format(reading[1], '.3f')),
+	        float(format(reading[2], '.3f')),
+	        float(format(reading[3], '.3f')),
+	        float(format(reading[4], '.3f')),
 	        float(format(reading[5], '.0f')),
 	        ','.join(map(str, reading[0])), ]
 
 
 def join_dataframe(case_name, reading):
 	data_framed = DataFrame(reading,
-	                        index=['1.Average (mA)', '2.Max', '3.Min', '4.Sdev', '5.Count', '6.Raw'],
+	                        index=['1.Average', '2.Max', '3.Min', '4.Sdev', '5.Count', '6.Raw'],
 	                        columns=[str(case_name)])
 	return data_framed
 

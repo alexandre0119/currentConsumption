@@ -7,7 +7,8 @@ from collections import OrderedDict
 from pandas import DataFrame
 import src.my_config as my_config
 import src.my_dmm as my_dmm
-import src.my_excel as my_excel
+import src.my_excel.excel_basic as excel_basic
+import src.my_excel.excel_format_summary as excel_format_summary
 import src.my_ssh.ssh_send_cmd as ssh_send_cmd
 import src.my_ssh.ssh_get_cmd as ssh_get_cmd
 import src.my_time as my_time
@@ -354,21 +355,21 @@ def main_flow():
 	                                    ('Run Time', [delta_time]))))
 	sheet_version = 'Version'
 
-	excel_writer = my_excel.open_excel('test.xlsx')
+	excel_writer = excel_basic.open_excel('test.xlsx')
 
-	my_excel.write_excel(excel_writer, df_version, sheet_name=sheet_version)
+	excel_basic.write_excel(excel_writer, df_version, sheet_name=sheet_version)
 
 	workbook = excel_writer.book
 	worksheet_version = excel_writer.sheets[sheet_version]
 
-	my_excel.set_column_width(worksheet_version, 'B', 'B', 18)
-	my_excel.set_column_width(worksheet_version, 'C', 'C', 88)
+	excel_format_summary.set_column_width(worksheet_version, 'B', 'B', 18)
+	excel_format_summary.set_column_width(worksheet_version, 'C', 'C', 88)
 
-	format_title = my_excel.format_title(workbook)
+	format_title = excel_format_summary.format_title(workbook)
 	worksheet_version.merge_range('B2:C2', 'Information', format_title)
 
-	format_item_subject = my_excel.format_item_subject(workbook)
-	format_item_content = my_excel.format_item_content(workbook)
+	format_item_subject = excel_format_summary.format_item_subject(workbook)
+	format_item_content = excel_format_summary.format_item_content(workbook)
 
 	cell_item_subject = ['B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B9', 'B10', 'B11', 'B12']
 	cell_item_content = ['C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9', 'C10', 'C11', 'C12']
@@ -383,7 +384,7 @@ def main_flow():
 
 	for i in range(len(visa_address())):
 		# Convert the dataframe to an XlsxWriter Excel object.
-		my_excel.write_excel(excel_writer, joined_data_frame_list[i], excel_sheet_name_list[i])
+		excel_basic.write_excel(excel_writer, joined_data_frame_list[i], excel_sheet_name_list[i])
 
-	my_excel.close_workbook(workbook)
-	my_excel.close_excel(excel_writer)
+	excel_basic.close_workbook(workbook)
+	excel_basic.close_excel(excel_writer)

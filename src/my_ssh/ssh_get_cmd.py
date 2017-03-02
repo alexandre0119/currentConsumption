@@ -3,7 +3,7 @@
 # Author: Alex Wang
 
 import src.my_ssh.ssh_basic as ssh_basic
-import src.my_config as my_config
+import src.my_config.config_basic as config_basic
 import sys
 import re
 
@@ -34,7 +34,7 @@ def get_bd_addr_list():
 def bd_addr():
 	dut_bd_address = ''
 	ref_bd_address = ''
-	config = my_config.load_config('config.ini')
+	config = config_basic.load_config()
 	for i in get_bd_addr_list():
 		# print(i.keys(), i.values(), '!!!!!!!!!!!!!!!!!!!!!!')
 		for j, k in i.items():

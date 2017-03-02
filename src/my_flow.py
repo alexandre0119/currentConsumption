@@ -5,7 +5,7 @@
 import sys
 from collections import OrderedDict
 from pandas import DataFrame
-import src.my_config as my_config
+import src.my_config.config_basic as config_basic
 import src.my_dmm as my_dmm
 import src.my_excel.excel_basic as excel_basic
 import src.my_excel.excel_format_summary as excel_format_summary
@@ -20,7 +20,7 @@ def visa_address():
 	:return: VISA address list
 	"""
 	# Init config file
-	config = my_config.load_config('config.ini')
+	config = config_basic.load_config()
 	# Get config file instrument count (DMM count): how many DMM are connected and measuring data
 	dmm_count = int(str(config['DMM'].get('DMM_Count')))
 	# Get config file DMM VISA address
@@ -114,9 +114,9 @@ def main_flow():
 	for i in range(len(visa_address())):
 		joined_data_frame_list.append(DataFrame())
 
-	config = my_config.load_config('config.ini')
-	dut = my_config.config_dut()
-	ref = my_config.config_ref()
+	config = config_basic.load_config()
+	dut = config_basic.config_dut()
+	ref = config_basic.config_ref()
 	dut_bd_addr = ssh_get_cmd.bd_addr()[0]
 	ref_bd_addr = ssh_get_cmd.bd_addr()[1]
 

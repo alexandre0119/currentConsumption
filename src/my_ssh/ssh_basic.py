@@ -3,13 +3,7 @@
 # Author: Alex Wang
 
 from paramiko import client
-
-import src.my_config as my_config
-from src.my_bt_case import *
-
-config = configparser.ConfigParser()
-config.read('config.ini')
-enable_robin3_8977 = str(config['Test_Case'].get('Enable'))
+import src.my_config.config_basic as config_basic
 
 
 class SSH:
@@ -67,9 +61,9 @@ def open_connection_ssh():
 	Open SSH connection based on server, username and password
 	:return: SSH connection
 	"""
-	ssh_server = my_config.config_ssh_server()
-	ssh_username = my_config.config_ssh_username()
-	ssh_password = my_config.config_ssh_password()
+	ssh_server = config_basic.config_ssh_server()
+	ssh_username = config_basic.config_ssh_username()
+	ssh_password = config_basic.config_ssh_password()
 	connection = SSH(ssh_server, ssh_username, ssh_password)
 	return connection
 

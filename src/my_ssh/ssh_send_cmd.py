@@ -4,7 +4,7 @@
 
 import src.my_ssh.ssh_basic as ssh_basic
 import src.my_bt_case as my_bt_case
-import src.my_config as my_config
+import src.my_config.config_basic as config_basic
 import time
 
 
@@ -18,9 +18,9 @@ def bt_init():
 	Init BT test Init class
 	:return: Init class
 	"""
-	chip_version = my_config.config_chip_version()
-	dut = my_config.config_dut()
-	ref = my_config.config_ref()
+	chip_version = config_basic.config_chip_version()
+	dut = config_basic.config_dut()
+	ref = config_basic.config_ref()
 	return my_bt_case.Init(chip_version, dut, ref)
 
 
@@ -29,9 +29,9 @@ def bt_power_init():
 	Init BT test power level setting class
 	:return: BT Power level class
 	"""
-	chip_version = my_config.config_chip_version()
-	dut = my_config.config_dut()
-	ref = my_config.config_ref()
+	chip_version = config_basic.config_chip_version()
+	dut = config_basic.config_dut()
+	ref = config_basic.config_ref()
 	return my_bt_case.PowerLevel(chip_version, dut, ref)
 
 
@@ -40,9 +40,9 @@ def bt_bt_init():
 	Init BT related test cases
 	:return: BT test case class
 	"""
-	chip_version = my_config.config_chip_version()
-	dut = my_config.config_dut()
-	ref = my_config.config_ref()
+	chip_version = config_basic.config_chip_version()
+	dut = config_basic.config_dut()
+	ref = config_basic.config_ref()
 	return my_bt_case.BT(chip_version, dut, ref)
 
 
@@ -51,9 +51,9 @@ def bt_ble_init():
 	Init BLE related test cases
 	:return: BLE test case class
 	"""
-	chip_version = my_config.config_chip_version()
-	dut = my_config.config_dut()
-	ref = my_config.config_ref()
+	chip_version = config_basic.config_chip_version()
+	dut = config_basic.config_dut()
+	ref = config_basic.config_ref()
 	return my_bt_case.BLE(chip_version, dut, ref)
 
 

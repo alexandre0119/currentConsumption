@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 # Author: Alex Wang
 
-from src.my_logging import *
 import configparser
-import time
+
+from src.my_misc.my_logging import *
 
 config = configparser.ConfigParser()
 config.read('config.ini')

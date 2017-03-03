@@ -4,14 +4,16 @@
 
 import sys
 from collections import OrderedDict
+
 from pandas import DataFrame
+
+import src.my_misc.my_time as my_time
 import src.my_config.config_basic as config_basic
-import src.my_dmm as my_dmm
+import src.my_dmm.dmm_basic as dmm_basic
 import src.my_excel.excel_basic as excel_basic
 import src.my_excel.excel_format_summary as excel_format_summary
-import src.my_ssh.ssh_send_cmd as ssh_send_cmd
 import src.my_ssh.ssh_get_cmd as ssh_get_cmd
-import src.my_time as my_time
+import src.my_ssh.ssh_send_cmd as ssh_send_cmd
 
 
 def visa_address():
@@ -82,9 +84,9 @@ def run_time(start_time, end_time, enable_print=1):
 def test_case_init_wrapper(case_name, case_func, *args, **kwargs):
 	print('Measuring {0}......'.format(case_name))
 	case_func(*args, **kwargs)
-	data_frame_list = my_dmm.dmm_flow_wrapper(visa_address(),
-	                                          600000, 3, 'IMM', 'MIN', 'TIM', 'MIN',
-	                                          1, 100, case_name, 0)
+	data_frame_list = dmm_basic.dmm_flow_wrapper(visa_address(),
+	                                             600000, 3, 'IMM', 'MIN', 'TIM', 'MIN',
+	                                             1, 100, case_name, 0)
 	return data_frame_list
 
 
@@ -93,9 +95,9 @@ def test_case_wrapper(case_name, joined_data_frame_list, enable, case_func, *arg
 	if enable == 1:
 		print('Measuring {0}......'.format(case_name))
 		case_func(*args, **kwargs)
-		data_frame_list = my_dmm.dmm_flow_wrapper(visa_address(),
-		                                          600000, 3, 'IMM', 'MIN', 'TIM', 'MIN',
-		                                          1, 100, case_name, 0)
+		data_frame_list = dmm_basic.dmm_flow_wrapper(visa_address(),
+		                                             600000, 3, 'IMM', 'MIN', 'TIM', 'MIN',
+		                                             1, 100, case_name, 0)
 		for i in range(len(visa_address())):
 			joined_data_frame_list[i] = joined_data_frame_list[i].join(data_frame_list[i])
 		return joined_data_frame_list
@@ -380,7 +382,7 @@ def main_flow():
 		worksheet_version.write(cell_item_content[i],
 		                        df_version[df_version.columns.values[i]].values[0],
 		                        format_item_content)
-		# print(df_version[df_version.columns.values[i]].values)
+	# print(df_version[df_version.columns.values[i]].values)
 
 	for i in range(len(visa_address())):
 		# Convert the dataframe to an XlsxWriter Excel object.

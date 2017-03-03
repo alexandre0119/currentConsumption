@@ -3,7 +3,7 @@
 # Author: Alex Wang
 
 import src.my_ssh.ssh_basic as ssh_basic
-import src.my_bt_case as my_bt_case
+import src.my_bt_case.bt_case as bt_case
 import src.my_config.config_basic as config_basic
 import time
 
@@ -21,7 +21,7 @@ def bt_init():
 	chip_version = config_basic.config_chip_version()
 	dut = config_basic.config_dut()
 	ref = config_basic.config_ref()
-	return my_bt_case.Init(chip_version, dut, ref)
+	return bt_case.Init(chip_version, dut, ref)
 
 
 def bt_power_init():
@@ -32,7 +32,7 @@ def bt_power_init():
 	chip_version = config_basic.config_chip_version()
 	dut = config_basic.config_dut()
 	ref = config_basic.config_ref()
-	return my_bt_case.PowerLevel(chip_version, dut, ref)
+	return bt_case.PowerLevel(chip_version, dut, ref)
 
 
 def bt_bt_init():
@@ -43,7 +43,7 @@ def bt_bt_init():
 	chip_version = config_basic.config_chip_version()
 	dut = config_basic.config_dut()
 	ref = config_basic.config_ref()
-	return my_bt_case.BT(chip_version, dut, ref)
+	return bt_case.BT(chip_version, dut, ref)
 
 
 def bt_ble_init():
@@ -54,7 +54,7 @@ def bt_ble_init():
 	chip_version = config_basic.config_chip_version()
 	dut = config_basic.config_dut()
 	ref = config_basic.config_ref()
-	return my_bt_case.BLE(chip_version, dut, ref)
+	return bt_case.BLE(chip_version, dut, ref)
 
 
 def cc_bt_reset(hci):

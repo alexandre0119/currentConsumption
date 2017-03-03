@@ -20,12 +20,12 @@ def get_bd_addr_list():
 		line_content = data[line_number]
 		match_hci = regex_hci.match(line_content)
 		if match_hci:
-			# logger_append.info('Match found: {0}'.format(match_hci.group('hci')))
+			# print('Match found: {0}'.format(match_hci.group('hci')))
 			line_number += 1
 			line_content = data[line_number]
 			match_bd_address = regex_bd_address.match(line_content)
 			if match_bd_address:
-				# logger_append.info('Match found: {0}'.format(match_bd_address.group('bd_address')))
+				# print('Match found: {0}'.format(match_bd_address.group('bd_address')))
 				bd_addr_list.append({
 					match_hci.group('hci').strip(): match_bd_address.group('bd_address').strip()})
 	return bd_addr_list

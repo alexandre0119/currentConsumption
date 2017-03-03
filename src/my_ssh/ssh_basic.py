@@ -31,12 +31,12 @@ class SSH:
 			data = stdout.read().splitlines()
 			error = stderr.read().splitlines()
 			# data = stdout.readlines()
-			# logger_append.info(data)
+			# print(data)
 			data_return = []
 			error_return = []
 			for line in data:
 				print(str(line, 'utf8'))
-				# logger_append.info(str(line, 'utf8'))
+				# print(str(line, 'utf8'))
 				data_return.append(str(line, 'utf8'))
 			# print(data_return)
 			for line in error:

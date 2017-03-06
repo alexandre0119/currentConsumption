@@ -3,7 +3,8 @@
 # Author: Alex Wang
 
 import configparser
-
+from src.my_misc.my_logging import create_logger
+log = create_logger()
 
 def load_config():
 	"""
@@ -75,3 +76,45 @@ def config_ssh_password():
 	config = load_config()
 	ssh_password = str(config['SSH'].get('SSH_Password'))
 	return ssh_password
+
+
+def config_bt_power(chip_version, bt_power_level):
+	config = load_config()
+	if chip_version == '8977':
+		if bt_power_level == '0':
+			bt_power_index = str(config['Robin3_8977_Power_Index'].get('0_dBm_Pin'))
+			return bt_power_index
+		elif bt_power_level == '4':
+			bt_power_index = str(config['Robin3_8977_Power_Index'].get('4_dBm_Pin'))
+			return bt_power_index
+		elif bt_power_level == 'Max':
+			bt_power_index = str(config['Robin3_8977_Power_Index'].get('Max_dBm_Pin'))
+			return bt_power_index
+		else:
+			log.info('Something wrong with BT power level setting')
+	elif chip_version == '8997':
+		if bt_power_level == '0':
+			bt_power_index = str(config['KF2_8997_Power_Index'].get('0_dBm_Pin'))
+			return bt_power_index
+		elif bt_power_level == '4':
+			bt_power_index = str(config['KF2_8997_Power_Index'].get('4_dBm_Pin'))
+			return bt_power_index
+		elif bt_power_level == 'Max':
+			bt_power_index = str(config['KF2_8997_Power_Index'].get('Max_dBm_Pin'))
+			return bt_power_index
+		else:
+			log.info('Something wrong with BT power level setting')
+	elif chip_version == '8987':
+		if bt_power_level == '0':
+			bt_power_index = str(config['CA2_8987_Power_Index'].get('0_dBm_Pin'))
+			return bt_power_index
+		elif bt_power_level == '4':
+			bt_power_index = str(config['CA2_8987_Power_Index'].get('4_dBm_Pin'))
+			return bt_power_index
+		elif bt_power_level == 'Max':
+			bt_power_index = str(config['CA2_8987_Power_Index'].get('Max_dBm_Pin'))
+			return bt_power_index
+		else:
+			log.info('Something wrong with BT power level setting')
+	else:
+		log.info('Something wrong with chip version select for BT power level')

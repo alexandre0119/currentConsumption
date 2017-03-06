@@ -4,6 +4,7 @@
 
 import src.my_config.config_basic as config_basic
 from src.my_misc.my_logging import create_logger
+from src.my_misc.my_decorator import enter_hci_header_footer
 
 config = config_basic.load_config()
 log = create_logger()
@@ -36,6 +37,7 @@ class PowerLevel(Init):
 			                        'Max': config_basic.config_bt_power('8987', 'Max')}
 		                       }
 
+	@enter_hci_header_footer()
 	def bt_set_power_level(self, power_level):
 		set_power = ''
 		power_level = str(power_level)
@@ -89,41 +91,49 @@ class BT(Init):
 		self.hci_dut = hci_dut
 		self.hci_ref = hci_ref
 
+	@enter_hci_header_footer()
 	def bt_reset(self, hci_interface):
 		cmd = 'hciconfig {0} reset'.format(hci_interface)
 		log.info(cmd)
 		return cmd
 
+	@enter_hci_header_footer()
 	def bt_deepsleep(self):
 		cmd = 'hcitool -i {0} cmd 3F 23 02'.format(self.hci_dut)
 		log.info(cmd)
 		return cmd
 
+	@enter_hci_header_footer()
 	def bt_idle(self):
 		cmd = 'hcitool -i {0} cmd 3F 23 01'.format(self.hci_dut)
 		log.info(cmd)
 		return cmd
 
+	@enter_hci_header_footer()
 	def bt_noscan(self):
 		cmd = 'hciconfig {0} noscan'.format(self.hci_dut)
 		log.info(cmd)
 		return cmd
 
+	@enter_hci_header_footer()
 	def bt_pscan(self):
 		cmd = 'hciconfig {0} pscan'.format(self.hci_dut)
 		log.info(cmd)
 		return cmd
 
+	@enter_hci_header_footer()
 	def bt_iscan(self):
 		cmd = 'hciconfig {0} iscan'.format(self.hci_dut)
 		log.info(cmd)
 		return cmd
 
+	@enter_hci_header_footer()
 	def bt_piscan(self):
 		cmd = 'hciconfig {0} piscan'.format(self.hci_dut)
 		log.info(cmd)
 		return cmd
 
+	@enter_hci_header_footer()
 	def bt_acl_sniff_1dot28s_master(self, dut_address, ref_address):
 		dut_address = str(dut_address).strip().split(':')
 		dut_address = ':'.join(dut_address)
@@ -143,6 +153,7 @@ class BT(Init):
 		log.info(cmd)
 		return cmd
 
+	@enter_hci_header_footer()
 	def bt_acl_sniff_0dot5s_master(self, dut_address, ref_address):
 		dut_address = str(dut_address).strip().split(':')
 		dut_address = ':'.join(dut_address)
@@ -162,6 +173,7 @@ class BT(Init):
 		log.info(cmd)
 		return cmd
 
+	@enter_hci_header_footer()
 	def bt_sco_hv3(self, ref_address):
 		ref_address = str(ref_address).strip().split(':')
 		ref_address = ':'.join(ref_address)
@@ -171,6 +183,7 @@ class BT(Init):
 		log.info(cmd)
 		return cmd
 
+	@enter_hci_header_footer()
 	def bt_sco_ev3(self, ref_address):
 		ref_address = str(ref_address).strip().split(':')
 		ref_address = ':'.join(ref_address)
@@ -188,11 +201,13 @@ class BLE(Init):
 		self.hci_dut = hci_dut
 		self.hci_ref = hci_ref
 
+	@enter_hci_header_footer()
 	def ble_adv_1dot28s_3channel(self, enable):
 		if str(enable) == '1':
 			cmd = 'hcitool -i {0} cmd 08 06 00 08 00 08 03 00 00 BC 9A 78 56 34 12 07 00\n' \
 			      'sleep 1\n' \
-			      'hcitool -i {0} cmd 08 08 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00\n' \
+			      'hcitool -i {0} cmd 08 08 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 ' \
+			      '99 88 77 66 55 44 33 22 11 00\n' \
 			      'sleep 1\n' \
 			      'hcitool -i {0} cmd 0x08 0x0A 0x0{1}' \
 				.format(self.hci_dut, enable)
@@ -201,7 +216,8 @@ class BLE(Init):
 		elif str(enable) == '0':
 			cmd = 'hcitool -i {0} cmd 08 06 00 08 00 08 03 00 00 BC 9A 78 56 34 12 07 00\n' \
 			      'sleep 1\n' \
-			      'hcitool -i {0} cmd 08 08 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00\n' \
+			      'hcitool -i {0} cmd 08 08 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 ' \
+			      '99 88 77 66 55 44 33 22 11 00\n' \
 			      'sleep 1\n' \
 			      'hcitool -i {0} cmd 0x08 0x0A 0x0{1}' \
 				.format(self.hci_dut, enable)
@@ -210,9 +226,11 @@ class BLE(Init):
 		else:
 			log.info('Invalid input for BLE Adv setting, pls check config.ini file')
 
+	@enter_hci_header_footer()
 	def ble_scan_1dot28s(self, enable):
 		if str(enable) == '1':
-			cmd = 'hcitool -i {0} cmd 08 09 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00\n' \
+			cmd = 'hcitool -i {0} cmd 08 09 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 ' \
+			      '99 88 77 66 55 44 33 22 11 00\n' \
 			      'sleep 1\n' \
 			      'hcitool -i {0} cmd 08 0B 01 00 08 10 00 00 00\n' \
 			      'sleep 1\n' \
@@ -221,7 +239,8 @@ class BLE(Init):
 			log.info(cmd)
 			return cmd
 		elif str(enable) == '0':
-			cmd = 'hcitool -i {0} cmd 08 09 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00\n' \
+			cmd = 'hcitool -i {0} cmd 08 09 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 ' \
+			      '99 88 77 66 55 44 33 22 11 00\n' \
 			      'sleep 1\n' \
 			      'hcitool -i {0} cmd 08 0B 01 00 08 10 00 00 00\n' \
 			      'sleep 1\n' \
@@ -232,9 +251,11 @@ class BLE(Init):
 		else:
 			log.info('Invalid input for BLE Adv setting, pls check config.ini file')
 
+	@enter_hci_header_footer()
 	def ble_scan_1s(self, enable):
 		if str(enable) == '1':
-			cmd = 'hcitool -i {0} cmd 08 09 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00\n' \
+			cmd = 'hcitool -i {0} cmd 08 09 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 ' \
+			      '99 88 77 66 55 44 33 22 11 00\n' \
 			      'sleep 1\n' \
 			      'hcitool -i {0} cmd 08 0B 01 40 06 10 00 00 00\n' \
 			      'sleep 1\n' \
@@ -243,7 +264,8 @@ class BLE(Init):
 			log.info(cmd)
 			return cmd
 		elif str(enable) == '0':
-			cmd = 'hcitool -i {0} cmd 08 09 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00\n' \
+			cmd = 'hcitool -i {0} cmd 08 09 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 ' \
+			      '99 88 77 66 55 44 33 22 11 00\n' \
 			      'sleep 1\n' \
 			      'hcitool -i {0} cmd 08 0B 01 40 06 10 00 00 00\n' \
 			      'sleep 1\n' \
@@ -254,9 +276,11 @@ class BLE(Init):
 		else:
 			log.info('Invalid input for BLE Adv setting, pls check config.ini file')
 
+	@enter_hci_header_footer()
 	def ble_scan_10ms(self, enable):
 		if str(enable) == '1':
-			cmd = 'hcitool -i {0} cmd 08 09 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00\n' \
+			cmd = 'hcitool -i {0} cmd 08 09 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 ' \
+			      '99 88 77 66 55 44 33 22 11 00\n' \
 			      'sleep 1\n' \
 			      'hcitool -i {0} cmd 08 0B 01 10 00 10 00 00 00\n' \
 			      'sleep 1\n' \
@@ -265,7 +289,8 @@ class BLE(Init):
 			log.info(cmd)
 			return cmd
 		elif str(enable) == '0':
-			cmd = 'hcitool -i {0} cmd 08 09 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00\n' \
+			cmd = 'hcitool -i {0} cmd 08 09 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 ' \
+			      '99 88 77 66 55 44 33 22 11 00\n' \
 			      'sleep 1\n' \
 			      'hcitool -i {0} cmd 08 0B 01 10 00 10 00 00 00\n' \
 			      'sleep 1\n' \
@@ -276,6 +301,7 @@ class BLE(Init):
 		else:
 			log.info('Invalid input for BLE Adv setting, pls check config.ini file')
 
+	@enter_hci_header_footer()
 	def ble_connection_1dot28s(self, ref_address):
 		ref_address = str(ref_address).strip().split(':')
 		ref_address.reverse()
@@ -283,11 +309,13 @@ class BLE(Init):
 		# print(ref_address, '!!!!!!!!!!!!!!!!!!!!!!')
 		cmd = 'hcitool -i {1} cmd 08 06 00 08 00 08 00 00 00 BC 9A 78 56 34 12 07 00\n' \
 		      'sleep 1\n' \
-		      'hcitool -i {1} cmd 08 08 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00\n' \
+		      'hcitool -i {1} cmd 08 08 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 ' \
+		      '99 88 77 66 55 44 33 22 11 00\n' \
 		      'sleep 1\n' \
 		      'hcitool -i {1} cmd 0x08 0x0A 0x01\n' \
 		      'sleep 1\n' \
-		      'hcitool -i {0} cmd 08 09 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00\n' \
+		      'hcitool -i {0} cmd 08 09 1F 00 99 88 77 66 55 44 33 22 11 00 99 88 77 66 55 44 33 22 11 00 ' \
+		      '99 88 77 66 55 44 33 22 11 00\n' \
 		      'sleep 1\n' \
 		      'hcitool -i {0} cmd 08 0B 01 10 00 10 00 00 00\n' \
 		      'sleep 1\n' \

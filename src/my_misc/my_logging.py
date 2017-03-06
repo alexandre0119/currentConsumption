@@ -31,7 +31,7 @@ def create_logger(logger_name=__name__, log_file='log_this.txt', log_lvl='DEBUG'
 		# formatter = logging.Formatter('[%(asctime)s] %(levelname)8s --- %(message)s' +
 		#                                '(%(filename)s:%(lineno)s)', datefmt='%Y-%m-%d %H:%M:%S')
 
-		fmt = '[%(asctime)s] %(levelname)8s --- %(message)s'
+		fmt = '[%(asctime)s] %(levelname)8s --- \n%(message)s'
 		fmt_date = '%Y-%m-%d %H:%M:%S'
 		formatter = logging.Formatter(fmt, fmt_date)
 

@@ -4,6 +4,11 @@
 
 from paramiko import client
 import src.my_config.config_basic as config_basic
+from src.my_misc.my_decorator import hci_return_header_footer
+from src.my_misc.my_logging import create_logger
+
+
+log = create_logger()
 
 
 class SSH:
@@ -16,11 +21,12 @@ class SSH:
 		self.username = username
 		self.userPassword = password
 		self.rootPassword = password
-		print("Connecting to server on ip address", str(self.address))
+		log.info("Connecting to server on ip address {0}".format(str(self.address)))
 		self.client = client.SSHClient()
 		self.client.set_missing_host_key_policy(client.AutoAddPolicy())
 		self.client.connect(self.address, username=self.username, password=self.userPassword, look_for_keys=False)
 
+	@hci_return_header_footer()
 	def send_command(self, command):
 		if self.client:
 			stdin, stdout, stderr = self.client.exec_command(command, get_pty=True)
@@ -29,19 +35,23 @@ class SSH:
 			stdin.flush()
 			stdin.close()
 			data = stdout.read().splitlines()
+			data_filter = filter(None, data) # remove all empty strings from a list of strings
 			error = stderr.read().splitlines()
+			error_filter = filter(None, error) # remove all empty strings from a list of strings
 			# data = stdout.readlines()
 			# print(data)
 			data_return = []
 			error_return = []
-			for line in data:
-				print(str(line, 'utf8'))
+			for line in data_filter:
 				# print(str(line, 'utf8'))
 				data_return.append(str(line, 'utf8'))
 			# print(data_return)
-			for line in error:
-				print(str(line, 'utf8'))
+			log.info('\n'.join(data_return))
+
+			for line in error_filter:
 				error_return.append(str(line, 'utf8'))
+			log.info('\n'.join(error_return))
+
 			while not stdout.channel.exit_status_ready():
 				# Print data when available
 				if stdout.channel.recv_ready():
@@ -50,10 +60,10 @@ class SSH:
 					while prevdata:
 						prevdata = stdout.channel.recv(1024)
 						alldata += prevdata
-					print(str(alldata, "utf8"))
+					log.info(str(alldata, "utf8"))
 			return data_return, error_return
 		else:
-			print("Connection not opened.")
+			log.info("Connection not opened.")
 
 
 def open_connection_ssh():

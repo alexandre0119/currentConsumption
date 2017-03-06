@@ -6,10 +6,10 @@ import configparser
 from src.my_misc.my_logging import create_logger
 log = create_logger()
 
+
 def load_config():
 	"""
 	Load config.ini file and return instance
-	:param config_name: config.ini file name
 	:return: config instance
 	"""
 	config = configparser.ConfigParser()

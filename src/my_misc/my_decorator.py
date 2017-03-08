@@ -5,7 +5,7 @@
 import functools
 from src.my_misc.my_logging import create_logger
 
-log = create_logger()
+log_decorator = create_logger(logger_name=__name__, fmt='%(message)s')
 
 
 def enter_hci_header_footer():
@@ -13,10 +13,10 @@ def enter_hci_header_footer():
 		@functools.wraps(func)
 		def wrapper(*args, **kw):
 			# print('Begin {0} call {1}():'.format(cmd_num, func.__name__))
-			log.info('\n---------------------Enter Hcitool cmd---------------------')
+			log_decorator.info('\n---------------------Enter Hcitool cmd---------------------')
 			now = func(*args, **kw)
 			# print('End {0} call {1}():'.format(cmd_num, func.__name__))
-			log.info('============================================================\n')
+			log_decorator.info('============================================================\n')
 			return now
 
 		return wrapper
@@ -29,10 +29,10 @@ def hci_return_header_footer():
 		@functools.wraps(func)
 		def wrapper(*args, **kw):
 			# print('Begin {0} call {1}():'.format(cmd_num, func.__name__))
-			log.info('\n---------------------Hcitool cmd return---------------------')
+			log_decorator.info('\n---------------------Hcitool cmd return---------------------')
 			now = func(*args, **kw)
 			# print('End {0} call {1}():'.format(cmd_num, func.__name__))
-			log.info('============================================================\n')
+			log_decorator.info('============================================================\n')
 			return now
 
 		return wrapper

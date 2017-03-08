@@ -42,15 +42,18 @@ class SSH:
 			# print(data)
 			data_return = []
 			error_return = []
+
 			for line in data_filter:
 				# print(str(line, 'utf8'))
 				data_return.append(str(line, 'utf8'))
 			# print(data_return)
-			log.info('\n'.join(data_return))
+			if len(data_return) != 0:
+				log.info('\n'.join(data_return))
 
 			for line in error_filter:
 				error_return.append(str(line, 'utf8'))
-			log.info('\n'.join(error_return))
+			if len(error_return) != 0:
+				log.info('\n'.join(error_return))
 
 			while not stdout.channel.exit_status_ready():
 				# Print data when available

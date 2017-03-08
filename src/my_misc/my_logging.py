@@ -7,7 +7,10 @@ import logging
 import os
 
 
-def create_logger(logger_name=__name__, log_file='log_this.txt', log_lvl='DEBUG'):
+def create_logger(logger_name=__name__, log_file='log_this.txt', log_level='DEBUG',
+                  fmt='[%(asctime)s] %(levelname)s --- \n%(message)s',
+                  fmt_date='%Y-%m-%d %H:%M:%S',
+                  file_mode='a'):
 	logger = logging.getLogger(logger_name)
 
 	if logger.handlers:
@@ -15,12 +18,12 @@ def create_logger(logger_name=__name__, log_file='log_this.txt', log_lvl='DEBUG'
 	else:
 		logger = logging.getLogger(logger_name)
 
-		log_level = getattr(logging, log_lvl.upper(), logging.INFO)
+		log_level = getattr(logging, log_level.upper(), logging.INFO)
 
 		logger.setLevel(log_level)
 
 		# create file handler
-		fh = logging.FileHandler(log_file, mode='a')
+		fh = logging.FileHandler(log_file, mode=file_mode)
 		fh.setLevel(log_level)
 
 		# create console handler
@@ -30,9 +33,6 @@ def create_logger(logger_name=__name__, log_file='log_this.txt', log_lvl='DEBUG'
 		# create formatter and add it to the handlers
 		# formatter = logging.Formatter('[%(asctime)s] %(levelname)8s --- %(message)s' +
 		#                                '(%(filename)s:%(lineno)s)', datefmt='%Y-%m-%d %H:%M:%S')
-
-		fmt = '[%(asctime)s] %(levelname)8s --- \n%(message)s'
-		fmt_date = '%Y-%m-%d %H:%M:%S'
 		formatter = logging.Formatter(fmt, fmt_date)
 
 		fh.setFormatter(formatter)

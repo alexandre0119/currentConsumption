@@ -7,7 +7,6 @@ import src.my_config.config_basic as config_basic
 from src.my_misc.my_decorator import hci_return_header_footer
 from src.my_misc.my_logging import create_logger
 
-
 log = create_logger()
 
 
@@ -35,9 +34,9 @@ class SSH:
 			stdin.flush()
 			stdin.close()
 			data = stdout.read().splitlines()
-			data_filter = filter(None, data) # remove all empty strings from a list of strings
+			data_filter = filter(None, data)  # remove all empty strings from a list of strings
 			error = stderr.read().splitlines()
-			error_filter = filter(None, error) # remove all empty strings from a list of strings
+			error_filter = filter(None, error)  # remove all empty strings from a list of strings
 			# data = stdout.readlines()
 			# print(data)
 			data_return = []

@@ -31,3 +31,33 @@ def close_workbook(writer_obj):
 def close_excel(writer_obj):
 	writer_obj.save()
 	writer_obj.close()
+
+
+def excel_col2str(n):
+	"""
+	convert a column number (eg. 127) into an excel column (eg. AA)
+	:param n: excel column number
+	:return: excel column
+	"""
+	div = n
+	string = ""
+	# temp=0
+	while div > 0:
+		module = (div - 1) % 26
+		string = chr(65 + module) + string
+		div = int((div - module) / 26)
+	return string
+
+
+def excel_col2num(col):
+	"""
+	Convert an excel or spreadsheet column letter to its number
+	:param col: excel column
+	:return: excel column number
+	"""
+	import string
+	num = 0
+	for c in col:
+		if c in string.ascii_letters:
+			num = num * 26 + (ord(c.upper()) - ord('A')) + 1
+	return num

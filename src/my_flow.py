@@ -86,24 +86,24 @@ def test_case_init_wrapper(case_name, case_func, *args, **kwargs):
 	case_func(*args, **kwargs)
 	data_frame_list = dmm_basic.dmm_flow_wrapper(visa_address(),
 	                                             600000, 3, 'IMM', 'MIN', 'TIM', 'MIN',
-	                                             1, 100, case_name, 0)
+	                                             1, 1000, case_name, 0)
 	return data_frame_list
 
 
-def test_case_wrapper(case_name, joined_data_frame_list, enable, case_func, *args, **kwargs):
+def test_case_wrapper(case_name, joined_df_list, enable, case_func, *args, **kwargs):
 	enable = int(str(enable))
 	if enable == 1:
 		print('Measuring {0}......'.format(case_name))
 		case_func(*args, **kwargs)
 		data_frame_list = dmm_basic.dmm_flow_wrapper(visa_address(),
 		                                             600000, 3, 'IMM', 'MIN', 'TIM', 'MIN',
-		                                             1, 100, case_name, 0)
+		                                             1, 1000, case_name, 0)
 		for i in range(len(visa_address())):
-			joined_data_frame_list[i] = joined_data_frame_list[i].join(data_frame_list[i])
-		return joined_data_frame_list
+			joined_df_list[i] = joined_df_list[i].join(data_frame_list[i])
+		return joined_df_list
 	else:
 		print('Skip <{0}> ......'.format(case_name))
-		return joined_data_frame_list
+		return joined_df_list
 
 
 def main_flow():
@@ -112,9 +112,9 @@ def main_flow():
 	start_time_formatted = starter(0)[1]
 
 	# Design joined data frame list based on connected Inst number, and init with empty DataFrame()
-	joined_data_frame_list = []
+	joined_df_list = []
 	for i in range(len(visa_address())):
-		joined_data_frame_list.append(DataFrame())
+		joined_df_list.append(DataFrame())
 
 	config = config_basic.load_config()
 	dut = config_basic.config_dut()
@@ -131,116 +131,116 @@ def main_flow():
 
 		# Assign first data frame list to joined data frame list as initiate value
 		for i in range(len(visa_address())):
-			joined_data_frame_list[i] = case_0_data_frame_list[i]
+			joined_df_list[i] = case_0_data_frame_list[i]
 
 		if str(config['Test_Case'].get('BT_Enable')) == '1':
 			# Get case_1 return data frame list: [inst_1_data_frame, inst_2_data_frame, ...]
-			joined_data_frame_list = test_case_wrapper('BT Idle', joined_data_frame_list,
+			joined_df_list = test_case_wrapper('BT Idle', joined_df_list,
 			                                           config['Test_Case'].get('BT_Idle'),
 			                                           ssh_send_cmd.cc_bt_idle, dut, ref, 0)
 
-			joined_data_frame_list = test_case_wrapper('BT Page Scan', joined_data_frame_list,
+			joined_df_list = test_case_wrapper('BT Page Scan', joined_df_list,
 			                                           config['Test_Case'].get('BT_P_Scan'),
 			                                           ssh_send_cmd.cc_bt_pscan, dut, ref, 0)
 
-			joined_data_frame_list = test_case_wrapper('BT Inquiry Scan', joined_data_frame_list,
+			joined_df_list = test_case_wrapper('BT Inquiry Scan', joined_df_list,
 			                                           config['Test_Case'].get('BT_I_Scan'),
 			                                           ssh_send_cmd.cc_bt_iscan, dut, ref, 0)
 
-			joined_data_frame_list = test_case_wrapper('BT Page & Inquiry Scan', joined_data_frame_list,
+			joined_df_list = test_case_wrapper('BT Page & Inquiry Scan', joined_df_list,
 			                                           config['Test_Case'].get('BT_PI_Scan'),
 			                                           ssh_send_cmd.cc_bt_piscan, dut, ref, 0)
 
-			joined_data_frame_list = test_case_wrapper('BT ACL Sniff 1.28s interval Master @ 0dBm at Pin',
-			                                           joined_data_frame_list,
+			joined_df_list = test_case_wrapper('BT ACL Sniff 1.28s interval Master @ 0dBm at Pin',
+			                                           joined_df_list,
 			                                           config['Test_Case'].get('BT_ACL_Sniff_1.28s_Master_0-dBm-pin'),
 			                                           ssh_send_cmd.cc_bt_acl_sniff_1dot28s_master,
 			                                           dut, dut_bd_addr,
 			                                           ref, ref_bd_addr,
 			                                           '0')
 
-			joined_data_frame_list = test_case_wrapper('BT ACL Sniff 1.28s interval Master @ 4dBm at Pin',
-			                                           joined_data_frame_list,
+			joined_df_list = test_case_wrapper('BT ACL Sniff 1.28s interval Master @ 4dBm at Pin',
+			                                           joined_df_list,
 			                                           config['Test_Case'].get('BT_ACL_Sniff_1.28s_Master_4-dBm-pin'),
 			                                           ssh_send_cmd.cc_bt_acl_sniff_1dot28s_master,
 			                                           dut, dut_bd_addr,
 			                                           ref, ref_bd_addr,
 			                                           '4')
 
-			joined_data_frame_list = test_case_wrapper('BT ACL Sniff 1.28s interval Master @ Max dBm at Pin',
-			                                           joined_data_frame_list,
+			joined_df_list = test_case_wrapper('BT ACL Sniff 1.28s interval Master @ Max dBm at Pin',
+			                                           joined_df_list,
 			                                           config['Test_Case'].get('BT_ACL_Sniff_1.28s_Master_Max-dBm-pin'),
 			                                           ssh_send_cmd.cc_bt_acl_sniff_1dot28s_master,
 			                                           dut, dut_bd_addr,
 			                                           ref, ref_bd_addr,
 			                                           'Max')
 
-			joined_data_frame_list = test_case_wrapper('BT ACL Sniff 0.5s interval Master @ 0 dBm at Pin',
-			                                           joined_data_frame_list,
+			joined_df_list = test_case_wrapper('BT ACL Sniff 0.5s interval Master @ 0 dBm at Pin',
+			                                           joined_df_list,
 			                                           config['Test_Case'].get('BT_ACL_Sniff_0.5s_Master_0-dBm-pin'),
 			                                           ssh_send_cmd.cc_bt_acl_sniff_0dot5s_master,
 			                                           dut, dut_bd_addr,
 			                                           ref, ref_bd_addr,
 			                                           '0')
 
-			joined_data_frame_list = test_case_wrapper('BT ACL Sniff 0.5s interval Master @ 4 dBm at Pin',
-			                                           joined_data_frame_list,
+			joined_df_list = test_case_wrapper('BT ACL Sniff 0.5s interval Master @ 4 dBm at Pin',
+			                                           joined_df_list,
 			                                           config['Test_Case'].get('BT_ACL_Sniff_0.5s_Master_4-dBm-pin'),
 			                                           ssh_send_cmd.cc_bt_acl_sniff_0dot5s_master,
 			                                           dut, dut_bd_addr,
 			                                           ref, ref_bd_addr,
 			                                           '4')
 
-			joined_data_frame_list = test_case_wrapper('BT ACL Sniff 0.5s interval Master @ Max dBm at Pin',
-			                                           joined_data_frame_list,
+			joined_df_list = test_case_wrapper('BT ACL Sniff 0.5s interval Master @ Max dBm at Pin',
+			                                           joined_df_list,
 			                                           config['Test_Case'].get('BT_ACL_Sniff_0.5s_Master_Max-dBm-pin'),
 			                                           ssh_send_cmd.cc_bt_acl_sniff_0dot5s_master,
 			                                           dut, dut_bd_addr,
 			                                           ref, ref_bd_addr,
 			                                           'Max')
 
-			joined_data_frame_list = test_case_wrapper('BT SCO HV3 Master @ 0 dBm at Pin',
-			                                           joined_data_frame_list,
+			joined_df_list = test_case_wrapper('BT SCO HV3 Master @ 0 dBm at Pin',
+			                                           joined_df_list,
 			                                           config['Test_Case'].get('BT_SCO_HV3_Master_0-dBm-pin'),
 			                                           ssh_send_cmd.cc_bt_sco_hv3,
 			                                           dut, dut_bd_addr,
 			                                           ref, ref_bd_addr,
 			                                           '0')
 
-			joined_data_frame_list = test_case_wrapper('BT SCO HV3 Master @ 4 dBm at Pin',
-			                                           joined_data_frame_list,
+			joined_df_list = test_case_wrapper('BT SCO HV3 Master @ 4 dBm at Pin',
+			                                           joined_df_list,
 			                                           config['Test_Case'].get('BT_SCO_HV3_Master_4-dBm-pin'),
 			                                           ssh_send_cmd.cc_bt_sco_hv3,
 			                                           dut, dut_bd_addr,
 			                                           ref, ref_bd_addr,
 			                                           '4')
 
-			joined_data_frame_list = test_case_wrapper('BT SCO HV3 Master @ Max dBm at Pin',
-			                                           joined_data_frame_list,
+			joined_df_list = test_case_wrapper('BT SCO HV3 Master @ Max dBm at Pin',
+			                                           joined_df_list,
 			                                           config['Test_Case'].get('BT_SCO_HV3_Master_Max-dBm-pin'),
 			                                           ssh_send_cmd.cc_bt_sco_hv3,
 			                                           dut, dut_bd_addr,
 			                                           ref, ref_bd_addr,
 			                                           'Max')
 
-			joined_data_frame_list = test_case_wrapper('BT SCO EV3 Master @ 0 dBm at Pin',
-			                                           joined_data_frame_list,
+			joined_df_list = test_case_wrapper('BT SCO EV3 Master @ 0 dBm at Pin',
+			                                           joined_df_list,
 			                                           config['Test_Case'].get('BT_SCO_EV3_Master_0-dBm-pin'),
 			                                           ssh_send_cmd.cc_bt_sco_ev3,
 			                                           dut, dut_bd_addr,
 			                                           ref, ref_bd_addr,
 			                                           '0')
 
-			joined_data_frame_list = test_case_wrapper('BT SCO EV3 Master @ 4 dBm at Pin',
-			                                           joined_data_frame_list,
+			joined_df_list = test_case_wrapper('BT SCO EV3 Master @ 4 dBm at Pin',
+			                                           joined_df_list,
 			                                           config['Test_Case'].get('BT_SCO_EV3_Master_4-dBm-pin'),
 			                                           ssh_send_cmd.cc_bt_sco_ev3,
 			                                           dut, dut_bd_addr,
 			                                           ref, ref_bd_addr,
 			                                           '4')
 
-			joined_data_frame_list = test_case_wrapper('BT SCO EV3 Master @ Max dBm at Pin',
-			                                           joined_data_frame_list,
+			joined_df_list = test_case_wrapper('BT SCO EV3 Master @ Max dBm at Pin',
+			                                           joined_df_list,
 			                                           config['Test_Case'].get('BT_SCO_EV3_Master_Max-dBm-pin'),
 			                                           ssh_send_cmd.cc_bt_sco_ev3,
 			                                           dut, dut_bd_addr,
@@ -253,72 +253,72 @@ def main_flow():
 			sys.exit(1)
 
 		if str(config['Test_Case'].get('BLE_Enable')) == '1':
-			joined_data_frame_list = test_case_wrapper('BLE Adv 1.28s interval 3 channels @ 0 dBm at Pin',
-			                                           joined_data_frame_list,
+			joined_df_list = test_case_wrapper('BLE Adv 1.28s interval 3 channels @ 0 dBm at Pin',
+			                                           joined_df_list,
 			                                           config['Test_Case'].get('BLE_Adv_1.28s_3Channel_0-dBm-pin'),
 			                                           ssh_send_cmd.cc_ble_adv_1dot28s_3channel,
 			                                           dut,
 			                                           ref,
 			                                           '0', 1)
 
-			joined_data_frame_list = test_case_wrapper('BLE Adv 1.28s interval 3 channels @ 4 dBm at Pin',
-			                                           joined_data_frame_list,
+			joined_df_list = test_case_wrapper('BLE Adv 1.28s interval 3 channels @ 4 dBm at Pin',
+			                                           joined_df_list,
 			                                           config['Test_Case'].get('BLE_Adv_1.28s_3Channel_4-dBm-pin'),
 			                                           ssh_send_cmd.cc_ble_adv_1dot28s_3channel,
 			                                           dut,
 			                                           ref,
 			                                           '0', 1)
 
-			joined_data_frame_list = test_case_wrapper('BLE Adv 1.28s interval 3 channels @ Max dBm at Pin',
-			                                           joined_data_frame_list,
+			joined_df_list = test_case_wrapper('BLE Adv 1.28s interval 3 channels @ Max dBm at Pin',
+			                                           joined_df_list,
 			                                           config['Test_Case'].get('BLE_Adv_1.28s_3Channel_Max-dBm-pin'),
 			                                           ssh_send_cmd.cc_ble_adv_1dot28s_3channel,
 			                                           dut,
 			                                           ref,
 			                                           '0', 1)
 
-			joined_data_frame_list = test_case_wrapper('BLE Scan 1.28s interval',
-			                                           joined_data_frame_list,
+			joined_df_list = test_case_wrapper('BLE Scan 1.28s interval',
+			                                           joined_df_list,
 			                                           config['Test_Case'].get('BLE_Scan_1.28s'),
 			                                           ssh_send_cmd.cc_ble_scan_1dot28s,
 			                                           dut,
 			                                           ref,
 			                                           '0', 1)
 
-			joined_data_frame_list = test_case_wrapper('BLE Scan 1s interval',
-			                                           joined_data_frame_list,
+			joined_df_list = test_case_wrapper('BLE Scan 1s interval',
+			                                           joined_df_list,
 			                                           config['Test_Case'].get('BLE_Scan_1s'),
 			                                           ssh_send_cmd.cc_ble_scan_1s,
 			                                           dut,
 			                                           ref,
 			                                           '0', 1)
 
-			joined_data_frame_list = test_case_wrapper('BLE Scan 10ms interval',
-			                                           joined_data_frame_list,
+			joined_df_list = test_case_wrapper('BLE Scan 10ms interval',
+			                                           joined_df_list,
 			                                           config['Test_Case'].get('BLE_Scan_10ms'),
 			                                           ssh_send_cmd.cc_ble_scan_10ms,
 			                                           dut,
 			                                           ref,
 			                                           '0', 1)
 
-			joined_data_frame_list = test_case_wrapper('BLE Connection 1.28s interval @ 0 dBm at Pin',
-			                                           joined_data_frame_list,
+			joined_df_list = test_case_wrapper('BLE Connection 1.28s interval @ 0 dBm at Pin',
+			                                           joined_df_list,
 			                                           config['Test_Case'].get('BLE_Connection_1.28s_0-dBm-pin'),
 			                                           ssh_send_cmd.cc_ble_connection_1dot28s,
 			                                           dut,
 			                                           ref, ref_bd_addr,
 			                                           '0')
 
-			joined_data_frame_list = test_case_wrapper('BLE Connection 1.28s interval @ 4 dBm at Pin',
-			                                           joined_data_frame_list,
+			joined_df_list = test_case_wrapper('BLE Connection 1.28s interval @ 4 dBm at Pin',
+			                                           joined_df_list,
 			                                           config['Test_Case'].get('BLE_Connection_1.28s_4-dBm-pin'),
 			                                           ssh_send_cmd.cc_ble_connection_1dot28s,
 			                                           dut,
 			                                           ref, ref_bd_addr,
 			                                           '4')
 
-			joined_data_frame_list = test_case_wrapper('BLE Connection 1.28s interval @ Max dBm at Pin',
-			                                           joined_data_frame_list,
+			joined_df_list = test_case_wrapper('BLE Connection 1.28s interval @ Max dBm at Pin',
+			                                           joined_df_list,
 			                                           config['Test_Case'].get('BLE_Connection_1.28s_Max-dBm-pin'),
 			                                           ssh_send_cmd.cc_ble_connection_1dot28s,
 			                                           dut,
@@ -330,7 +330,7 @@ def main_flow():
 			print('Invalid "BLE_Enable" info, pls check config.ini file')
 			sys.exit(1)
 
-	# print(joined_data_frame_list)
+	# print(joined_df_list)
 
 	ender(1)
 	end_time = ender(0)[0]
@@ -373,20 +373,72 @@ def main_flow():
 	format_item_subject = excel_format_summary.format_item_subject(workbook)
 	format_item_content = excel_format_summary.format_item_content(workbook)
 
-	cell_item_subject = ['B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B9', 'B10', 'B11', 'B12']
-	cell_item_content = ['C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9', 'C10', 'C11', 'C12']
+	# cell_index_version = ['B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B9', 'B10', 'B11', 'B12']
+	# cell_content_version = ['C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9', 'C10', 'C11', 'C12']
+	cell_index_version = []
+	cell_content_version = []
 	for i in range(len(df_version.columns.values)):
-		worksheet_version.write(cell_item_subject[i],
+		cell_index_version.append('B{0}'.format(i+3))
+		cell_content_version.append('C{0}'.format(i+3))
+
+	for i in range(len(df_version.columns.values)):
+		worksheet_version.write(cell_index_version[i],
 		                        df_version.columns.values[i],
 		                        format_item_subject)
-		worksheet_version.write(cell_item_content[i],
+		worksheet_version.write(cell_content_version[i],
 		                        df_version[df_version.columns.values[i]].values[0],
 		                        format_item_content)
 	# print(df_version[df_version.columns.values[i]].values)
-
+	print(df_version)
+	print('\n')
+	for i in range(len(joined_df_list)):
+		print(joined_df_list[i].T)
+	print('\n')
+	# print(joined_df_list[0].T.columns.values[0])
+	# print('\n')
+	# print(joined_df_list[0].T.index.values[0])
+	# print('\n')
+	# print(joined_df_list[0].T.get_value('Deep Sleep', '1.Average'))
 	for i in range(len(visa_address())):
 		# Convert the dataframe to an XlsxWriter Excel object.
-		excel_basic.write_excel(excel_writer, joined_data_frame_list[i], excel_sheet_name_list[i])
+		excel_basic.write_excel(excel_writer, joined_df_list[i], excel_sheet_name_list[i])
+	worksheet_data_list = []
+	for i in range(len(visa_address())):
+		worksheet_data_list.append(excel_writer.sheets[excel_sheet_name_list[i]])
+	for i in worksheet_data_list:
+		excel_format_summary.set_column_width(i, 'B', 'B', 18)
+		excel_format_summary.set_column_width(i, 'C', 'H', 9)
+	cell_index_data = []
+	cell_content_data = []
+	cell_content_data_array = []
+	for i_index in range(len(joined_df_list[0].T.index.values)):
+		cell_index_data.append('B{0}'.format(i_index+3))
+
+	for i_index in range(len(joined_df_list[0].T.index.values)):
+		for i_column in range(len(joined_df_list[0].T.columns.values)):
+			cell_content_data.append('{0}{1}'.format(excel_basic.excel_col2str(i_column + excel_basic.excel_col2num('C')),
+			                                         i_index + 3))
+		cell_content_data_array.append(cell_content_data)
+		cell_content_data = []
+	print(cell_content_data_array)
+
+	# Loop for data worksheet
+	for i_worksheet in worksheet_data_list:
+		# Get index count, which is test cases count
+		for i_index in range(len(joined_df_list[0].T.index.values)):
+			# Get column count
+			for i_column in range(len(joined_df_list[0].T.columns.values)):
+				# worksheet_data_list.index(i_worksheet) is the one rail data frame in DF list, since worksheet # = DF #
+				i_worksheet.write(cell_index_data[i_index],
+				        joined_df_list[worksheet_data_list.index(i_worksheet)].T.index.values[i_index],
+				        format_item_subject)
+				i_worksheet.write(cell_content_data_array[i_index][i_column],
+				                  joined_df_list[worksheet_data_list.index(i_worksheet)].T.get_value(joined_df_list[worksheet_data_list.index(i_worksheet)].T.index.values[i_index], joined_df_list[worksheet_data_list.index(i_worksheet)].T.columns.values[i_column]),
+				                  format_item_content)
+
+
+	# for i_sheet in range(len(excel_sheet_name_list)):
+	# 	for i_
 
 	excel_basic.close_workbook(workbook)
 	excel_basic.close_excel(excel_writer)

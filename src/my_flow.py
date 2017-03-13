@@ -86,7 +86,7 @@ def test_case_init_wrapper(case_name, case_func, *args, **kwargs):
 	case_func(*args, **kwargs)
 	data_frame_list = dmm_basic.dmm_flow_wrapper(visa_address(),
 	                                             600000, 3, 'IMM', 'MIN', 'TIM', 'MIN',
-	                                             1, 1000, case_name, 0)
+	                                             1, 5000, case_name, 0)
 	return data_frame_list
 
 
@@ -97,7 +97,7 @@ def test_case_wrapper(case_name, joined_df_list, enable, case_func, *args, **kwa
 		case_func(*args, **kwargs)
 		data_frame_list = dmm_basic.dmm_flow_wrapper(visa_address(),
 		                                             600000, 3, 'IMM', 'MIN', 'TIM', 'MIN',
-		                                             1, 1000, case_name, 0)
+		                                             1, 5000, case_name, 0)
 		for i in range(len(visa_address())):
 			joined_df_list[i] = joined_df_list[i].join(data_frame_list[i])
 		return joined_df_list
@@ -389,10 +389,10 @@ def main_flow():
 		                        df_version[df_version.columns.values[i]].values[0],
 		                        format_item_content)
 	# print(df_version[df_version.columns.values[i]].values)
-	print(df_version)
+	# print(df_version)
 	print('\n')
-	for i in range(len(joined_df_list)):
-		print(joined_df_list[i].T)
+	# for i in range(len(joined_df_list)):
+	# 	print(joined_df_list[i].T)
 	print('\n')
 	# print(joined_df_list[0].T.columns.values[0])
 	# print('\n')
@@ -409,11 +409,15 @@ def main_flow():
 		excel_format_summary.set_column_width(i, 'B', 'B', 18)
 		excel_format_summary.set_column_width(i, 'C', 'H', 9)
 	cell_index_data = []
+	cell_column_data = []
 	cell_content_data = []
 	cell_content_data_array = []
 	for i_index in range(len(joined_df_list[0].T.index.values)):
 		cell_index_data.append('B{0}'.format(i_index+3))
 
+	for i_column in range(len(joined_df_list[0].T.columns.values)):
+		cell_column_data.append('{0}2'.format(excel_basic.excel_col2str(i_column+excel_basic.excel_col2num('C'))))
+	# print(cell_column_data, '!!!!!!!!')
 	for i_index in range(len(joined_df_list[0].T.index.values)):
 		for i_column in range(len(joined_df_list[0].T.columns.values)):
 			cell_content_data.append('{0}{1}'.format(excel_basic.excel_col2str(i_column + excel_basic.excel_col2num('C')),

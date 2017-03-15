@@ -7,11 +7,12 @@ from collections import OrderedDict
 
 from pandas import DataFrame
 
-import src.my_misc.my_time as my_time
 import src.my_config.config_basic as config_basic
 import src.my_dmm.dmm_basic as dmm_basic
 import src.my_excel.excel_basic as excel_basic
 import src.my_excel.excel_format as excel_format
+import src.my_misc.dataframe_basic as df_basic
+import src.my_misc.my_time as my_time
 import src.my_ssh.ssh_get_cmd as ssh_get_cmd
 import src.my_ssh.ssh_send_cmd as ssh_send_cmd
 
@@ -379,25 +380,25 @@ def main_flow():
 	# cell_content_version = ['C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9', 'C10', 'C11', 'C12']
 	cell_index_version = []
 	cell_content_version = []
-	for i in range(len(df_version.columns.values)):
+	for i in range(len(df_basic.get_col(df_version))):
 		cell_index_version.append('B{0}'.format(i+3))
 		cell_content_version.append('C{0}'.format(i+3))
 
-	for i in range(len(df_version.columns.values)):
+	for i in range(len(df_basic.get_col(df_version))):
 		excel_basic.write_excel_format(worksheet_version,
 		                               cell_index_version[i],
-		                               df_version.columns.values[i],
+		                               df_basic.get_col(df_version)[i],
 		                               format_index_one)
 		excel_basic.write_excel_format(worksheet_version,
 		                               cell_content_version[i],
-		                               df_version[df_version.columns.values[i]].values[0],
+		                               # df_version[df_basic.get_col(df_version)[i]].values[0],
+		                               df_basic.get_col_value(df_version, df_basic.get_col(df_version)[i]),
 		                               format_content_one)
-		# worksheet_version.write(cell_index_version[i],
-		#                         df_version.columns.values[i],
-		#                         format_index_one)
-		# worksheet_version.write(cell_content_version[i],
-		#                         df_version[df_version.columns.values[i]].values[0],
-		#                         format_content_one)
+		# print(df_version[df_version.columns.values[i]].values[0], '00000')
+		# print(df_version[df_version.columns.values[i]].values, '11111')
+		# print(type(df_version[df_version.columns.values[i]].values), '22222')
+		# print(type(df_version), '33333')
+
 
 
 	for i in range(len(visa_address())):
@@ -413,14 +414,14 @@ def main_flow():
 	cell_column_data = []
 	cell_content_data = []
 	cell_content_data_array = []
-	for i_index in range(len(joined_df_list[0].T.index.values)):
+	for i_index in range(len(df_basic.get_idx(joined_df_list[0].T))):
 		cell_index_data.append('B{0}'.format(i_index+3))
 
-	for i_column in range(len(joined_df_list[0].T.columns.values)):
+	for i_column in range(len(df_basic.get_col(joined_df_list[0].T))):
 		cell_column_data.append('{0}2'.format(excel_basic.excel_col2str(i_column+excel_basic.excel_col2num('C'))))
 	# print(cell_column_data, '!!!!!!!!')
-	for i_index in range(len(joined_df_list[0].T.index.values)):
-		for i_column in range(len(joined_df_list[0].T.columns.values)):
+	for i_index in range(len(df_basic.get_idx(joined_df_list[0].T))):
+		for i_column in range(len(df_basic.get_col(joined_df_list[0].T))):
 			cell_content_data.append('{0}{1}'.format(excel_basic.excel_col2str(i_column + excel_basic.excel_col2num('C')),
 			                                         i_index + 3))
 		cell_content_data_array.append(cell_content_data)
@@ -431,17 +432,28 @@ def main_flow():
 	for i_worksheet in worksheet_data_list:
 
 		# Get index count, which is test cases count
-		for i_index in range(len(joined_df_list[0].T.index.values)):
+		for i_index in range(len(df_basic.get_idx(joined_df_list[0].T))):
 			# Get column count
-			for i_column in range(len(joined_df_list[0].T.columns.values)):
-				i_worksheet.write(cell_column_data[i_column], joined_df_list[worksheet_data_list.index(i_worksheet)].T.columns.values[i_column], format_title_two)
-				# worksheet_data_list.index(i_worksheet) is the one rail data frame in DF list, since worksheet # = DF #
-				i_worksheet.write(cell_index_data[i_index],
-				        joined_df_list[worksheet_data_list.index(i_worksheet)].T.index.values[i_index],
-				                  format_index_one)
-				i_worksheet.write(cell_content_data_array[i_index][i_column],
-				                  joined_df_list[worksheet_data_list.index(i_worksheet)].T.get_value(joined_df_list[worksheet_data_list.index(i_worksheet)].T.index.values[i_index], joined_df_list[worksheet_data_list.index(i_worksheet)].T.columns.values[i_column]),
-				                  format_content_two)
+			for i_column in range(len(df_basic.get_col(joined_df_list[0].T))):
+				# worksheet_data_list.index(i_worksheet) is the one rail dataframe in DF list, since worksheet # = DF #
+				excel_basic.write_excel_format(i_worksheet,
+				                               cell_column_data[i_column],
+				                               # joined_df_list[worksheet_data_list.index(i_worksheet)].T.columns.values[i_column],
+				                               df_basic.get_col(joined_df_list[worksheet_data_list.index(i_worksheet)].T)[i_column],
+				                               format_title_two)
+				excel_basic.write_excel_format(i_worksheet,
+				                               cell_index_data[i_index],
+				                               # joined_df_list[worksheet_data_list.index(i_worksheet)].T.index.values[i_index],
+				                               df_basic.get_idx(joined_df_list[worksheet_data_list.index(i_worksheet)].T)[i_index],
+				                               format_index_one)
+				excel_basic.write_excel_format(i_worksheet,
+				                               cell_content_data_array[i_index][i_column],
+				                               joined_df_list[worksheet_data_list.index(i_worksheet)].T.get_value(joined_df_list[worksheet_data_list.index(i_worksheet)].T.index.values[i_index],
+					                               joined_df_list[worksheet_data_list.index(i_worksheet)].T.columns.values[i_column]),
+				                               # df_basic.get_col_idx_value(joined_df_list[worksheet_data_list.index(i_worksheet)].T,
+				                               #                            df_basic.get_idx(joined_df_list[worksheet_data_list.index(i_worksheet)].T)[i_index],
+				                               #                            df_basic.get_col(joined_df_list[worksheet_data_list.index(i_worksheet)].T)[i_column]),
+				                               format_content_two)
 
 
 	excel_basic.close_workbook(workbook)

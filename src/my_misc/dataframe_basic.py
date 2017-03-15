@@ -35,7 +35,7 @@ def get_col_value(dataframe_content, dataframe_column):
 	return dataframe_content[dataframe_column].values[0]
 
 
-def get_col_idx_value(datafram_content, dataframe_col, datafram_idx):
+def get_idx_col_value(datafram_content, datafram_idx, dataframe_col):
 	"""
 	Get dataframe value based on index and column
 	:param datafram_content: dataframe

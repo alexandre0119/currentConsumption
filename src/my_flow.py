@@ -376,11 +376,12 @@ def main_flow():
 	format_content_one = excel_format.format_content_one(workbook)
 	format_content_two = excel_format.format_content_two(workbook)
 
-	cell_index_version = []
-	cell_content_version = []
-	for i in range(len(df_basic.get_col(df_version))):
-		cell_index_version.append('B{0}'.format(i+3))
-		cell_content_version.append('C{0}'.format(i+3))
+
+	# Create version sheet index cell list
+	cell_index_version = excel_basic.create_single_col('B', 3, len(df_basic.get_col(df_version)))
+	# Create version sheet index content cell list
+	cell_content_version = excel_basic.create_single_col('C', 3, len(df_basic.get_col(df_version)))
+
 
 	for i in range(len(df_basic.get_col(df_version))):
 		excel_basic.write_excel_format(worksheet_version,

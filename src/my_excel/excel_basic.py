@@ -61,13 +61,13 @@ def close_excel(writer_obj):
 	writer_obj.close()
 
 
-def excel_col2str(n):
+def excel_col2str(col):
 	"""
 	convert a column number (eg. 127) into an excel column (eg. AA)
 	:param n: excel column number
 	:return: excel column
 	"""
-	div = n
+	div = col
 	string = ""
 	while div > 0:
 		module = (div - 1) % 26
@@ -78,7 +78,7 @@ def excel_col2str(n):
 
 def excel_col2num(col):
 	"""
-	Convert an excel or spreadsheet column letter to its number
+	Convert an excel or spreadsheet column letter (eg. AA) to its number (eg. 127)
 	:param col: excel column
 	:return: excel column number
 	"""
@@ -89,5 +89,18 @@ def excel_col2num(col):
 			num = num * 26 + (ord(c.upper()) - ord('A')) + 1
 	return num
 
+
+def create_single_row(row_num, start, range_span):
+	row_list = []
+	for i in range(int(range_span)):
+		row_list.append('{0}{1}'.format(excel_col2str(excel_col2num(start) + i), row_num))
+	return row_list
+
+
+def create_single_col(col_num, start, range_span):
+	col_list = []
+	for i in range(int(range_span)):
+		col_list.append('{0}{1}'.format(col_num, int(start) + i))
+	return col_list
 
 

@@ -376,26 +376,23 @@ def main_flow():
 	format_content_one = excel_format.format_content_one(workbook)
 	format_content_two = excel_format.format_content_two(workbook)
 
-
+	# Get DataFrame column value list length
+	df_version_col_len = len(df_basic.get_col(df_version))
 	# Create version sheet index cell list
-	cell_index_version = excel_basic.create_single_col('B', 3, len(df_basic.get_col(df_version)))
+	cell_version_index = excel_basic.create_single_col('B', '3', df_version_col_len)
 	# Create version sheet index content cell list
-	cell_content_version = excel_basic.create_single_col('C', 3, len(df_basic.get_col(df_version)))
+	cell_version_content = excel_basic.create_single_col('C', '3', df_version_col_len)
 
 
-	for i in range(len(df_basic.get_col(df_version))):
+	for i in range(df_version_col_len):
 		excel_basic.write_excel_format(worksheet_version,
-		                               cell_index_version[i],
+		                               cell_version_index[i],
 		                               df_basic.get_col(df_version)[i],
 		                               format_index_one)
 		excel_basic.write_excel_format(worksheet_version,
-		                               cell_content_version[i],
+		                               cell_version_content[i],
 		                               df_basic.get_col_value(df_version, df_basic.get_col(df_version)[i]),
 		                               format_content_one)
-		# print(df_version[df_version.columns.values[i]].values[0], '00000')
-		# print(df_version[df_version.columns.values[i]].values, '11111')
-		# print(type(df_version[df_version.columns.values[i]].values), '22222')
-		# print(type(df_version), '33333')
 
 	for i in range(len(visa_address())):
 		# Convert the dataframe to an XlsxWriter Excel object.
@@ -406,23 +403,15 @@ def main_flow():
 	for i in worksheet_data_list:
 		excel_format.set_column_width(i, 'B', 'B', 18)
 		excel_format.set_column_width(i, 'C', 'H', 14)
-	cell_index_data = []
-	cell_column_data = []
-	cell_content_data = []
-	cell_content_data_array = []
-	for i_index in range(len(df_basic.get_idx(joined_df_list[0].T))):
-		cell_index_data.append('B{0}'.format(i_index+3))
 
-	for i_column in range(len(df_basic.get_col(joined_df_list[0].T))):
-		cell_column_data.append('{0}2'.format(excel_basic.excel_col2str(i_column+excel_basic.excel_col2num('C'))))
-	# print(cell_column_data, '!!!!!!!!')
-	for i_index in range(len(df_basic.get_idx(joined_df_list[0].T))):
-		for i_column in range(len(df_basic.get_col(joined_df_list[0].T))):
-			cell_content_data.append('{0}{1}'.format(excel_basic.excel_col2str(i_column + excel_basic.excel_col2num('C')),
-			                                         i_index + 3))
-		cell_content_data_array.append(cell_content_data)
-		cell_content_data = []
-	print(cell_content_data_array)
+	# Create data sheet index cell list
+	cell_data_index = excel_basic.create_single_col('B', '3', len(df_basic.get_idx(joined_df_list[0].T)))
+	# Create data sheet title cell list
+	cell_data_title = excel_basic.create_single_row('C', '2', len(df_basic.get_col(joined_df_list[0].T)))
+	# Create data sheet content cell list
+	cell_data_content_array = excel_basic.create_array('C', '3',
+	                                                   len(df_basic.get_col(joined_df_list[0].T)),
+	                                                   len(df_basic.get_idx(joined_df_list[0].T)))
 
 	# Loop for data worksheet
 	for i_worksheet in worksheet_data_list:
@@ -433,15 +422,15 @@ def main_flow():
 				# worksheet_data_list.index(i_worksheet) is the one rail dataframe in DF list, since worksheet # = DF #
 				i_dataframe = joined_df_list[worksheet_data_list.index(i_worksheet)].T
 				excel_basic.write_excel_format(i_worksheet,
-				                               cell_column_data[i_column],
+				                               cell_data_title[i_column],
 				                               df_basic.get_col(i_dataframe)[i_column],
 				                               format_title_two)
 				excel_basic.write_excel_format(i_worksheet,
-				                               cell_index_data[i_index],
+				                               cell_data_index[i_index],
 				                               df_basic.get_idx(i_dataframe)[i_index],
 				                               format_index_one)
 				excel_basic.write_excel_format(i_worksheet,
-				                               cell_content_data_array[i_index][i_column],
+				                               cell_data_content_array[i_index][i_column],
 				                               df_basic.get_idx_col_value(i_dataframe,
 				                                                          df_basic.get_idx(i_dataframe)[i_index],
 				                                                          df_basic.get_col(i_dataframe)[i_column]),

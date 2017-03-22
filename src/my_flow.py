@@ -15,27 +15,11 @@ import src.my_dmm.dmm_basic as dmm_basic
 # Excel related
 import src.my_excel.excel_basic as excel_basic
 import src.my_excel.excel_format as excel_format
-# Time related
-import src.my_misc.my_time as my_time
 # SSH related
 import src.my_ssh.ssh_get_cmd as ssh_get_cmd
 import src.my_ssh.ssh_send_cmd as ssh_send_cmd
 # Decorator
 import src.my_misc.my_decorator as my_decorator
-
-
-def run_time(start_time, end_time, enable_print=1):
-	run_time_str = '''
-	----------------------------------------------------------------
-	Program total running time: {0}
-	================================================================
-	'''
-	if enable_print == 1:
-		delta_time = my_time.time_delta(start_time, end_time)
-		print(run_time_str.format(delta_time))
-	else:
-		delta_time = my_time.time_delta(start_time, end_time)
-		return delta_time
 
 
 def test_case_init_wrapper(case_name, case_func, *args, **kwargs):
@@ -64,6 +48,7 @@ def test_case_wrapper(case_name, joined_df_list, enable, case_func, *args, **kwa
 
 
 def main_flow():
+	# starter: 1: logging; 0[0]: not formatted time; 0[1] formatted time
 	my_decorator.main_flow_starter(1)
 	start_time = my_decorator.main_flow_starter(0)[0]
 	start_time_formatted = my_decorator.main_flow_starter(0)[1]
@@ -289,12 +274,14 @@ def main_flow():
 
 	# print(joined_df_list)
 
+	# ender: 1: logging; 0[0]: not formatted time; 0[1] formatted time
 	my_decorator.main_flow_ender(1)
 	end_time = my_decorator.main_flow_ender(0)[0]
 	end_time_formatted = my_decorator.main_flow_ender(0)[1]
 
-	delta_time = run_time(start_time, end_time, 0)
-	run_time(start_time, end_time, 1)
+	# run_time: 1: logging; 0: get time
+	delta_time = my_decorator.main_flow_run_time(start_time, end_time, 0)
+	my_decorator.main_flow_run_time(start_time, end_time, 1)
 
 	# [Start][Excel] write data to Excel
 

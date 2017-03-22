@@ -53,11 +53,9 @@ def hci_return_header_footer():
 
 def main_flow_starter(enable_print=1):
 	"""
-	As other answers mention, the brace-style formatting introduced in Python 3.2 is only used on the format string,
-	not the actual log messages.
-	As of Python 3.5, there is no nice way to use brace-style formatting to log messages.
-	:param enable_print:
-	:return:
+	Main flow starter
+	:param enable_print: 1 to enable logging/print
+	:return: not formatted and formatted time when enable is non 1
 	"""
 	start_str = '''
 	================================================================
@@ -75,6 +73,11 @@ def main_flow_starter(enable_print=1):
 
 
 def main_flow_ender(enable_print=1):
+	"""
+	Main flow ender
+	:param enable_print: 1 to enable logging/print
+	:return: not formatted and formatted time when enable is non 1
+	"""
 	end_str = '''
 	----------------------------------------------------------------
 	Program ends @ {0}
@@ -88,3 +91,26 @@ def main_flow_ender(enable_print=1):
 	else:
 		end_time = my_time.now()
 		return end_time, my_time.now_formatted(end_time)
+
+
+def main_flow_run_time(start_time, end_time, enable_print=1):
+	"""
+	Main flow run time
+	:param start_time: start time
+	:param end_time: end time
+	:param enable_print: 1 to enable logging/print
+	:return: time value when enable is non 1
+	"""
+	run_time_str = '''
+	----------------------------------------------------------------
+	Program total running time: {0}
+	================================================================
+	'''
+	if enable_print == 1:
+		delta_time = my_time.time_delta(start_time, end_time)
+		final_str = run_time_str.format(delta_time)
+		# print(final_str)
+		log_decorator.info(final_str)
+	else:
+		delta_time = my_time.time_delta(start_time, end_time)
+		return delta_time

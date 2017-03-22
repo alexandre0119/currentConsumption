@@ -3,69 +3,25 @@
 # Author: Alex Wang
 
 import sys
+# Ordered dict to construct DF
 from collections import OrderedDict
-
 from pandas import DataFrame
-
+# DF related
+import src.my_misc.dataframe_basic as df_basic
+# config.ini settings
 import src.my_config.config_basic as config_basic
+# DMM control related
 import src.my_dmm.dmm_basic as dmm_basic
+# Excel related
 import src.my_excel.excel_basic as excel_basic
 import src.my_excel.excel_format as excel_format
-import src.my_misc.dataframe_basic as df_basic
+# Time related
 import src.my_misc.my_time as my_time
+# SSH related
 import src.my_ssh.ssh_get_cmd as ssh_get_cmd
 import src.my_ssh.ssh_send_cmd as ssh_send_cmd
-
-
-def visa_address():
-	"""
-	Get VISA address list based on running instrument number and their addresses from config file
-	:return: VISA address list
-	"""
-	# Init config file
-	config = config_basic.load_config()
-	# Get config file instrument count (DMM count): how many DMM are connected and measuring data
-	dmm_count = int(str(config['DMM'].get('DMM_Count')))
-	# Get config file DMM VISA address
-	visa_address_list_all = [str(config['DMM'].get('VISA_Address_A')),
-	                         str(config['DMM'].get('VISA_Address_B')),
-	                         str(config['DMM'].get('VISA_Address_C')),
-	                         str(config['DMM'].get('VISA_Address_D'))]
-
-	# Append VISA address to a list and return
-	visa_address_list = []
-	for i in range(int(dmm_count)):
-		visa_address_list.append(visa_address_list_all[i])
-
-	return visa_address_list
-
-
-def starter(enable_print=1):
-	start_str = '''
-	================================================================
-	Program starts @ {0}
-	----------------------------------------------------------------
-	'''
-	if enable_print == 1:
-		start_time = my_time.now()
-		print(start_str.format(my_time.now_formatted(start_time)))
-	else:
-		start_time = my_time.now()
-		return start_time, my_time.now_formatted(start_time)
-
-
-def ender(enable_print=1):
-	end_str = '''
-	----------------------------------------------------------------
-	Program ends @ {0}
-	================================================================
-	'''
-	if enable_print == 1:
-		end_time = my_time.now()
-		print(end_str.format(my_time.now_formatted(end_time)))
-	else:
-		end_time = my_time.now()
-		return end_time, my_time.now_formatted(end_time)
+# Decorator
+import src.my_misc.my_decorator as my_decorator
 
 
 def run_time(start_time, end_time, enable_print=1):
@@ -85,7 +41,7 @@ def run_time(start_time, end_time, enable_print=1):
 def test_case_init_wrapper(case_name, case_func, *args, **kwargs):
 	print('Measuring {0}......'.format(case_name))
 	case_func(*args, **kwargs)
-	data_frame_list = dmm_basic.dmm_flow_wrapper(visa_address(),
+	data_frame_list = dmm_basic.dmm_flow_wrapper(config_basic.visa_address_active_list(),
 	                                             600000, 3, 'IMM', 'MIN', 'TIM', 'MIN',
 	                                             1, 100, case_name, 0)
 	return data_frame_list
@@ -96,10 +52,10 @@ def test_case_wrapper(case_name, joined_df_list, enable, case_func, *args, **kwa
 	if enable == 1:
 		print('Measuring {0}......'.format(case_name))
 		case_func(*args, **kwargs)
-		data_frame_list = dmm_basic.dmm_flow_wrapper(visa_address(),
+		data_frame_list = dmm_basic.dmm_flow_wrapper(config_basic.visa_address_active_list(),
 		                                             600000, 3, 'IMM', 'MIN', 'TIM', 'MIN',
 		                                             1, 100, case_name, 0)
-		for i in range(len(visa_address())):
+		for i in range(len(config_basic.visa_address_active_list())):
 			joined_df_list[i] = joined_df_list[i].join(data_frame_list[i])
 		return joined_df_list
 	else:
@@ -108,13 +64,13 @@ def test_case_wrapper(case_name, joined_df_list, enable, case_func, *args, **kwa
 
 
 def main_flow():
-	starter(1)
-	start_time = starter(0)[0]
-	start_time_formatted = starter(0)[1]
+	my_decorator.main_flow_starter(1)
+	start_time = my_decorator.main_flow_starter(0)[0]
+	start_time_formatted = my_decorator.main_flow_starter(0)[1]
 
 	# Design joined data frame list based on connected Inst number, and init with empty DataFrame()
 	joined_df_list = []
-	for i in range(len(visa_address())):
+	for i in range(len(config_basic.visa_address_active_list())):
 		joined_df_list.append(DataFrame())
 
 	config = config_basic.load_config()
@@ -131,7 +87,7 @@ def main_flow():
 		case_0_data_frame_list = test_case_init_wrapper('Deep Sleep', ssh_send_cmd.cc_bt_init_status, dut, ref, 0)
 
 		# Assign first data frame list to joined data frame list as initiate value
-		for i in range(len(visa_address())):
+		for i in range(len(config_basic.visa_address_active_list())):
 			joined_df_list[i] = case_0_data_frame_list[i]
 
 		if str(config['Test_Case'].get('BT_Enable')) == '1':
@@ -333,9 +289,9 @@ def main_flow():
 
 	# print(joined_df_list)
 
-	ender(1)
-	end_time = ender(0)[0]
-	end_time_formatted = ender(0)[1]
+	my_decorator.main_flow_ender(1)
+	end_time = my_decorator.main_flow_ender(0)[0]
+	end_time_formatted = my_decorator.main_flow_ender(0)[1]
 
 	delta_time = run_time(start_time, end_time, 0)
 	run_time(start_time, end_time, 1)
@@ -410,14 +366,14 @@ def main_flow():
 
 	# [Worksheet][data] Create worksheet object list
 	# Worksheet for data name list, all up to 4 sheets based on config.ini file
-	excel_sheet_name_list = config_basic.worksheet_name_list()
+	excel_sheet_name_list = config_basic.worksheet_name_all_list()
 	# Loop for VISA address, how many instruments we are using now
-	for i in range(len(visa_address())):
+	for i in range(len(config_basic.visa_address_active_list())):
 		# Convert the dataframe to an XlsxWriter Excel object.
 		excel_basic.write_excel(excel_writer, joined_df_list[i], excel_sheet_name_list[i])
 	# Create worksheet object list
 	worksheet_data_list = []
-	for i in range(len(visa_address())):
+	for i in range(len(config_basic.visa_address_active_list())):
 		worksheet_data_list.append(excel_writer.sheets[excel_sheet_name_list[i]])
 
 	# [Worksheet][data][format] format title

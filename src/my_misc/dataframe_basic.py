@@ -2,10 +2,6 @@
 # -*- coding: utf-8 -*-
 # Author: Alex Wang
 
-from collections import OrderedDict
-
-from pandas import DataFrame
-
 
 def get_col(dataframe_content):
 	"""

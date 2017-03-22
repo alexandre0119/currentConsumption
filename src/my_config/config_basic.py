@@ -48,7 +48,7 @@ def config_ref():
 	return ref
 
 
-def worksheet_name_list():
+def worksheet_name_all_list():
 	"""
 	Load worksheet name list from config.ini, up to 4 sheets
 	:return: worksheet name list
@@ -57,8 +57,29 @@ def worksheet_name_list():
 	excel_sheet_name_list = [str(config['BASIC'].get('Excel_Sheet_Name_A')),
 	                         str(config['BASIC'].get('Excel_Sheet_Name_B')),
 	                         str(config['BASIC'].get('Excel_Sheet_Name_C')),
-	                         str(config['BASIC'].get('Excel_Sheet_Name_D')), ]
+	                         str(config['BASIC'].get('Excel_Sheet_Name_D'))]
 	return excel_sheet_name_list
+
+
+def visa_address_active_list():
+	"""
+	Get VISA address list based on running instrument number and their addresses from config file
+	:return: VISA address list
+	"""
+	# Init config file
+	config = load_config()
+	# Get config file instrument count (DMM count): how many DMM are connected and measuring data
+	dmm_count = int(str(config['DMM'].get('DMM_Count')))
+	# Get config file DMM VISA address
+	visa_address_list_all = [str(config['DMM'].get('VISA_Address_A')),
+	                         str(config['DMM'].get('VISA_Address_B')),
+	                         str(config['DMM'].get('VISA_Address_C')),
+	                         str(config['DMM'].get('VISA_Address_D'))]
+	# Append VISA address to a list and return
+	visa_address_list = []
+	for i in range(int(dmm_count)):
+		visa_address_list.append(visa_address_list_all[i])
+	return visa_address_list
 
 
 def config_ssh_server():

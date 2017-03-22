@@ -48,6 +48,19 @@ def config_ref():
 	return ref
 
 
+def worksheet_name_list():
+	"""
+	Load worksheet name list from config.ini, up to 4 sheets
+	:return: worksheet name list
+	"""
+	config = load_config()
+	excel_sheet_name_list = [str(config['BASIC'].get('Excel_Sheet_Name_A')),
+	                         str(config['BASIC'].get('Excel_Sheet_Name_B')),
+	                         str(config['BASIC'].get('Excel_Sheet_Name_C')),
+	                         str(config['BASIC'].get('Excel_Sheet_Name_D')), ]
+	return excel_sheet_name_list
+
+
 def config_ssh_server():
 	"""
 	Load SSH server(destination) IP address from config.ini

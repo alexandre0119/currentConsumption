@@ -340,12 +340,19 @@ def main_flow():
 	delta_time = run_time(start_time, end_time, 0)
 	run_time(start_time, end_time, 1)
 
-	# Write to different sheet
-	excel_sheet_name_list = [str(config['BASIC'].get('Excel_Sheet_Name_A')),
-	                         str(config['BASIC'].get('Excel_Sheet_Name_B')),
-	                         str(config['BASIC'].get('Excel_Sheet_Name_C')),
-	                         str(config['BASIC'].get('Excel_Sheet_Name_D')), ]
+	# [Start][Excel] write data to Excel
 
+	# [Open][Excel] open excel file
+	excel_writer = excel_basic.open_excel('test.xlsx')
+	# Create workbook object
+	workbook = excel_writer.book
+
+	# [Start][Worksheet][version]
+
+	# [Worksheet][Name] version information sheet
+	sheet_version = 'Version'
+
+	# [Worksheet][version] create DF 'df_version' based on ordered dict
 	df_version = DataFrame(OrderedDict((('WLAN Version', ['xx.xx.xx.xx.xx.xx']),
 	                                    ('BT Version', ['xx.xx.xx.xx.xx.xx']),
 	                                    ('Hardware', ['Robin3 WIB module']),
@@ -356,79 +363,104 @@ def main_flow():
 	                                    ('Start Time', [start_time_formatted]),
 	                                    ('End Time', [end_time_formatted]),
 	                                    ('Run Time', [delta_time]))))
-	sheet_version = 'Version'
 
-	excel_writer = excel_basic.open_excel('test.xlsx')
-
+	# [Worksheet][version] Write raw data to excel without format, swap column and index
 	excel_basic.write_excel(excel_writer, df_version, sheet_name=sheet_version)
 
-	workbook = excel_writer.book
+	# [Worksheet][version] worksheet object
 	worksheet_version = excel_writer.sheets[sheet_version]
 
+	# [Worksheet][version][format] set column width
 	excel_format.set_column_width(worksheet_version, 'B', 'B', 18)
 	excel_format.set_column_width(worksheet_version, 'C', 'C', 88)
 
+	# [Worksheet][version][format] write and format title
 	format_title_one = excel_format.format_title_one(workbook)
-	format_title_two = excel_format.format_title_two(workbook)
 	worksheet_version.merge_range('B2:C2', 'Information', format_title_one)
 
+	# [Worksheet][version][format] format index
 	format_index_one = excel_format.format_index_one(workbook)
+	# [Worksheet][version][format] format content
 	format_content_one = excel_format.format_content_one(workbook)
-	format_content_two = excel_format.format_content_two(workbook)
 
-	# Get DataFrame column value list length
+	# [version] Get DataFrame column list length for 'df_version'
 	df_version_col_len = len(df_basic.get_col(df_version))
-	# Create version sheet index cell list
+
+	# [version] Create index cell list
 	cell_version_index = excel_basic.create_single_col('B', '3', df_version_col_len)
-	# Create version sheet index content cell list
+	# [version] Create index content cell list
 	cell_version_content = excel_basic.create_single_col('C', '3', df_version_col_len)
 
-
+	# [version][write] Loop for DF 'df_version' column length
 	for i in range(df_version_col_len):
+		# Write DF 'df_version' each column to cell destination
 		excel_basic.write_excel_format(worksheet_version,
 		                               cell_version_index[i],
 		                               df_basic.get_col(df_version)[i],
 		                               format_index_one)
+		# Write DF 'df_version' each column corresponding data to cell destination
 		excel_basic.write_excel_format(worksheet_version,
 		                               cell_version_content[i],
 		                               df_basic.get_col_value(df_version, df_basic.get_col(df_version)[i]),
 		                               format_content_one)
 
+	# [Complete][Worksheet][version]
+
+	# [Start][Worksheet][data]
+
+	# [Worksheet][data] Create worksheet object list
+	# Worksheet for data name list, all up to 4 sheets based on config.ini file
+	excel_sheet_name_list = config_basic.worksheet_name_list()
+	# Loop for VISA address, how many instruments we are using now
 	for i in range(len(visa_address())):
 		# Convert the dataframe to an XlsxWriter Excel object.
 		excel_basic.write_excel(excel_writer, joined_df_list[i], excel_sheet_name_list[i])
+	# Create worksheet object list
 	worksheet_data_list = []
 	for i in range(len(visa_address())):
 		worksheet_data_list.append(excel_writer.sheets[excel_sheet_name_list[i]])
+
+	# [Worksheet][data][format] format title
+	format_title_two = excel_format.format_title_two(workbook)
+	# [Worksheet][data][format] format content
+	format_content_two = excel_format.format_content_two(workbook)
+
+	# [data] Get DataFrame index list length for 'joined_df_list'
+	joined_df_list_idx_len = len(df_basic.get_idx(joined_df_list[0].T))
+	# [data] Get DataFrame column list length for 'joined_df_list'
+	joined_df_list_col_len = len(df_basic.get_col(joined_df_list[0].T))
+
+	# [data] Set column width for each worksheet
 	for i in worksheet_data_list:
 		excel_format.set_column_width(i, 'B', 'B', 18)
 		excel_format.set_column_width(i, 'C', 'H', 14)
 
-	# Create data sheet index cell list
-	cell_data_index = excel_basic.create_single_col('B', '3', len(df_basic.get_idx(joined_df_list[0].T)))
-	# Create data sheet title cell list
-	cell_data_title = excel_basic.create_single_row('C', '2', len(df_basic.get_col(joined_df_list[0].T)))
-	# Create data sheet content cell list
-	cell_data_content_array = excel_basic.create_array('C', '3',
-	                                                   len(df_basic.get_col(joined_df_list[0].T)),
-	                                                   len(df_basic.get_idx(joined_df_list[0].T)))
+	# [data] Create index cell list
+	cell_data_index = excel_basic.create_single_col('B', '3', joined_df_list_idx_len)
+	# [data] Create title cell list
+	cell_data_title = excel_basic.create_single_row('C', '2', joined_df_list_col_len)
+	# [data] Create content cell list
+	cell_data_content_array = excel_basic.create_array('C', '3', joined_df_list_col_len, joined_df_list_idx_len)
 
-	# Loop for data worksheet
+	# [data][write] Loop for data worksheet
 	for i_worksheet in worksheet_data_list:
 		# Get index count, which is test cases count
-		for i_index in range(len(df_basic.get_idx(joined_df_list[0].T))):
+		for i_index in range(joined_df_list_idx_len):
 			# Get column count
-			for i_column in range(len(df_basic.get_col(joined_df_list[0].T))):
+			for i_column in range(joined_df_list_col_len):
 				# worksheet_data_list.index(i_worksheet) is the one rail dataframe in DF list, since worksheet # = DF #
 				i_dataframe = joined_df_list[worksheet_data_list.index(i_worksheet)].T
+				# [Worksheet][data] write title
 				excel_basic.write_excel_format(i_worksheet,
 				                               cell_data_title[i_column],
 				                               df_basic.get_col(i_dataframe)[i_column],
 				                               format_title_two)
+				# [Worksheet][data] write index
 				excel_basic.write_excel_format(i_worksheet,
 				                               cell_data_index[i_index],
 				                               df_basic.get_idx(i_dataframe)[i_index],
 				                               format_index_one)
+				# [Worksheet][data] write content
 				excel_basic.write_excel_format(i_worksheet,
 				                               cell_data_content_array[i_index][i_column],
 				                               df_basic.get_idx_col_value(i_dataframe,
@@ -436,5 +468,9 @@ def main_flow():
 				                                                          df_basic.get_col(i_dataframe)[i_column]),
 				                               format_content_two)
 
+	# [Complete][Worksheet][data]
+
+	# Close workbook object
 	excel_basic.close_workbook(workbook)
+	# Close excel object
 	excel_basic.close_excel(excel_writer)

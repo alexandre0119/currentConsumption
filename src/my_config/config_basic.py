@@ -82,6 +82,90 @@ def visa_address_active_list():
 	return visa_address_list
 
 
+def dmm_timeout():
+	"""
+	Get DMM max timeout setting from config.ini
+	:return: timeout (ms)
+	"""
+	config = load_config()
+	timeout = float(config['DMM'].get('DMM_Timeout'))
+	return timeout
+
+
+def dmm_trigger_count():
+	"""
+	Get DMM trigger count setting for different modes from config.ini
+	:return: trigger count list [0] flat [1] pulse [2] active
+	"""
+	config = load_config()
+	flat = float(config['DMM'].get('Flat_Trigger_Count'))
+	pulse = float(config['DMM'].get('Pulse_Trigger_Count'))
+	active = float(config['DMM'].get('Active_Trigger_Count'))
+	return [flat, pulse, active]
+
+
+def dmm_sample_count():
+	"""
+	Get DMM sample count setting for different modes from config.ini
+	:return: sample count list [0] flat [1] pulse [2] active
+	"""
+	config = load_config()
+	flat = float(config['DMM'].get('Flat_Sample_Count'))
+	pulse = float(config['DMM'].get('Pulse_Sample_Count'))
+	active = float(config['DMM'].get('Active_Sample_Count'))
+	return [flat, pulse, active]
+
+
+def dmm_current_range():
+	"""
+	Get DMM current max range from config.ini
+	:return: current range (A)
+	"""
+	config = load_config()
+	current_range = float(config['DMM'].get('Current_Range'))
+	return current_range
+
+
+def dmm_trig_src():
+	"""
+	Get DMM trigger source from config.ini
+	:return: trigger source type
+	"""
+	config = load_config()
+	trig_src = str(config['DMM'].get('DMM_Trigger_Source'))
+	return trig_src
+
+
+def dmm_trig_delay():
+	"""
+	Get DMM trigger delay from config.ini
+	:return: trigger delay type
+	"""
+	config = load_config()
+	trig_delay = str(config['DMM'].get('DMM_Trigger_Delay'))
+	return trig_delay
+
+
+def dmm_sample_src():
+	"""
+	Get DMM sample source from config.ini
+	:return: sample source type
+	"""
+	config = load_config()
+	sample_src = str(config['DMM'].get('DMM_Sample_Source'))
+	return sample_src
+
+
+def dmm_sample_timer():
+	"""
+	Get DMM sample timer from config.ini
+	:return: sample source type
+	"""
+	config = load_config()
+	sample_timer = str(config['DMM'].get('DMM_Sample_Timer'))
+	return sample_timer
+
+
 def config_ssh_server():
 	"""
 	Load SSH server(destination) IP address from config.ini

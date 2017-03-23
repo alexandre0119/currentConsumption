@@ -22,15 +22,6 @@ import src.my_ssh.ssh_send_cmd as ssh_send_cmd
 import src.my_misc.my_decorator as my_decorator
 
 
-def test_case_init_wrapper(case_name, case_func, *args, **kwargs):
-	print('Measuring {0}......'.format(case_name))
-	case_func(*args, **kwargs)
-	data_frame_list = dmm_basic.dmm_flow_wrapper(config_basic.visa_address_active_list(),
-	                                             600000, 3, 'IMM', 'MIN', 'TIM', 'MIN',
-	                                             1, 100, case_name, 0)
-	return data_frame_list
-
-
 def test_case_wrapper(case_name, joined_df_list, enable, case_func, *args, **kwargs):
 	enable = int(str(enable))
 	if enable == 1:
@@ -69,7 +60,8 @@ def main_flow():
 		print('Chip version is selected as {0}'.format(str(config['BASIC'].get('Chip_Version'))))
 
 		# Get case_0 return data frame list: [inst_1_data_frame, inst_2_data_frame, ...]
-		case_0_data_frame_list = test_case_init_wrapper('Deep Sleep', ssh_send_cmd.cc_bt_init_status, dut, ref, 0)
+		case_0_data_frame_list = dmm_basic.test_case_init_wrapper('Deep Sleep', 0,
+		                                                          ssh_send_cmd.cc_bt_init_status, dut, ref, 0)
 
 		# Assign first data frame list to joined data frame list as initiate value
 		for i in range(len(config_basic.visa_address_active_list())):

@@ -6,7 +6,6 @@ import src.my_misc.my_time as my_time
 
 import functools
 from src.my_misc.my_logging import create_logger
-
 # Logger for decorator
 log_decorator = create_logger(logger_name=__name__, fmt='%(message)s')
 

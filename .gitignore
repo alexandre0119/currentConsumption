@@ -9,3 +9,6 @@ src/my_dmm/__pycache__/
 src/my_excel/__pycache__/
 src/my_misc/__pycache__/
 src/my_ssh/__pycache__/
+.idea/markdown-navigator.xml
+.idea/markdown-navigator/
+log_this.txt

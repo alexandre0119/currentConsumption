@@ -1,7 +1,9 @@
 # currentConsumption
-Current consumption automation
+Current consumption automation for BT/BLE test cases
 
 # Lib installation
-- pip install pathos <used for multiprocessing>
+- pip install xxx
+
+
 
 

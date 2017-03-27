@@ -1,23 +1,22 @@
 # To-Do
 
 ## Feature
-- Add SW/HW all version information
+- Read back WLAN and BT version information
 - Get temp reading
-- use multiprocessing instead of multithreading
 
 ## Bug
 - Bug 1
 
 ## Enhancement
-- Organize code and add comment and doc string
+- Add comment and doc string
 
 # Complete
 
 ## Feature
-- Support multi DMM threading
+- File restructure
 
 ## Bug
 - Bug 1
-## Enhancement
 
+## Enhancement
 - Enhance 1

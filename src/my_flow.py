@@ -2,26 +2,26 @@
 # -*- coding: utf-8 -*-
 # Author: Alex Wang
 
-import sys
-# Ordered dict to construct DF
-from collections import OrderedDict
-from pandas import DataFrame
-# DF related
-import src.my_misc.dataframe_basic as df_basic
-# config.ini settings
-import src.my_config.config_basic as config_basic
-# DMM control related
-import src.my_dmm.dmm_basic as dmm_basic
-# Excel related
-import src.my_excel.excel_basic as excel_basic
+import sys  # sys
+
+from collections import OrderedDict  # Ordered dict to construct DataFrame
+from pandas import DataFrame  # DataFrame
+
+import src.my_misc.dataframe_basic as df_basic  # DF
+
+import src.my_config.config_basic as config_basic  # config.ini settings
+
+import src.my_dmm.dmm_basic as dmm_basic  # DMM control
+
+import src.my_excel.excel_basic as excel_basic  # Excel
 import src.my_excel.excel_format as excel_format
-# SSH related
-import src.my_ssh.ssh_get_cmd as ssh_get_cmd
+
+import src.my_ssh.ssh_get_cmd as ssh_get_cmd  # SSH
 import src.my_ssh.ssh_send_cmd as ssh_send_cmd
-# Decorator
-import src.my_misc.my_decorator as my_decorator
-from src.my_misc.my_logging import create_logger
-# Logger for decorator
+
+import src.my_misc.my_decorator as my_decorator  # Decorator
+
+from src.my_misc.my_logging import create_logger  # Create logger
 log_flow = create_logger()
 
 

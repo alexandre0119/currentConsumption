@@ -20,26 +20,17 @@ import src.my_ssh.ssh_get_cmd as ssh_get_cmd
 import src.my_ssh.ssh_send_cmd as ssh_send_cmd
 # Decorator
 import src.my_misc.my_decorator as my_decorator
-
-
-def test_case_wrapper(case_name, joined_df_list, enable, case_func, *args, **kwargs):
-	enable = int(str(enable))
-	if enable == 1:
-		print('Measuring {0}......'.format(case_name))
-		case_func(*args, **kwargs)
-		data_frame_list = dmm_basic.dmm_flow_wrapper(config_basic.visa_address_active_list(),
-		                                             600000, 3, 'IMM', 'MIN', 'TIM', 'MIN',
-		                                             1, 100, case_name, 0)
-		for i in range(len(config_basic.visa_address_active_list())):
-			joined_df_list[i] = joined_df_list[i].join(data_frame_list[i])
-		return joined_df_list
-	else:
-		print('Skip <{0}> ......'.format(case_name))
-		return joined_df_list
+from src.my_misc.my_logging import create_logger
+# Logger for decorator
+log_flow = create_logger()
 
 
 def main_flow():
-	# starter: 1: logging; 0[0]: not formatted time; 0[1] formatted time
+	"""
+	Main test sequence flow
+	:return: None
+	"""
+	# starter: 1: enable logging; 0[0]: return not formatted time; 0[1]: return formatted time
 	my_decorator.main_flow_starter(1)
 	start_time = my_decorator.main_flow_starter(0)[0]
 	start_time_formatted = my_decorator.main_flow_starter(0)[1]
@@ -49,15 +40,16 @@ def main_flow():
 	for i in range(len(config_basic.visa_address_active_list())):
 		joined_df_list.append(DataFrame())
 
-	config = config_basic.load_config()
-	dut = config_basic.config_dut()
-	ref = config_basic.config_ref()
-	dut_bd_addr = ssh_get_cmd.bd_addr()[0]
-	ref_bd_addr = ssh_get_cmd.bd_addr()[1]
+	config = config_basic.load_config()  # Init config file
+	dut = config_basic.config_dut()  # Get DUT hci# from config file
+	ref = config_basic.config_ref()  # Get Reference hci# from config file
+	dut_bd_addr = ssh_get_cmd.bd_addr()[0]  # Get DUT BD addr from config file
+	ref_bd_addr = ssh_get_cmd.bd_addr()[1]  # Get Reference BD addr from config file
 
+	# Identify chip version
 	if str(config['BASIC'].get('Chip_Version')) == '8977' or '8997' or '8987':
-		# Print chip version
-		print('Chip version is selected as {0}'.format(str(config['BASIC'].get('Chip_Version'))))
+		# Logging chip version
+		log_flow.info('Chip version is selected as {0}'.format(str(config['BASIC'].get('Chip_Version'))))
 
 		# Get case_0 return data frame list: [inst_1_data_frame, inst_2_data_frame, ...]
 		case_0_data_frame_list = dmm_basic.test_case_init_wrapper('Deep Sleep', 0,
@@ -67,204 +59,263 @@ def main_flow():
 		for i in range(len(config_basic.visa_address_active_list())):
 			joined_df_list[i] = case_0_data_frame_list[i]
 
+		# Enable BT test or skip
 		if str(config['Test_Case'].get('BT_Enable')) == '1':
 			# Get case_1 return data frame list: [inst_1_data_frame, inst_2_data_frame, ...]
-			joined_df_list = test_case_wrapper('BT Idle', joined_df_list,
-			                                           config['Test_Case'].get('BT_Idle'),
-			                                           ssh_send_cmd.cc_bt_idle, dut, ref, 0)
+			# [BT] Idle
+			joined_df_list = dmm_basic.test_case_wrapper('BT Idle',
+			                                             joined_df_list,
+			                                             config['Test_Case'].get('BT_Idle'),
+			                                             0,
+			                                             ssh_send_cmd.cc_bt_idle, dut, ref, 0)
 
-			joined_df_list = test_case_wrapper('BT Page Scan', joined_df_list,
-			                                           config['Test_Case'].get('BT_P_Scan'),
-			                                           ssh_send_cmd.cc_bt_pscan, dut, ref, 0)
+			# [BT] Page scan
+			joined_df_list = dmm_basic.test_case_wrapper('BT Page Scan',
+			                                             joined_df_list,
+			                                             config['Test_Case'].get('BT_P_Scan'),
+			                                             1,
+			                                             ssh_send_cmd.cc_bt_pscan, dut, ref, 0)
 
-			joined_df_list = test_case_wrapper('BT Inquiry Scan', joined_df_list,
-			                                           config['Test_Case'].get('BT_I_Scan'),
-			                                           ssh_send_cmd.cc_bt_iscan, dut, ref, 0)
+			# [BT] Inquiry scan
+			joined_df_list = dmm_basic.test_case_wrapper('BT Inquiry Scan',
+			                                             joined_df_list,
+			                                             config['Test_Case'].get('BT_I_Scan'),
+			                                             1,
+			                                             ssh_send_cmd.cc_bt_iscan, dut, ref, 0)
 
-			joined_df_list = test_case_wrapper('BT Page & Inquiry Scan', joined_df_list,
-			                                           config['Test_Case'].get('BT_PI_Scan'),
-			                                           ssh_send_cmd.cc_bt_piscan, dut, ref, 0)
+			# [BT] Page and Inquiry scan
+			joined_df_list = dmm_basic.test_case_wrapper('BT Page & Inquiry Scan',
+			                                             joined_df_list,
+			                                             config['Test_Case'].get('BT_PI_Scan'),
+			                                             1,
+			                                             ssh_send_cmd.cc_bt_piscan, dut, ref, 0)
 
-			joined_df_list = test_case_wrapper('BT ACL Sniff 1.28s interval Master @ 0dBm at Pin',
-			                                           joined_df_list,
-			                                           config['Test_Case'].get('BT_ACL_Sniff_1.28s_Master_0-dBm-pin'),
-			                                           ssh_send_cmd.cc_bt_acl_sniff_1dot28s_master,
-			                                           dut, dut_bd_addr,
-			                                           ref, ref_bd_addr,
-			                                           '0')
+			# [BT] ACL Sniff - 1.28s interval - Master role - 0dBm @ chip pin
+			joined_df_list = dmm_basic.test_case_wrapper('BT ACL Sniff 1.28s interval Master @ 0dBm at Pin',
+			                                             joined_df_list,
+			                                             config['Test_Case'].get('BT_ACL_Sniff_1.28s_Master_0-dBm-pin'),
+			                                             1,
+			                                             ssh_send_cmd.cc_bt_acl_sniff_1dot28s_master,
+			                                             dut, dut_bd_addr, ref, ref_bd_addr,
+			                                             '0')
 
-			joined_df_list = test_case_wrapper('BT ACL Sniff 1.28s interval Master @ 4dBm at Pin',
-			                                           joined_df_list,
-			                                           config['Test_Case'].get('BT_ACL_Sniff_1.28s_Master_4-dBm-pin'),
-			                                           ssh_send_cmd.cc_bt_acl_sniff_1dot28s_master,
-			                                           dut, dut_bd_addr,
-			                                           ref, ref_bd_addr,
-			                                           '4')
+			# [BT] ACL Sniff - 1.28s interval - Master role - 4dBm @ chip pin
+			joined_df_list = dmm_basic.test_case_wrapper('BT ACL Sniff 1.28s interval Master @ 4dBm at Pin',
+			                                             joined_df_list,
+			                                             config['Test_Case'].get('BT_ACL_Sniff_1.28s_Master_4-dBm-pin'),
+			                                             1,
+			                                             ssh_send_cmd.cc_bt_acl_sniff_1dot28s_master,
+			                                             dut, dut_bd_addr, ref, ref_bd_addr,
+			                                             '4')
 
-			joined_df_list = test_case_wrapper('BT ACL Sniff 1.28s interval Master @ Max dBm at Pin',
-			                                           joined_df_list,
-			                                           config['Test_Case'].get('BT_ACL_Sniff_1.28s_Master_Max-dBm-pin'),
-			                                           ssh_send_cmd.cc_bt_acl_sniff_1dot28s_master,
-			                                           dut, dut_bd_addr,
-			                                           ref, ref_bd_addr,
-			                                           'Max')
+			# [BT] ACL Sniff - 1.28s interval - Master role - Max dBm @ chip pin
+			joined_df_list = dmm_basic.test_case_wrapper('BT ACL Sniff 1.28s interval Master @ Max dBm at Pin',
+			                                             joined_df_list,
+			                                             config['Test_Case'].get('BT_ACL_Sniff_1.28s_Master_Max-dBm-pin'),
+			                                             1,
+			                                             ssh_send_cmd.cc_bt_acl_sniff_1dot28s_master,
+			                                             dut, dut_bd_addr, ref, ref_bd_addr,
+			                                             'Max')
 
-			joined_df_list = test_case_wrapper('BT ACL Sniff 0.5s interval Master @ 0 dBm at Pin',
-			                                           joined_df_list,
-			                                           config['Test_Case'].get('BT_ACL_Sniff_0.5s_Master_0-dBm-pin'),
-			                                           ssh_send_cmd.cc_bt_acl_sniff_0dot5s_master,
-			                                           dut, dut_bd_addr,
-			                                           ref, ref_bd_addr,
-			                                           '0')
+			# [BT] ACL Sniff - 0.5s interval - Master role - 0dBm @ chip pin
+			joined_df_list = dmm_basic.test_case_wrapper('BT ACL Sniff 0.5s interval Master @ 0 dBm at Pin',
+			                                             joined_df_list,
+			                                             config['Test_Case'].get('BT_ACL_Sniff_0.5s_Master_0-dBm-pin'),
+			                                             1,
+			                                             ssh_send_cmd.cc_bt_acl_sniff_0dot5s_master,
+			                                             dut, dut_bd_addr, ref, ref_bd_addr,
+			                                             '0')
 
-			joined_df_list = test_case_wrapper('BT ACL Sniff 0.5s interval Master @ 4 dBm at Pin',
-			                                           joined_df_list,
-			                                           config['Test_Case'].get('BT_ACL_Sniff_0.5s_Master_4-dBm-pin'),
-			                                           ssh_send_cmd.cc_bt_acl_sniff_0dot5s_master,
-			                                           dut, dut_bd_addr,
-			                                           ref, ref_bd_addr,
-			                                           '4')
+			# [BT] ACL Sniff - 0.5s interval - Master role - 4dBm @ chip pin
+			joined_df_list = dmm_basic.test_case_wrapper('BT ACL Sniff 0.5s interval Master @ 4 dBm at Pin',
+			                                             joined_df_list,
+			                                             config['Test_Case'].get('BT_ACL_Sniff_0.5s_Master_4-dBm-pin'),
+			                                             1,
+			                                             ssh_send_cmd.cc_bt_acl_sniff_0dot5s_master,
+			                                             dut, dut_bd_addr, ref, ref_bd_addr,
+			                                             '4')
 
-			joined_df_list = test_case_wrapper('BT ACL Sniff 0.5s interval Master @ Max dBm at Pin',
-			                                           joined_df_list,
-			                                           config['Test_Case'].get('BT_ACL_Sniff_0.5s_Master_Max-dBm-pin'),
-			                                           ssh_send_cmd.cc_bt_acl_sniff_0dot5s_master,
-			                                           dut, dut_bd_addr,
-			                                           ref, ref_bd_addr,
-			                                           'Max')
+			# [BT] ACL Sniff - 0.5s interval - Master role - Max dBm @ chip pin
+			joined_df_list = dmm_basic.test_case_wrapper('BT ACL Sniff 0.5s interval Master @ Max dBm at Pin',
+			                                             joined_df_list,
+			                                             config['Test_Case'].get('BT_ACL_Sniff_0.5s_Master_Max-dBm-pin'),
+			                                             1,
+			                                             ssh_send_cmd.cc_bt_acl_sniff_0dot5s_master,
+			                                             dut, dut_bd_addr, ref, ref_bd_addr,
+			                                             'Max')
 
-			joined_df_list = test_case_wrapper('BT SCO HV3 Master @ 0 dBm at Pin',
-			                                           joined_df_list,
-			                                           config['Test_Case'].get('BT_SCO_HV3_Master_0-dBm-pin'),
-			                                           ssh_send_cmd.cc_bt_sco_hv3,
-			                                           dut, dut_bd_addr,
-			                                           ref, ref_bd_addr,
-			                                           '0')
+			# [BT] SCO - HV3 - Master role - 0dBm @ chip pin
+			joined_df_list = dmm_basic.test_case_wrapper('BT SCO HV3 Master @ 0 dBm at Pin',
+			                                             joined_df_list,
+			                                             config['Test_Case'].get('BT_SCO_HV3_Master_0-dBm-pin'),
+			                                             2,
+			                                             ssh_send_cmd.cc_bt_sco_hv3,
+			                                             dut, dut_bd_addr, ref, ref_bd_addr,
+			                                             '0')
 
-			joined_df_list = test_case_wrapper('BT SCO HV3 Master @ 4 dBm at Pin',
-			                                           joined_df_list,
-			                                           config['Test_Case'].get('BT_SCO_HV3_Master_4-dBm-pin'),
-			                                           ssh_send_cmd.cc_bt_sco_hv3,
-			                                           dut, dut_bd_addr,
-			                                           ref, ref_bd_addr,
-			                                           '4')
+			# [BT] SCO - HV3 - Master role - 4dBm @ chip pin
+			joined_df_list = dmm_basic.test_case_wrapper('BT SCO HV3 Master @ 4 dBm at Pin',
+			                                             joined_df_list,
+			                                             config['Test_Case'].get('BT_SCO_HV3_Master_4-dBm-pin'),
+			                                             2,
+			                                             ssh_send_cmd.cc_bt_sco_hv3,
+			                                             dut, dut_bd_addr, ref, ref_bd_addr,
+			                                             '4')
 
-			joined_df_list = test_case_wrapper('BT SCO HV3 Master @ Max dBm at Pin',
-			                                           joined_df_list,
-			                                           config['Test_Case'].get('BT_SCO_HV3_Master_Max-dBm-pin'),
-			                                           ssh_send_cmd.cc_bt_sco_hv3,
-			                                           dut, dut_bd_addr,
-			                                           ref, ref_bd_addr,
-			                                           'Max')
+			# [BT] SCO - HV3 - Master role - Max dBm @ chip pin
+			joined_df_list = dmm_basic.test_case_wrapper('BT SCO HV3 Master @ Max dBm at Pin',
+			                                             joined_df_list,
+			                                             config['Test_Case'].get('BT_SCO_HV3_Master_Max-dBm-pin'),
+			                                             2,
+			                                             ssh_send_cmd.cc_bt_sco_hv3,
+			                                             dut, dut_bd_addr, ref, ref_bd_addr,
+			                                             'Max')
 
-			joined_df_list = test_case_wrapper('BT SCO EV3 Master @ 0 dBm at Pin',
-			                                           joined_df_list,
-			                                           config['Test_Case'].get('BT_SCO_EV3_Master_0-dBm-pin'),
-			                                           ssh_send_cmd.cc_bt_sco_ev3,
-			                                           dut, dut_bd_addr,
-			                                           ref, ref_bd_addr,
-			                                           '0')
+			# [BT] SCO - EV3 - Master role - 0dBm @ chip pin
+			joined_df_list = dmm_basic.test_case_wrapper('BT SCO EV3 Master @ 0 dBm at Pin',
+			                                             joined_df_list,
+			                                             config['Test_Case'].get('BT_SCO_EV3_Master_0-dBm-pin'),
+			                                             2,
+			                                             ssh_send_cmd.cc_bt_sco_ev3,
+			                                             dut, dut_bd_addr, ref, ref_bd_addr,
+			                                             '0')
 
-			joined_df_list = test_case_wrapper('BT SCO EV3 Master @ 4 dBm at Pin',
-			                                           joined_df_list,
-			                                           config['Test_Case'].get('BT_SCO_EV3_Master_4-dBm-pin'),
-			                                           ssh_send_cmd.cc_bt_sco_ev3,
-			                                           dut, dut_bd_addr,
-			                                           ref, ref_bd_addr,
-			                                           '4')
+			# [BT] SCO - EV3 - Master role - 4dBm @ chip pin
+			joined_df_list = dmm_basic.test_case_wrapper('BT SCO EV3 Master @ 4 dBm at Pin',
+			                                             joined_df_list,
+			                                             config['Test_Case'].get('BT_SCO_EV3_Master_4-dBm-pin'),
+			                                             2,
+			                                             ssh_send_cmd.cc_bt_sco_ev3,
+			                                             dut, dut_bd_addr, ref, ref_bd_addr,
+			                                             '4')
 
-			joined_df_list = test_case_wrapper('BT SCO EV3 Master @ Max dBm at Pin',
-			                                           joined_df_list,
-			                                           config['Test_Case'].get('BT_SCO_EV3_Master_Max-dBm-pin'),
-			                                           ssh_send_cmd.cc_bt_sco_ev3,
-			                                           dut, dut_bd_addr,
-			                                           ref, ref_bd_addr,
-			                                           'Max')
+			# [BT] SCO - EV3 - Master role - Max dBm @ chip pin
+			joined_df_list = dmm_basic.test_case_wrapper('BT SCO EV3 Master @ Max dBm at Pin',
+			                                             joined_df_list,
+			                                             config['Test_Case'].get('BT_SCO_EV3_Master_Max-dBm-pin'),
+			                                             2,
+			                                             ssh_send_cmd.cc_bt_sco_ev3,
+			                                             dut, dut_bd_addr, ref, ref_bd_addr,
+			                                             'Max')
+		# Skip BT test cases
 		elif str(config['Test_Case'].get('BT_Enable')) == '0':
-			print('Skip all BT test cases')
+			skip_bt_str = ('\n'
+			               '****************************************************************\n'
+			               '>>>> {0}\n'
+			               '****************************************************************\n')
+			final_skip_bt_str = skip_bt_str.format('Skip all BT test cases')
+			log_flow.info(final_skip_bt_str)
+		# BT_Enable config.ini error handle
 		else:
-			print('Invalid "BT_Enable" info, pls check config.ini file. Exiting...')
+			skip_bt_err = ('\n'
+			               '****************************************************************\n'
+			               '>>>> {0}\n'
+			               '****************************************************************\n')
+			final_skip_bt_err = skip_bt_err.format('Invalid "BT_Enable" info, pls check config.ini file. Exit...')
+			log_flow.info(final_skip_bt_err)
 			sys.exit(1)
 
+		# Enable BLE test or skip
 		if str(config['Test_Case'].get('BLE_Enable')) == '1':
-			joined_df_list = test_case_wrapper('BLE Adv 1.28s interval 3 channels @ 0 dBm at Pin',
-			                                           joined_df_list,
-			                                           config['Test_Case'].get('BLE_Adv_1.28s_3Channel_0-dBm-pin'),
-			                                           ssh_send_cmd.cc_ble_adv_1dot28s_3channel,
-			                                           dut,
-			                                           ref,
-			                                           '0', 1)
+			# [BLE] Adv - 12.8s interval - 3 channels - 0dBm @ chip pin
+			joined_df_list = dmm_basic.test_case_wrapper('BLE Adv 1.28s interval 3 channels @ 0 dBm at Pin',
+			                                             joined_df_list,
+			                                             config['Test_Case'].get('BLE_Adv_1.28s_3Channel_0-dBm-pin'),
+			                                             1,
+			                                             ssh_send_cmd.cc_ble_adv_1dot28s_3channel,
+			                                             dut, ref,
+			                                             '0', 1)
 
-			joined_df_list = test_case_wrapper('BLE Adv 1.28s interval 3 channels @ 4 dBm at Pin',
-			                                           joined_df_list,
-			                                           config['Test_Case'].get('BLE_Adv_1.28s_3Channel_4-dBm-pin'),
-			                                           ssh_send_cmd.cc_ble_adv_1dot28s_3channel,
-			                                           dut,
-			                                           ref,
-			                                           '0', 1)
+			# [BLE] Adv - 12.8s interval - 3 channels - 4dBm @ chip pin
+			joined_df_list = dmm_basic.test_case_wrapper('BLE Adv 1.28s interval 3 channels @ 4 dBm at Pin',
+			                                             joined_df_list,
+			                                             config['Test_Case'].get('BLE_Adv_1.28s_3Channel_4-dBm-pin'),
+			                                             1,
+			                                             ssh_send_cmd.cc_ble_adv_1dot28s_3channel,
+			                                             dut, ref,
+			                                             '0', 1)
 
-			joined_df_list = test_case_wrapper('BLE Adv 1.28s interval 3 channels @ Max dBm at Pin',
-			                                           joined_df_list,
-			                                           config['Test_Case'].get('BLE_Adv_1.28s_3Channel_Max-dBm-pin'),
-			                                           ssh_send_cmd.cc_ble_adv_1dot28s_3channel,
-			                                           dut,
-			                                           ref,
-			                                           '0', 1)
+			# [BLE] Adv - 12.8s interval - 3 channels - Max dBm @ chip pin
+			joined_df_list = dmm_basic.test_case_wrapper('BLE Adv 1.28s interval 3 channels @ Max dBm at Pin',
+			                                             joined_df_list,
+			                                             config['Test_Case'].get('BLE_Adv_1.28s_3Channel_Max-dBm-pin'),
+			                                             1,
+			                                             ssh_send_cmd.cc_ble_adv_1dot28s_3channel,
+			                                             dut, ref,
+			                                             '0', 1)
 
-			joined_df_list = test_case_wrapper('BLE Scan 1.28s interval',
-			                                           joined_df_list,
-			                                           config['Test_Case'].get('BLE_Scan_1.28s'),
-			                                           ssh_send_cmd.cc_ble_scan_1dot28s,
-			                                           dut,
-			                                           ref,
-			                                           '0', 1)
+			# [BLE] Scan - 1.28s interval
+			joined_df_list = dmm_basic.test_case_wrapper('BLE Scan 1.28s interval',
+			                                             joined_df_list,
+			                                             config['Test_Case'].get('BLE_Scan_1.28s'),
+			                                             1,
+			                                             ssh_send_cmd.cc_ble_scan_1dot28s,
+			                                             dut, ref,
+			                                             '0', 1)
 
-			joined_df_list = test_case_wrapper('BLE Scan 1s interval',
-			                                           joined_df_list,
-			                                           config['Test_Case'].get('BLE_Scan_1s'),
-			                                           ssh_send_cmd.cc_ble_scan_1s,
-			                                           dut,
-			                                           ref,
-			                                           '0', 1)
+			# [BLE] Scan - 1s interval
+			joined_df_list = dmm_basic.test_case_wrapper('BLE Scan 1s interval',
+			                                             joined_df_list,
+			                                             config['Test_Case'].get('BLE_Scan_1s'),
+			                                             1,
+			                                             ssh_send_cmd.cc_ble_scan_1s,
+			                                             dut, ref,
+			                                             '0', 1)
 
-			joined_df_list = test_case_wrapper('BLE Scan 10ms interval',
-			                                           joined_df_list,
-			                                           config['Test_Case'].get('BLE_Scan_10ms'),
-			                                           ssh_send_cmd.cc_ble_scan_10ms,
-			                                           dut,
-			                                           ref,
-			                                           '0', 1)
+			# [BLE] Scan - 10ms interval
+			joined_df_list = dmm_basic.test_case_wrapper('BLE Scan 10ms interval',
+			                                             joined_df_list,
+			                                             config['Test_Case'].get('BLE_Scan_10ms'),
+			                                             1,
+			                                             ssh_send_cmd.cc_ble_scan_10ms,
+			                                             dut, ref,
+			                                             '0', 1)
 
-			joined_df_list = test_case_wrapper('BLE Connection 1.28s interval @ 0 dBm at Pin',
-			                                           joined_df_list,
-			                                           config['Test_Case'].get('BLE_Connection_1.28s_0-dBm-pin'),
-			                                           ssh_send_cmd.cc_ble_connection_1dot28s,
-			                                           dut,
-			                                           ref, ref_bd_addr,
-			                                           '0')
+			# [BLE] connection - 12.8s interval - 0dBm @ chip pin
+			joined_df_list = dmm_basic.test_case_wrapper('BLE Connection 1.28s interval @ 0 dBm at Pin',
+			                                             joined_df_list,
+			                                             config['Test_Case'].get('BLE_Connection_1.28s_0-dBm-pin'),
+			                                             1,
+			                                             ssh_send_cmd.cc_ble_connection_1dot28s,
+			                                             dut, ref, ref_bd_addr,
+			                                             '0')
 
-			joined_df_list = test_case_wrapper('BLE Connection 1.28s interval @ 4 dBm at Pin',
-			                                           joined_df_list,
-			                                           config['Test_Case'].get('BLE_Connection_1.28s_4-dBm-pin'),
-			                                           ssh_send_cmd.cc_ble_connection_1dot28s,
-			                                           dut,
-			                                           ref, ref_bd_addr,
-			                                           '4')
+			# [BLE] connection - 12.8s interval - 4dBm @ chip pin
+			joined_df_list = dmm_basic.test_case_wrapper('BLE Connection 1.28s interval @ 4 dBm at Pin',
+			                                             joined_df_list,
+			                                             config['Test_Case'].get('BLE_Connection_1.28s_4-dBm-pin'),
+			                                             1,
+			                                             ssh_send_cmd.cc_ble_connection_1dot28s,
+			                                             dut, ref, ref_bd_addr,
+			                                             '4')
 
-			joined_df_list = test_case_wrapper('BLE Connection 1.28s interval @ Max dBm at Pin',
-			                                           joined_df_list,
-			                                           config['Test_Case'].get('BLE_Connection_1.28s_Max-dBm-pin'),
-			                                           ssh_send_cmd.cc_ble_connection_1dot28s,
-			                                           dut,
-			                                           ref, ref_bd_addr,
-			                                           'Max')
+			# [BLE] connection - 12.8s interval - Max dBm @ chip pin
+			joined_df_list = dmm_basic.test_case_wrapper('BLE Connection 1.28s interval @ Max dBm at Pin',
+			                                             joined_df_list,
+			                                             config['Test_Case'].get('BLE_Connection_1.28s_Max-dBm-pin'),
+			                                             1,
+			                                             ssh_send_cmd.cc_ble_connection_1dot28s,
+			                                             dut, ref, ref_bd_addr,
+			                                             'Max')
+		# Skip BLE test cases
 		elif str(config['Test_Case'].get('BLE_Enable')) == '0':
-			print('Skip all BLE test cases')
+			skip_ble_str = ('\n'
+			                '****************************************************************\n'
+			                '>>>> {0}\n'
+			                '****************************************************************\n')
+			final_skip_ble_str = skip_ble_str.format('Skip all BLE test cases')
+			log_flow.info(final_skip_ble_str)
+		# BLE_Enable config.ini error handle
 		else:
-			print('Invalid "BLE_Enable" info, pls check config.ini file')
+			skip_ble_err = ('\n'
+			                '****************************************************************\n'
+			                '>>>> {0}\n'
+			                '****************************************************************\n')
+			final_skip_ble_err = skip_ble_err.format('Invalid "BLE_Enable" info, pls check config.ini file. Exit...')
+			log_flow.info(final_skip_ble_err)
 			sys.exit(1)
 
-	# print(joined_df_list)
+	# log_flow.info(joined_df_list)
 
 	# ender: 1: logging; 0[0]: not formatted time; 0[1] formatted time
 	my_decorator.main_flow_ender(1)

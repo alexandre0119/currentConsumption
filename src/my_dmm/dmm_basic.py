@@ -358,3 +358,48 @@ def test_case_init_wrapper(case_name, case_count_type, case_func, *args, **kwarg
 	                                   config_basic.dmm_sample_count()[case_count_type], case_name, 0)
 	log_dmm.info(final_end_str)
 	return data_frame_list
+
+
+def test_case_wrapper(case_name, joined_df_list, enable, case_count_type, case_func, *args, **kwargs):
+	enable = int(str(enable))
+	if enable == 1:
+		case_count_type = int(case_count_type)
+		start_str = '''
+		================================================================
+		****************************************************************
+		>>>> Start measure [{0}]
+		----------------------------------------------------------------
+		'''
+		end_str = '''
+		----------------------------------------------------------------
+		Finish measure [{0}] <<<<
+		****************************************************************
+		================================================================
+		'''
+		final_start_str = start_str.format(case_name)
+		final_end_str = end_str.format(case_name)
+		log_dmm.info(final_start_str)
+		print('Measuring {0}......'.format(case_name))
+		case_func(*args, **kwargs)
+		data_frame_list = dmm_flow_wrapper(config_basic.visa_address_active_list(),
+		                                   config_basic.dmm_timeout(),
+		                                   config_basic.dmm_current_range(),
+		                                   config_basic.dmm_trig_src(),
+		                                   config_basic.dmm_trig_delay(),
+		                                   config_basic.dmm_sample_src(),
+		                                   config_basic.dmm_sample_timer(),
+		                                   config_basic.dmm_trigger_count()[case_count_type],
+		                                   config_basic.dmm_sample_count()[case_count_type], case_name, 0)
+		for i in range(len(config_basic.visa_address_active_list())):
+			joined_df_list[i] = joined_df_list[i].join(data_frame_list[i])
+		log_dmm.info(final_end_str)
+		return joined_df_list
+	else:
+		skip_str = '''
+		****************************************************************
+		>>>> Skip [{0}]
+		****************************************************************
+		'''
+		final_skip_str = skip_str.format(case_name)
+		log_dmm.info(final_skip_str)
+		return joined_df_list

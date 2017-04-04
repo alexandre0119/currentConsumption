@@ -329,7 +329,7 @@ def main_flow():
 	# [Start][Excel] write data to Excel
 
 	# [Open][Excel] open excel file
-	excel_writer = excel_basic.open_excel('test.xlsx')
+	excel_writer = excel_basic.open_excel(r'C:\test.xlsx')
 	# Create workbook object
 	workbook = excel_writer.book
 
@@ -371,6 +371,8 @@ def main_flow():
 
 	# [version] Get DataFrame column list length for 'df_version'
 	df_version_col_len = len(df_basic.get_col(df_version))
+	# print(df_basic.get_col(df_version), '!!!!!!!!!!!!')
+	# print(type(df_basic.get_col(df_version)), '!!!!!!!!!!!!!!!!!')
 
 	# [version] Create index cell list
 	cell_version_index = excel_basic.create_single_col('B', '3', df_version_col_len)
@@ -413,6 +415,7 @@ def main_flow():
 
 	# [data] Get DataFrame index list length for 'joined_df_list'
 	joined_df_list_idx_len = len(df_basic.get_idx(joined_df_list[0].T))
+	# print(df_basic.get_idx(joined_df_list[0].T), '!!!!!!!!!!!!!!!!')
 	# [data] Get DataFrame column list length for 'joined_df_list'
 	joined_df_list_col_len = len(df_basic.get_col(joined_df_list[0].T))
 

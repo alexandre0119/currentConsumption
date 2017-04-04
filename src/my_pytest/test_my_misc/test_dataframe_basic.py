@@ -19,8 +19,8 @@ df_sample = pd.DataFrame(my_content, index=my_idx, columns=my_col)
 
 print(df_sample)
 
-def test_dataframe_basic():
-	print(dataframe_basic.get_col(df_sample))
+def test_get_col():
+	# print(dataframe_basic.get_col(df_sample))
 	assert dataframe_basic.get_col(df_sample)[0] == 'A'
 	assert dataframe_basic.get_col(df_sample)[1] == 'B'
 	assert dataframe_basic.get_col(df_sample)[2] == 'C'
@@ -29,7 +29,7 @@ def test_dataframe_basic():
 
 
 def test_get_idx():
-	print(dataframe_basic.get_idx(df_sample))
+	# print(dataframe_basic.get_idx(df_sample))
 	assert dataframe_basic.get_idx(df_sample)[0] == '1-1'
 	assert dataframe_basic.get_idx(df_sample)[1] == '2-2'
 	assert dataframe_basic.get_idx(df_sample)[2] == '3-3'

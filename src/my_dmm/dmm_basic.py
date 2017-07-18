@@ -361,6 +361,17 @@ def test_case_init_wrapper(case_name, case_count_type, case_func, *args, **kwarg
 
 
 def test_case_wrapper(case_name, joined_df_list, enable, case_count_type, case_func, *args, **kwargs):
+	"""
+	Test case wrapper for details test cases components
+	:param case_name: Test case name
+	:param joined_df_list: Joined DataFrame list
+	:param enable: enable flag
+	:param case_count_type: trigger/sample count type 0: flat; 1: pulse; 2: active
+	:param case_func: Test case function
+	:param args: Test case function args
+	:param kwargs: Test case function kwargs
+	:return: Joined measurement results DataFrame list
+	"""
 	enable = int(str(enable))
 	if enable == 1:
 		case_count_type = int(case_count_type)

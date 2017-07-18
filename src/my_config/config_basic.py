@@ -197,6 +197,12 @@ def config_ssh_password():
 
 
 def config_bt_power(chip_version, bt_power_level):
+	"""
+	Config BT power level
+	:param chip_version: chip version
+	:param bt_power_level: BT power level setting
+	:return: BT power level index with given chip version
+	"""
 	config = load_config()
 	if chip_version == '8977':
 		if bt_power_level == '0':

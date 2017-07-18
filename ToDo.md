@@ -1,14 +1,15 @@
 # To-Do
 
 ## Feature
-- Read back WLAN and BT version information
-- Get temp reading
+- Read back WLAN and BT release version information
+- Get temperature reading
 
 ## Bug
-- Bug 1
+- Disable multi threading/processing for now
 
 ## Enhancement
 - Add comment and doc string
+- Re-enable multi threading/processing
 
 # Complete
 
@@ -16,7 +17,7 @@
 - File restructure
 
 ## Bug
-- Bug 1
+- Place holder
 
 ## Enhancement
-- Enhance 1
+- Place holder

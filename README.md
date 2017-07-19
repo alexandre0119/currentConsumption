@@ -12,4 +12,6 @@ Current consumption automation for BT/BLE test cases.
 - Enter root folder and run 'python run.py'
 - test.xlsx will be generated under C: folder
 
+### Note: BT/BLE case automation was completed, won't update recently.
+
 

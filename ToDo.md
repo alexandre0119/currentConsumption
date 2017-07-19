@@ -3,6 +3,7 @@
 ## Feature
 - Read back WLAN and BT release version information
 - Get temperature reading
+- Add Pytest
 
 ## Bug
 - Disable multi threading/processing for now

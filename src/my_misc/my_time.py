@@ -29,8 +29,8 @@ def now_formatted(now_time):
 	Get current date and time formatted using datetime
 	:return: current date and time formatted
 	"""
-	format = "%H:%M:%S %m-%d-%Y %A"
-	now_formatted_info = now_time.strftime(format) + ' ' + time_zone()
+	format_str = "%H:%M:%S %m-%d-%Y %A"
+	now_formatted_info = now_time.strftime(format_str) + ' ' + time_zone()
 	return now_formatted_info
 
 
@@ -61,13 +61,3 @@ def time_delta(start_time, end_time):
 	delta = end_time - start_time
 	delta_formatted = strfdelta(delta, "{hours}:{minutes}:{seconds} {days} days")
 	return delta_formatted
-
-# # Examples
-# print(now())
-# print(time_zone())
-# print(now_formatted())
-#
-# start_time = now()
-# sleep(1)
-# end_time = now()
-# print(time_delta(start_time, end_time))

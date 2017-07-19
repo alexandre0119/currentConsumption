@@ -16,6 +16,12 @@ class SSH:
 	transport = None
 
 	def __init__(self, address, username, password):
+		"""
+		Init Paramiko SSH
+		:param address: IP address
+		:param username: Username
+		:param password: Password
+		"""
 		self.address = address
 		self.username = username
 		self.userPassword = password
@@ -27,6 +33,11 @@ class SSH:
 
 	@hci_return_header_footer()
 	def send_command(self, command):
+		"""
+		Send SSH cmd
+		:param command: cmd string
+		:return: [0] date return [1] error return
+		"""
 		if self.client:
 			stdin, stdout, stderr = self.client.exec_command(command, get_pty=True)
 			# stdin, stdout, stderr = self.client.exec_command('sudo ' + command)

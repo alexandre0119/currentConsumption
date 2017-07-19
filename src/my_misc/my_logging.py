@@ -11,6 +11,16 @@ def create_logger(logger_name=__name__, log_file='log_this.txt', log_level='DEBU
                   fmt='[%(asctime)s] %(levelname)s --- \n%(message)s',
                   fmt_date='%Y-%m-%d %H:%M:%S',
                   file_mode='a'):
+	"""
+	My logging
+	:param logger_name: logger name
+	:param log_file: log file name
+	:param log_level: log level
+	:param fmt: format string
+	:param fmt_date: format date
+	:param file_mode: file mode
+	:return: logger
+	"""
 	logger = logging.getLogger(logger_name)
 
 	if logger.handlers:

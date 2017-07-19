@@ -6,7 +6,11 @@ from pandas import ExcelWriter
 
 
 def open_excel(excel_name):
-	# Create a Pandas Excel writer using XlsxWriter as the engine.
+	"""
+	Create a Pandas Excel writer using XlsxWriter as the engine.
+	:param excel_name: excel name
+	:return: excel write object
+	"""
 	writer = ExcelWriter(excel_name, engine='xlsxwriter')
 	return writer
 

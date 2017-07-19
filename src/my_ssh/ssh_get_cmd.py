@@ -9,6 +9,10 @@ import re
 
 
 def get_bd_addr_list():
+	"""
+	Get BD addr list
+	:return: BD addr list
+	"""
 	data = ssh_basic.open_connection_ssh().send_command('hciconfig')[0]
 
 	regex_bd_address = re.compile(r'[\s]*BD Address:[\s]*' +
@@ -32,11 +36,15 @@ def get_bd_addr_list():
 
 
 def bd_addr():
+	"""
+	Convert BD addr list to DUT and Ref BD addresses
+	:return: [0] DUT BD addr; [1] Ref BD addr
+	"""
 	dut_bd_address = ''
 	ref_bd_address = ''
 	config = config_basic.load_config()
 	for i in get_bd_addr_list():
-		# print(i.keys(), i.values(), '!!!!!!!!!!!!!!!!!!!!!!')
+		# print(i.keys(), i.values())
 		for j, k in i.items():
 			if j == config['BASIC'].get('Dut'):
 				dut_bd_address = k

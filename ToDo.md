@@ -6,7 +6,7 @@
 - Add Pytest
 
 ## Bug
-- Disable multi threading/processing for now
+- Disable multi threading/processing for now, maybe enable in the future
 
 ## Enhancement
 - Add comment and doc string

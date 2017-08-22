@@ -14,3 +14,5 @@ log_this.txt
 test.xlsx
 .idea/dictionaries/alexwang.xml
 .idea/preferred-vcs.xml
+src/my_pytest/__pycache__/
+src/my_pytest/test_my_misc/__pycache__/
